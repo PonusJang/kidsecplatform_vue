@@ -56,24 +56,24 @@ export const constantRoutes = [
   },
 
   {
-    path: '/example',
+    path: '/domain',
     component: Layout,
-    redirect: '/example/table',
-    name: 'Example',
-    meta: { title: 'Example', icon: 'el-icon-s-help' },
+    redirect: '/domain/domainList',
+    name: 'domain',
+    meta: { title: '域名', icon: 'el-icon-s-help' },
     children: [
       {
-        path: 'table',
-        name: 'Table',
-        component: () => import('@/views/table/index'),
-        meta: { title: 'Table', icon: 'table' }
-      },
-      {
-        path: 'tree',
-        name: 'Tree',
-        component: () => import('@/views/tree/index'),
-        meta: { title: 'Tree', icon: 'tree' }
+        path: 'domainList',
+        name: 'domainList',
+        component: () => import('@/views/domain/domainList'),
+        meta: { title: '查看域名', icon: 'table' }
       }
+      // {
+      //   path: 'domainAdd',
+      //   name: 'domainAdd',
+      //   component: () => import('@/views/tree/index'),
+      //   meta: { title: '添加域名', icon: 'tree' }
+      // }
     ]
   },
 
