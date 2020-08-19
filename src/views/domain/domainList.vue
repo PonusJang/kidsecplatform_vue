@@ -23,11 +23,11 @@
           <span>{{ scope.row.domain }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="子域名" align="center">
-        <template slot-scope="scope">
-          {{ scope.row.subdomains }}
-        </template>
-      </el-table-column>
+<!--      <el-table-column label="子域名" align="center">-->
+<!--        <template slot-scope="scope">-->
+<!--          {{ scope.row.subdomains }}-->
+<!--        </template>-->
+<!--      </el-table-column>-->
 
       <el-table-column align="center" prop="created_at" label="添加时间">
         <template slot-scope="scope">
@@ -56,9 +56,10 @@ export default {
   },
   methods: {
     fetchData() {
-      this.listLoading = true
       getList().then(response => {
-        this.list = response.data.items
+        console.log(response)
+        this.list = response.data.docs
+        this.listLoading = true
         this.listLoading = false
       })
     }
