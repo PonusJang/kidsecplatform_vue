@@ -28,8 +28,8 @@
     >
 
 
-      <el-table-column type="expand"> //type="expand" 带下层数据的字段
-        <template scope="scope">
+      <el-table-column type="expand">
+        <template slot-scope="scope">
           <el-table class="demo-table-expand"
                     :data="scope.row.subdomains"
                     border
@@ -121,7 +121,7 @@
 
 <script>
   // eslint-disable-next-line no-unused-vars
-  import {getList, update} from '@/api/domain'
+  import {getList, update, add, del} from '@/api/domain'
   import {parseTime} from '@/utils'
   import waves from '@/directive/waves' // waves directive
   import Pagination from '@/components/Pagination' // secondary package based on el-pagination
@@ -183,15 +183,38 @@
       resetTemp() {
         this.temp = {
           id: undefined,
-          importance: 1,
-          remark: '',
-          timestamp: new Date(),
-          title: '',
-          status: 'published',
-          type: ''
+          owner: "",
+          domain: ""
         }
       },
-
+      createData() {
+        this.$refs['dataForm'].validate((valid) => {
+          if (valid) {
+            add(this.temp).then(() => {
+              this.list.unshift(this.temp)
+              this.dialogFormVisible = false
+              this.$notify({
+                title: 'Success',
+                message: 'Created Successfully',
+                type: 'success',
+                duration: 2000
+              })
+            })
+          }
+        })
+      },
+      handleDelete(row, index) {
+        //console.log(row.domain)
+        del(row.domain).then(() => {
+          this.$notify({
+            title: 'Success',
+            message: 'Delete Successfully',
+            type: 'success',
+            duration: 2000
+          })
+          this.list.splice(index, 1)
+        })
+      },
       handleFilter() {
         this.listQuery.page = 1
         this.getList()
@@ -208,6 +231,7 @@
 
       handleUpdate(row) {
         this.temp = Object.assign({}, row) // copy obj
+        console.log(row.domian)
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
         this.$nextTick(() => {
@@ -219,9 +243,8 @@
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             const tempData = Object.assign({}, this.temp)
-            console.log(tempData)
             update(tempData).then(() => {
-              const index = this.list.findIndex(v => v.id === this.temp.id)
+              const index = this.list.findIndex(v => v._id === this.temp._id)
               this.list.splice(index, 1, this.temp)
               this.dialogFormVisible = false
               this.$notify({
