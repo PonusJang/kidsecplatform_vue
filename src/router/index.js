@@ -66,7 +66,7 @@ export const constantRoutes = [
         path: 'domainList',
         name: 'domainList',
         component: () => import('@/views/domain/domainList'),
-        meta: { title: '查看域名', icon: 'table' }
+        meta: { title: '域名监控', icon: 'table' }
       }
       // {
       //   path: 'domainAdd',
