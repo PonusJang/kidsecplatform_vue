@@ -1,10 +1,9 @@
 import request from '@/utils/request'
 
-export function getList(params) {
+export function getList() {
   return request({
     url: '/domain/getList',
-    method: 'get',
-    params
+    method: 'get'
   })
 }
 
@@ -16,7 +15,6 @@ export function update(data) {
   })
 }
 
-
 export function add(data) {
   return request({
     url: '/domain/add',
@@ -24,7 +22,6 @@ export function add(data) {
     data
   })
 }
-
 
 export function del(domain) {
   return request({
