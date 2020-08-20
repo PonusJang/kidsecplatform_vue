@@ -68,15 +68,23 @@ export const constantRoutes = [
         component: () => import('@/views/domain/domainList'),
         meta: { title: '域名监控', icon: 'table' }
       }
-      // {
-      //   path: 'domainAdd',
-      //   name: 'domainAdd',
-      //   component: () => import('@/views/tree/index'),
-      //   meta: { title: '添加域名', icon: 'tree' }
-      // }
     ]
   },
-
+  {
+    path: '/ip',
+    component: Layout,
+    redirect: '/ip/ipList',
+    name: 'ip',
+    meta: { title: 'IP', icon: 'el-icon-s-help' },
+    children: [
+      {
+        path: 'domainList',
+        name: 'domainList',
+        component: () => import('@/views/ip/ipList'),
+        meta: { title: 'IP监控', icon: 'nested' }
+      }
+    ]
+  },
   {
     path: '/form',
     component: Layout,
