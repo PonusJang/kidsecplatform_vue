@@ -1,9 +1,10 @@
 import request from '@/utils/request'
 
-export function getList() {
+export function getList(page, limit) {
   return request({
     url: '/domain/getList',
-    method: 'get'
+    method: 'get',
+    params: { page, limit }
   })
 }
 
@@ -28,5 +29,22 @@ export function del(domain) {
     url: '/domain/delete',
     method: 'get',
     params: { domain }
+  })
+}
+
+
+export function findByOwner(page, limit, owner) {
+  return request({
+    url: '/domain/findByOwner',
+    method: 'get',
+    params: {page, limit, owner}
+  })
+}
+
+export function findByDomain(page, limit, domain) {
+  return request({
+    url: '/domain/findByDomain',
+    method: 'get',
+    params: {page, limit, domain}
   })
 }

@@ -78,8 +78,8 @@ export const constantRoutes = [
     meta: { title: 'IP', icon: 'el-icon-s-help' },
     children: [
       {
-        path: 'domainList',
-        name: 'domainList',
+        path: 'ipList',
+        name: 'ipList',
         component: () => import('@/views/ip/ipList'),
         meta: { title: 'IP监控', icon: 'nested' }
       }

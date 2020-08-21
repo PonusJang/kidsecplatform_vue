@@ -1,9 +1,10 @@
 import request from '@/utils/request'
 
-export function getList() {
+export function getList(page, limit) {
   return request({
     url: '/ip/getList',
-    method: 'get'
+    method: 'get',
+    params: {page, limit}
   })
 }
 
@@ -27,6 +28,31 @@ export function del(ip) {
   return request({
     url: '/ip/delete',
     method: 'get',
-    params: { ip }
+    params: {ip}
+  })
+}
+
+
+export function findByIP(page, limit, ip) {
+  return request({
+    url: '/ip/findByIp',
+    method: 'get',
+    params: {page, limit, ip}
+  })
+}
+
+export function findByPort(page, limit, port) {
+  return request({
+    url: '/ip/findByPort',
+    method: 'get',
+    params: {page, limit, port}
+  })
+}
+
+export function findByService(page, limit, service) {
+  return request({
+    url: '/ip/findByService',
+    method: 'get',
+    params: {page, limit, service}
   })
 }
