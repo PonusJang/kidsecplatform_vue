@@ -9,13 +9,9 @@
         class="filter-item"
         @keyup.enter.native="handleFilter"
       />
-      <el-input
-        v-model="listQuery.domain"
-        placeholder="状态"
-        style="width: 200px;"
-        class="filter-item"
-        @keyup.enter.native="handleFilter"
-      />
+      <el-select v-model="listQuery.status" style="width: 140px" class="filter-item" @change="handleFilter">
+        <el-option v-for="item in statusOptions" :key="item.key" :label="item.label" :value="item.key" />
+      </el-select>
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         搜索
       </el-button>
@@ -83,14 +79,10 @@
           {{ scope.$index }}
         </template>
       </el-table-column>
-      <el-table-column label="任务名" align="center">
+
+      <el-table-column label="任务名称" align="center">
         <template slot-scope="scope">
-          <span class="link-type" @click="handleUpdate(row)"> {{ scope.row.name }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="插件" align="center">
-        <template slot-scope="scope">
-          <span class="link-type" @click="handleUpdate(row)">{{ scope.row.plugin }}</span>
+          <span class="link-type" @click="handleUpdate(row)">{{ scope.row.name }}</span>
         </template>
       </el-table-column>
 
@@ -103,9 +95,6 @@
 
       <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
         <template slot-scope="{row,$index}">
-          <el-button type="primary" size="mini" @click="handleUpdate(row)">
-            编辑
-          </el-button>
           <el-button size="mini" type="danger" @click="handleDelete(row,$index)">
             删除
           </el-button>
@@ -153,7 +142,7 @@
 
 <script>
 // eslint-disable-next-line no-unused-vars
-import { getList, update, add, del, findByDomain, findByOwner } from '@/api/domain'
+import { getList, add, del, findByName, findByService } from '@/api/task'
 import { parseTime } from '@/utils'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
@@ -173,6 +162,7 @@ export default {
         owner: undefined,
         domain: undefined
       },
+      statusOptions: ['START', 'FINISHED', 'RUNNING'],
       list: null,
       listLoading: false,
       dialogFormVisible: false,
@@ -200,16 +190,16 @@ export default {
   methods: {
     getList() {
       this.listLoading = false
-      if (this.listQuery.owner != undefined && this.listQuery.owner != '') {
-        findByOwner(this.listQuery.page, this.listQuery.limit, this.listQuery.owner).then(response => {
+      if (this.listQuery.name != undefined && this.listQuery.name != '') {
+        findByName(this.listQuery.page, this.listQuery.limit, this.listQuery.name).then(response => {
           this.total = response.data.count
           this.list = response.data.docs
           setTimeout(() => {
             this.listLoading = false
           }, 1.5 * 1000)
         })
-      } else if (this.listQuery.domain != undefined && this.listQuery.domain != '') {
-        findByDomain(this.listQuery.page, this.listQuery.limit, this.listQuery.domain).then(response => {
+      } else if (this.listQuery.service != undefined && this.listQuery.service != '') {
+        findByService(this.listQuery.page, this.listQuery.limit, this.listQuery.domain).then(response => {
           this.total = response.data.count
           this.list = response.data.docs
           setTimeout(() => {

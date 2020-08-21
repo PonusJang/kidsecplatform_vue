@@ -106,7 +106,7 @@ export const constantRoutes = [
       {
         path: 'pluginList',
         name: 'pluginList',
-        component: () => import('@/views/task/taskList'),
+        component: () => import('@/views/plugin/pluginList'),
         meta: { title: '插件管理', icon: 'nested' }
       }
     ]
