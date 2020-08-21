@@ -4,14 +4,14 @@
     <div class="filter-container">
       <el-input
         v-model="listQuery.owner"
-        placeholder="归属企业"
+        placeholder="任务名"
         style="width: 200px;"
         class="filter-item"
         @keyup.enter.native="handleFilter"
       />
       <el-input
         v-model="listQuery.domain"
-        placeholder="域名"
+        placeholder="状态"
         style="width: 200px;"
         class="filter-item"
         @keyup.enter.native="handleFilter"
@@ -54,7 +54,7 @@
         <template slot-scope="scope">
           <el-table
             class="demo-table-expand"
-            :data="scope.row.subdomains"
+            :data="scope.row.results"
             border
             style="width: 100%"
           >
@@ -65,16 +65,14 @@
             <el-table-column
               prop="ip"
               label="IP"
-              :formatter="set_ip"
             />
             <el-table-column
-              prop="subdomain"
-              label="子域名"
+              prop="port"
+              label="端口"
             />
             <el-table-column
-              prop="web_tag"
-              label="网站指纹"
-              :formatter="set_webtag"
+              prop="vuln"
+              label="vulnable"
             />
           </el-table>
         </template>
@@ -85,14 +83,14 @@
           {{ scope.$index }}
         </template>
       </el-table-column>
-      <el-table-column label="归属企业" align="center">
+      <el-table-column label="任务名" align="center">
         <template slot-scope="scope">
-          <span class="link-type" @click="handleUpdate(row)"> {{ scope.row.owner }}</span>
+          <span class="link-type" @click="handleUpdate(row)"> {{ scope.row.name }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="域名" align="center">
+      <el-table-column label="插件" align="center">
         <template slot-scope="scope">
-          <span class="link-type" @click="handleUpdate(row)">{{ scope.row.domain }}</span>
+          <span class="link-type" @click="handleUpdate(row)">{{ scope.row.plugin }}</span>
         </template>
       </el-table-column>
 
@@ -227,14 +225,6 @@ export default {
           }, 1.5 * 1000)
         })
       }
-    },
-    set_webtag(row, column) {
-      const arr = new Array(row.web_tag)
-      return arr.join('<br>')
-    },
-    set_ip(row, column) {
-      const arr = new Array(row.ip)
-      return arr.join('<br>')
     },
     resetTemp() {
       this.temp = {
