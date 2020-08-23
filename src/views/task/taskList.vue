@@ -9,8 +9,8 @@
         class="filter-item"
         @keyup.enter.native="handleFilter"
       />
-      <el-select v-model="listQuery.status" style="width: 140px" class="filter-item" @change="handleFilter">
-        <el-option v-for="item in statusOptions" :key="item.key" :label="item.label" :value="item.key" />
+      <el-select v-model="listQuery.type" placeholder="Type" clearable class="filter-item" style="width: 130px">
+        <el-option v-for="item in statusOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key" />
       </el-select>
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         搜索
@@ -146,6 +146,12 @@ import { getList, add, del, findByName, findByService } from '@/api/task'
 import { parseTime } from '@/utils'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
+
+const statusOptions = [
+  { key: 'START', display_name: '运行中' },
+  { key: 'FINISHED', display_name: '完成' }
+]
+
 export default {
   name: 'DomainList',
   components: { Pagination },
@@ -162,7 +168,7 @@ export default {
         owner: undefined,
         domain: undefined
       },
-      statusOptions: ['START', 'FINISHED', 'RUNNING'],
+      statusOptions,
       list: null,
       listLoading: false,
       dialogFormVisible: false,

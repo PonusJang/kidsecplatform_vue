@@ -23,3 +23,14 @@ export function findByName(page, limit, name) {
     params: { page, limit, name }
   })
 }
+
+export function uploadPlugin(fileData) {
+  return request({
+    url: '/plugin/uploadPlugin',
+    method: 'post',
+    headers: {
+      'Content-Type': 'multipart/form-data;charset=utf-8'
+    },
+    data: fileData
+  })
+}

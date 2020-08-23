@@ -19,7 +19,7 @@
         icon="el-icon-edit"
         @click="handleCreate"
       >
-        新增
+        上传插件
       </el-button>
 
     </div>
@@ -79,6 +79,30 @@
 
     </el-table>
 
+    <el-dialog title="上传插件" width="26%" :visible.sync="dialogPvVisible">
+      <el-upload
+        ref="upload"
+        class="upload-demo"
+        drag
+        action=""
+        :before-upload="beforeUpload"
+        multiple
+        :auto-upload="false"
+        accept=".py"
+        :on-success="handlesuccess"
+      >
+        <i class="el-icon-upload" />
+        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+        <div slot="tip" class="el-upload__tip">请注意您只能上传.py格式的文件</div>
+      </el-upload>
+      <el-button type="primary" class="yes-btn" @click="SubmitForm()">
+        确 定
+      </el-button>
+      <el-button>
+        重 置
+      </el-button>
+    </el-dialog>
+
     <pagination
       v-show="total>0"
       :total="total"
@@ -91,7 +115,7 @@
 
 <script>
 // eslint-disable-next-line no-unused-vars
-import { getList, del, findByName } from '@/api/plugin'
+import { getList, del, findByName, uploadPlugin } from '@/api/plugin'
 import { parseTime } from '@/utils'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
@@ -119,7 +143,11 @@ export default {
         create: '新增'
       },
       dialogPvVisible: false,
-      downloadLoading: false
+      downloadLoading: false,
+      temp: {
+        id: undefined
+      },
+      fileList: []
     }
   },
   created() {
@@ -128,10 +156,8 @@ export default {
   methods: {
     getList() {
       this.listLoading = false
-      console.log(this.listQuery.ip)
       if (this.listQuery.name != undefined && this.listQuery.name != '') {
         findByName(this.listQuery.page, this.listQuery.limit, this.listQuery.ip).then(response => {
-          // console.log(response.data.docs)
           this.total = response.data.count
           this.list = response.data.docs
           setTimeout(() => {
@@ -140,7 +166,6 @@ export default {
         })
       } else {
         getList(this.listQuery.page, this.listQuery.limit).then(response => {
-          // console.log(response.data.docs)
           this.total = response.data.count
           this.list = response.data.docs
           setTimeout(() => {
@@ -150,8 +175,7 @@ export default {
       }
     },
     handleDelete(row, index) {
-      console.log(row)
-      del(row.ip).then(() => {
+      del(row.name).then(() => {
         this.$notify({
           title: 'Success',
           message: 'Delete Successfully',
@@ -165,13 +189,41 @@ export default {
       this.listQuery.page = 1
       this.getList()
     },
+    resetTemp() {
+      this.temp = {
+        id: undefined
+      }
+    },
+    SubmitForm() {
+      this.$refs.upload.submit()
+    },
+    beforeUpload(file) {
+      const name = file.name
+      const type = name.substring(name.lastIndexOf('.') + 1)
+      if (type !== 'py') {
+        this.$message('请上传Python文件格式')
+        return false
+      }
+      const fd = new FormData()
+      fd.append('file', file)
+      uploadPlugin(fd).then(res => {
+        console.log(res)
+      })
+      return true
+    },
+    /**
+       *文件上传成功时的钩子
+       * */
+    handlesuccess(file) {
+      this.$message({
+        message: '上传成功',
+        type: 'success',
+        duration: 1000
+      })
+    },
     handleCreate() {
       this.resetTemp()
-      this.dialogStatus = 'create'
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
+      this.dialogPvVisible = true
     },
     formatJson(filterVal) {
       return this.list.map(v => filterVal.map(j => {
