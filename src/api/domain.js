@@ -32,12 +32,19 @@ export function del(domain) {
   })
 }
 
+export function delAll(domain, option) {
+  return request({
+    url: '/domain/delete',
+    method: 'get',
+    params: { domain, option }
+  })
+}
 
 export function findByOwner(page, limit, owner) {
   return request({
     url: '/domain/findByOwner',
     method: 'get',
-    params: {page, limit, owner}
+    params: { page, limit, owner }
   })
 }
 
@@ -45,6 +52,6 @@ export function findByDomain(page, limit, domain) {
   return request({
     url: '/domain/findByDomain',
     method: 'get',
-    params: {page, limit, domain}
+    params: { page, limit, domain }
   })
 }

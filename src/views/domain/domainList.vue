@@ -103,13 +103,16 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" width="250" class-name="small-padding fixed-width">
         <template slot-scope="{row,$index}">
           <el-button type="primary" size="mini" @click="handleUpdate(row)">
             编辑
           </el-button>
           <el-button size="mini" type="danger" @click="handleDelete(row,$index)">
             删除
+          </el-button>
+          <el-button size="mini" type="danger" @click="handleDeleteAll(row,$index)">
+            删除全部
           </el-button>
         </template>
       </el-table-column>
@@ -155,7 +158,7 @@
 
 <script>
 // eslint-disable-next-line no-unused-vars
-import { getList, update, add, del, findByDomain, findByOwner } from '@/api/domain'
+import { getList, update, add, del, delAll, findByDomain, findByOwner } from '@/api/domain'
 import { parseTime } from '@/utils'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
@@ -262,6 +265,18 @@ export default {
     handleDelete(row, index) {
       // console.log(row.domain)
       del(row.domain).then(() => {
+        this.$notify({
+          title: 'Success',
+          message: 'Delete Successfully',
+          type: 'success',
+          duration: 2000
+        })
+        this.list.splice(index, 1)
+      })
+    },
+    handleDeleteAll(row, index) {
+      // console.log(row.domain)
+      delAll(row.domain, 'delete_all_ip').then(() => {
         this.$notify({
           title: 'Success',
           message: 'Delete Successfully',
