@@ -31,3 +31,11 @@ export function findByService(page, limit, service) {
     params: { page, limit, service }
   })
 }
+
+export function add(data) {
+  return request({
+    url: '/task/add',
+    method: 'post',
+    data
+  })
+}

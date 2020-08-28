@@ -4,7 +4,7 @@ export function getList(page, limit) {
   return request({
     url: '/ip/getList',
     method: 'get',
-    params: {page, limit}
+    params: { page, limit }
   })
 }
 
@@ -28,16 +28,15 @@ export function del(ip) {
   return request({
     url: '/ip/delete',
     method: 'get',
-    params: {ip}
+    params: { ip }
   })
 }
-
 
 export function findByIP(page, limit, ip) {
   return request({
     url: '/ip/findByIp',
     method: 'get',
-    params: {page, limit, ip}
+    params: { page, limit, ip }
   })
 }
 
@@ -45,7 +44,7 @@ export function findByPort(page, limit, port) {
   return request({
     url: '/ip/findByPort',
     method: 'get',
-    params: {page, limit, port}
+    params: { page, limit, port }
   })
 }
 
@@ -53,6 +52,14 @@ export function findByService(page, limit, service) {
   return request({
     url: '/ip/findByService',
     method: 'get',
-    params: {page, limit, service}
+    params: { page, limit, service }
+  })
+}
+
+export function searchIP(data) {
+  return request({
+    url: '/ip/search',
+    method: 'post',
+    data
   })
 }

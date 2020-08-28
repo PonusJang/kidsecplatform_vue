@@ -34,3 +34,11 @@ export function uploadPlugin(fileData) {
     data: fileData
   })
 }
+
+export function searchPlugin(data) {
+  return request({
+    url: '/plugin/search',
+    method: 'post',
+    data
+  })
+}
