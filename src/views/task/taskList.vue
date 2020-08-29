@@ -55,7 +55,7 @@
         <template slot-scope="scope">
           <el-table
             class="demo-table-expand"
-            :data="scope.row.results"
+            :data="scope.row.result"
             border
             style="width: 100%"
           >
@@ -72,6 +72,7 @@
               label="端口"
             />
             <el-table-column
+              :formatter="stateFormat"
               prop="vuln"
               label="vulnable"
             />
@@ -87,7 +88,23 @@
 
       <el-table-column label="任务名称" align="center">
         <template slot-scope="scope">
-          <span class="link-type" @click="handleUpdate(row)">{{ scope.row.name }}</span>
+          <span class="link-type">{{ scope.row.name }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="插件" align="center">
+        <template slot-scope="scope">
+          <span class="link-type">{{ scope.row.plugin }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="服务" align="center">
+        <template slot-scope="scope">
+          <span class="link-type">{{ scope.row.service }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="状态" align="center">
+        <template slot-scope="scope">
+          <span class="link-type">{{ scope.row.status }}</span>
         </template>
       </el-table-column>
 
@@ -97,7 +114,12 @@
           <span>{{ scope.row.add_time | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
         </template>
       </el-table-column>
-
+      <el-table-column align="center" prop="created_at" label="完成时间">
+        <template slot-scope="scope">
+          <i class="el-icon-time" />
+          <span>{{ scope.row.finished_time | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
         <template slot-scope="{row,$index}">
           <el-button size="mini" type="danger" @click="handleDelete(row,$index)">
@@ -299,6 +321,13 @@ export default {
         })
       }
     },
+    stateFormat(row, column) {
+      if (row.state === true) {
+        return '存在'
+      } else {
+        return '不存在'
+      }
+    },
     resetAll() {
       this.host_value = [],
       this.host_options = [],
@@ -323,7 +352,7 @@ export default {
     },
     handleDelete(row, index) {
       // console.log(row.domain)
-      del(row.domain).then(() => {
+      del(row.name).then(() => {
         this.$notify({
           title: 'Success',
           message: 'Delete Successfully',
