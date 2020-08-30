@@ -57,7 +57,7 @@
       </el-table-column>
       <el-table-column label="服务器" align="center">
         <template slot-scope="scope">
-          <span class="link-type" @click="handleUpdate(row)"> {{ scope.row.server }}</span>
+          <span class="link-type" @click="handleUpdate(row)"> {{ scope.row.local_ip }}</span>
         </template>
       </el-table-column>
       <el-table-column label="本地端口" align="center">
@@ -122,7 +122,7 @@
         style="width: 400px; margin-left:50px;"
       >
         <el-form-item label="服务器" prop="title">
-          <el-input v-model="temp.server" />
+          <el-input v-model="temp.local_ip" />
         </el-form-item>
         <el-form-item label="域名" prop="title">
           <el-input v-model="temp.domain" />
@@ -160,7 +160,7 @@ export default {
       listQuery: {
         page: 1,
         limit: 10,
-        server: undefined,
+        local_ip: undefined,
         domain: undefined
       },
       list: null,
@@ -173,13 +173,13 @@ export default {
       },
       dialogPvVisible: false,
       rules: {
-        server: [{ required: true, message: '服务器 is required', trigger: 'blur' }],
+        local_ip: [{ required: true, message: '服务器 is required', trigger: 'blur' }],
         domain: [{ required: true, message: '域名 is required', trigger: 'blur' }]
       },
       downloadLoading: false,
       temp: {
         id: undefined,
-        server: '',
+        local_ip: '',
         domain: ''
       }
     }
