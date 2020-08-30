@@ -13,7 +13,7 @@ import Layout from '@/layout'
  * hidden: true                   if set true, item will not show in the sidebar(default is false)
  * alwaysShow: true               if set true, will always show the root menu
  *                                if not set alwaysShow, when item has more than one children route,
- *                                it will becomes nested mode, otherwise not show the root menu
+ *                                it will becomes intranet mode, otherwise not show the root menu
  * redirect: noRedirect           if set noRedirect will no redirect in the breadcrumb
  * name:'router-name'             the name is used by <keep-alive> (must set!!!)
  * meta : {
@@ -54,60 +54,70 @@ export const constantRoutes = [
       meta: { title: 'Dashboard', icon: 'dashboard' }
     }]
   },
-
   {
-    path: '/domain',
+    path: '/internet',
     component: Layout,
-    redirect: '/domain/domainList',
-    name: 'domain',
-    meta: { title: '域名', icon: 'el-icon-s-help' },
+    redirect: '/internet/domain/domainList',
+    name: '互联网资产',
+    meta: {
+      title: '互联网资产',
+      icon: 'nested'
+    },
     children: [
       {
-        path: 'domainList',
-        name: 'domainList',
-        component: () => import('@/views/domain/domainList'),
-        meta: { title: '域名监控', icon: 'table' }
+        path: 'domain',
+        component: () => import('@/views/internet/domain/domainList'),
+        name: '域名监控',
+        meta: { title: '域名监控' }
+      },
+      {
+        path: 'ip',
+        component: () => import('@/views/internet/ip/ipList'),
+        name: 'IP监控',
+        meta: { title: 'IP监控' }
+      },
+      {
+        path: 'task',
+        component: () => import('@/views/internet/task/taskList'),
+        name: '任务管理',
+        meta: { title: '任务管理' }
       }
     ]
   },
   {
-    path: '/ip',
+    path: '/intranet',
     component: Layout,
-    redirect: '/ip/ipList',
-    name: 'ip',
-    meta: { title: 'IP', icon: 'el-icon-s-help' },
+    redirect: '/intranet/nginx',
+    name: '内网资产',
+    meta: {
+      title: '内网资产',
+      icon: 'nested'
+    },
     children: [
       {
-        path: 'ipList',
-        name: 'ipList',
-        component: () => import('@/views/ip/ipList'),
-        meta: { title: 'IP监控', icon: 'nested' }
+        path: 'nginx',
+        component: () => import('@/views/intranet/nginx/index'),
+        name: 'Nginx映射',
+        meta: { title: 'Nginx映射' }
+      },
+      {
+        path: 'assest',
+        component: () => import('@/views/intranet/assest/index'),
+        name: '资产管理',
+        meta: { title: '资产管理' }
       }
     ]
   },
   {
-    path: '/task',
+    path: '/system',
     component: Layout,
-    redirect: '/task/taskList',
+    redirect: '/system/sysConfigList',
     children: [
       {
-        path: 'taskList',
-        name: 'taskList',
-        component: () => import('@/views/task/taskList'),
-        meta: { title: '任务管理', icon: 'form' }
-      }
-    ]
-  },
-  {
-    path: '/plugin',
-    component: Layout,
-    redirect: '/plugin/pluginList',
-    children: [
-      {
-        path: 'pluginList',
-        name: 'pluginList',
-        component: () => import('@/views/plugin/pluginList'),
-        meta: { title: '插件管理', icon: 'nested' }
+        path: 'sysConfigList',
+        name: 'sysConfigList',
+        component: () => import('@/views/system/index'),
+        meta: { title: '系统配置', icon: 'table' }
       }
     ]
   },

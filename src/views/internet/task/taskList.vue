@@ -253,7 +253,7 @@ import { searchIP } from '@/api/ip'
 import { searchPlugin } from '@/api/plugin'
 import { parseTime } from '@/utils'
 import waves from '@/directive/waves' // waves directive
-import Pagination from '@/components/Pagination' // secondary package based on el-pagination
+import Pagination from '@/components/Pagination/index' // secondary package based on el-pagination
 import Multiselect from 'vue-multiselect'
 
 const statusOptions = [
@@ -295,7 +295,7 @@ export default {
   methods: {
     getList() {
       this.listLoading = false
-      if (this.listQuery.name != undefined && this.listQuery.name != '') {
+      if (this.listQuery.name !== undefined && this.listQuery.name !== '') {
         findByName(this.listQuery.page, this.listQuery.limit, this.listQuery.name).then(response => {
           this.total = response.data.count
           this.list = response.data.docs
@@ -303,7 +303,7 @@ export default {
             this.listLoading = false
           }, 1.5 * 1000)
         })
-      } else if (this.listQuery.service != undefined && this.listQuery.service != '') {
+      } else if (this.listQuery.service !== undefined && this.listQuery.service !== '') {
         findByService(this.listQuery.page, this.listQuery.limit, this.listQuery.domain).then(response => {
           this.total = response.data.count
           this.list = response.data.docs

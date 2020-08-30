@@ -3,15 +3,22 @@
   <div class="app-container">
     <div class="filter-container">
       <el-input
-        v-model="listQuery.owner"
-        placeholder="归属企业"
+        v-model="listQuery.ip"
+        placeholder="IP"
         style="width: 200px;"
         class="filter-item"
         @keyup.enter.native="handleFilter"
       />
       <el-input
-        v-model="listQuery.domain"
-        placeholder="域名"
+        v-model="listQuery.port"
+        placeholder="端口"
+        style="width: 200px;"
+        class="filter-item"
+        @keyup.enter.native="handleFilter"
+      />
+      <el-input
+        v-model="listQuery.service"
+        placeholder="服务"
         style="width: 200px;"
         class="filter-item"
         @keyup.enter.native="handleFilter"
@@ -54,27 +61,21 @@
         <template slot-scope="scope">
           <el-table
             class="demo-table-expand"
-            :data="scope.row.subdomains"
+            :data="scope.row.open_ports"
             border
             style="width: 100%"
           >
             <el-table-column
+              prop="port"
+              label="端口"
+            />
+            <el-table-column
+              prop="service"
+              label="服务"
+            />
+            <el-table-column
               prop="add_time"
-              label="CreatedTime"
-            />
-            <el-table-column
-              prop="ip"
-              label="IP"
-              :formatter="set_ip"
-            />
-            <el-table-column
-              prop="subdomain"
-              label="子域名"
-            />
-            <el-table-column
-              prop="web_tag"
-              label="网站指纹"
-              :formatter="set_webtag"
+              label="AddTime"
             />
           </el-table>
         </template>
@@ -85,17 +86,16 @@
           {{ scope.$index }}
         </template>
       </el-table-column>
+      <el-table-column label="IP" align="center">
+        <template slot-scope="scope">
+          <span class="link-type" @click="handleUpdate(row)"> {{ scope.row.ip }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="归属企业" align="center">
         <template slot-scope="scope">
           <span class="link-type" @click="handleUpdate(row)"> {{ scope.row.owner }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="域名" align="center">
-        <template slot-scope="scope">
-          <span class="link-type" @click="handleUpdate(row)">{{ scope.row.domain }}</span>
-        </template>
-      </el-table-column>
-
       <el-table-column align="center" prop="created_at" label="添加时间">
         <template slot-scope="scope">
           <i class="el-icon-time" />
@@ -103,16 +103,13 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="操作" align="center" width="250" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
         <template slot-scope="{row,$index}">
           <el-button type="primary" size="mini" @click="handleUpdate(row)">
             编辑
           </el-button>
           <el-button size="mini" type="danger" @click="handleDelete(row,$index)">
             删除
-          </el-button>
-          <el-button size="mini" type="danger" @click="handleDeleteAll(row,$index)">
-            删除全部
           </el-button>
         </template>
       </el-table-column>
@@ -136,11 +133,11 @@
         label-width="70px"
         style="width: 400px; margin-left:50px;"
       >
-        <el-form-item label="归属企业" prop="title">
-          <el-input v-model="temp.owner" />
+        <el-form-item label="IP" prop="title">
+          <el-input v-model="temp.ip" />
         </el-form-item>
-        <el-form-item label="域名" prop="title">
-          <el-input v-model="temp.domain" />
+        <el-form-item label="owner" prop="title">
+          <el-input v-model="temp.owner" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -158,12 +155,12 @@
 
 <script>
 // eslint-disable-next-line no-unused-vars
-import { getList, update, add, del, delAll, findByDomain, findByOwner } from '@/api/domain'
+import { getList, update, add, del, findByIP, findByPort, findByService } from '@/api/ip'
 import { parseTime } from '@/utils'
 import waves from '@/directive/waves' // waves directive
-import Pagination from '@/components/Pagination' // secondary package based on el-pagination
+import Pagination from '@/components/Pagination/index' // secondary package based on el-pagination
 export default {
-  name: 'DomainList',
+  name: 'IpList',
   components: { Pagination },
   directives: { waves },
   filters: {
@@ -175,8 +172,9 @@ export default {
       listQuery: {
         page: 1,
         limit: 10,
-        owner: undefined,
-        domain: undefined
+        ip: undefined,
+        port: undefined,
+        service: undefined
       },
       list: null,
       listLoading: false,
@@ -188,14 +186,14 @@ export default {
       },
       dialogPvVisible: false,
       rules: {
-        owner: [{ required: true, message: '归属企业 is required', trigger: 'blur' }],
-        domain: [{ required: true, message: '域名 is required', trigger: 'blur' }]
+        ip: [{ required: true, message: 'IP is required', trigger: 'blur' }],
+        owner: [{ required: true, message: '归属企业 is required', trigger: 'blur' }]
       },
       downloadLoading: false,
       temp: {
         id: undefined,
-        owner: '',
-        domain: ''
+        ip: '',
+        owner: ''
       }
     }
   },
@@ -205,16 +203,28 @@ export default {
   methods: {
     getList() {
       this.listLoading = false
-      if (this.listQuery.owner != undefined && this.listQuery.owner != '') {
-        findByOwner(this.listQuery.page, this.listQuery.limit, this.listQuery.owner).then(response => {
+      console.log(this.listQuery.ip)
+      if (this.listQuery.ip !== undefined && this.listQuery.ip !== '') {
+        findByIP(this.listQuery.page, this.listQuery.limit, this.listQuery.ip).then(response => {
+          // console.log(response.data.docs)
           this.total = response.data.count
           this.list = response.data.docs
           setTimeout(() => {
             this.listLoading = false
           }, 1.5 * 1000)
         })
-      } else if (this.listQuery.domain != undefined && this.listQuery.domain != '') {
-        findByDomain(this.listQuery.page, this.listQuery.limit, this.listQuery.domain).then(response => {
+      } else if (this.listQuery.port !== undefined && this.listQuery.port !== '') {
+        findByPort(this.listQuery.page, this.listQuery.limit, this.listQuery.port).then(response => {
+          // console.log(response.data.docs)
+          this.total = response.data.count
+          this.list = response.data.docs
+          setTimeout(() => {
+            this.listLoading = false
+          }, 1.5 * 1000)
+        })
+      } else if (this.listQuery.service != undefined && this.listQuery.service != '') {
+        findByService(this.listQuery.page, this.listQuery.limit, this.listQuery.service).then(response => {
+          // console.log(response.data.docs)
           this.total = response.data.count
           this.list = response.data.docs
           setTimeout(() => {
@@ -223,6 +233,7 @@ export default {
         })
       } else {
         getList(this.listQuery.page, this.listQuery.limit).then(response => {
+          // console.log(response.data.docs)
           this.total = response.data.count
           this.list = response.data.docs
           setTimeout(() => {
@@ -231,19 +242,11 @@ export default {
         })
       }
     },
-    set_webtag(row, column) {
-      const arr = new Array(row.web_tag)
-      return arr.join('<br>')
-    },
-    set_ip(row, column) {
-      const arr = new Array(row.ip)
-      return arr.join('<br>')
-    },
     resetTemp() {
       this.temp = {
         id: undefined,
-        owner: '',
-        domain: ''
+        ip: '',
+        owner: ''
       }
     },
     createData() {
@@ -263,20 +266,8 @@ export default {
       })
     },
     handleDelete(row, index) {
-      // console.log(row.domain)
-      del(row.domain).then(() => {
-        this.$notify({
-          title: 'Success',
-          message: 'Delete Successfully',
-          type: 'success',
-          duration: 2000
-        })
-        this.list.splice(index, 1)
-      })
-    },
-    handleDeleteAll(row, index) {
-      // console.log(row.domain)
-      delAll(row.domain, 'delete_all_ip').then(() => {
+      console.log(row)
+      del(row.ip).then(() => {
         this.$notify({
           title: 'Success',
           message: 'Delete Successfully',
@@ -300,7 +291,6 @@ export default {
     },
     handleUpdate(row) {
       this.temp = Object.assign({}, row) // copy obj
-      console.log(row.domian)
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       this.$nextTick(() => {
@@ -328,13 +318,13 @@ export default {
     handleDownload() {
       this.downloadLoading = true
       import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['add_time', 'owner', 'domain']
-        const filterVal = ['add_time', 'owner', 'domain']
+        const tHeader = ['add_time', 'ip']
+        const filterVal = ['add_time', 'ip']
         const data = this.formatJson(filterVal)
         excel.export_json_to_excel({
           header: tHeader,
           data,
-          filename: '域名列表'
+          filename: 'IP列表'
         })
         this.downloadLoading = false
       })
