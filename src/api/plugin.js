@@ -39,6 +39,7 @@ export function searchPlugin(data) {
   return request({
     url: '/plugin/search',
     method: 'post',
+    headers: { 'Content-Type': 'multipart/form-data' },
     data
   })
 }
