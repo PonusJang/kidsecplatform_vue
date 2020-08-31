@@ -55,3 +55,12 @@ export function findByType(page, limit, type) {
     params: { page, limit, type }
   })
 }
+
+export function addFromExcel(data) {
+  return request({
+    url: '/assets/addFromExcel',
+    method: 'post',
+    data
+  })
+}
+

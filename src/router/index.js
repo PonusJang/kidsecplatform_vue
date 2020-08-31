@@ -6,6 +6,8 @@ Vue.use(Router)
 /* Layout */
 import Layout from '@/layout'
 
+import Login from '../views/login/'
+const dashboard = resolve => require(['../views/dashboard/index'], resolve)
 /**
  * Note: sub-menu only appear when route children.length >= 1
  * Detail see: https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
@@ -33,15 +35,14 @@ import Layout from '@/layout'
 export const constantRoutes = [
   {
     path: '/login',
-    component: () => import('@/views/login/index'),
-    hidden: true
+    component: Login
   },
 
-  {
-    path: '/404',
-    component: () => import('@/views/404'),
-    hidden: true
-  },
+  // {
+  //   path: '/404',
+  //   component: () => import('@/views/404'),
+  //   hidden: true
+  // },
 
   {
     path: '/',
@@ -54,6 +55,23 @@ export const constantRoutes = [
       meta: { title: 'Dashboard', icon: 'dashboard' }
     }]
   },
+
+  {
+    path: 'external-link',
+    component: Layout,
+    children: [
+      {
+        path: 'https://ponusjang.github.io/',
+        meta: { title: '关于', icon: 'link' }
+      }
+    ]
+  },
+
+  // 404 page must be placed at the end !!!
+  { path: '*', redirect: '/404', hidden: true }
+]
+
+export const asyncRoutes = [
   {
     path: '/internet',
     component: Layout,
@@ -61,26 +79,27 @@ export const constantRoutes = [
     name: '互联网资产',
     meta: {
       title: '互联网资产',
-      icon: 'nested'
+      icon: 'nested',
+      roles: ['admin']
     },
     children: [
       {
         path: 'domain',
         component: () => import('@/views/internet/domain/domainList'),
         name: '域名监控',
-        meta: { title: '域名监控' }
+        meta: { title: '域名监控', roles: ['admin'] }
       },
       {
         path: 'ip',
         component: () => import('@/views/internet/ip/ipList'),
         name: 'IP监控',
-        meta: { title: 'IP监控' }
+        meta: { title: 'IP监控', roles: ['admin'] }
       },
       {
         path: 'task',
         component: () => import('@/views/internet/task/taskList'),
         name: '任务管理',
-        meta: { title: '任务管理' }
+        meta: { title: '任务管理', roles: ['admin'] }
       }
     ]
   },
@@ -98,13 +117,13 @@ export const constantRoutes = [
         path: 'nginx',
         component: () => import('@/views/intranet/nginx/index'),
         name: 'Nginx映射',
-        meta: { title: 'Nginx映射' }
+        meta: { title: 'Nginx映射', roles: ['admin'] }
       },
       {
         path: 'assest',
         component: () => import('@/views/intranet/assest/index'),
         name: '资产管理',
-        meta: { title: '资产管理' }
+        meta: { title: '资产管理', roles: ['admin'] }
       }
     ]
   },
@@ -117,23 +136,10 @@ export const constantRoutes = [
         path: 'sysConfigList',
         name: 'sysConfigList',
         component: () => import('@/views/system/index'),
-        meta: { title: '系统配置', icon: 'table' }
+        meta: { title: '系统配置', icon: 'table', roles: ['admin'] }
       }
     ]
-  },
-  {
-    path: 'external-link',
-    component: Layout,
-    children: [
-      {
-        path: 'https://ponusjang.github.io/',
-        meta: { title: '关于', icon: 'link' }
-      }
-    ]
-  },
-
-  // 404 page must be placed at the end !!!
-  { path: '*', redirect: '/404', hidden: true }
+  }
 ]
 
 const createRouter = () => new Router({

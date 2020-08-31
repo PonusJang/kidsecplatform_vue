@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import { getToken } from '@/utils/auth'
 
 export function login(data) {
   return request({
@@ -20,5 +21,12 @@ export function logout() {
   return request({
     url: '/user/logout',
     method: 'post'
+  })
+}
+
+export function getRouters() {
+  return request({
+    url: '/getRouters?username=' + getToken(),
+    method: 'get'
   })
 }

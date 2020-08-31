@@ -152,7 +152,7 @@
 
 <script>
 // eslint-disable-next-line no-unused-vars
-import { getList, update, add, del, delAll, findByDomain, findByOwner } from '@/api/nginx'
+import { getList, update, add, del, findByDomain, findByOwner } from '@/api/nginx'
 import { parseTime } from '@/utils'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
@@ -311,7 +311,7 @@ export default {
         excel.export_json_to_excel({
           header: tHeader,
           data,
-          filename: '域名列表'
+          filename: 'Nginx映射列表'
         })
         this.downloadLoading = false
       })

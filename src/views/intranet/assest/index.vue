@@ -56,7 +56,15 @@
       >
         导入EXCEL
       </el-button>
-
+      <el-button
+        v-waves
+        class="filter-item"
+        type="primary"
+        icon="el-icon-download"
+        @click="handleDownloadTemplate"
+      >
+        下载模板
+      </el-button>
     </div>
 
     <el-table
@@ -163,6 +171,9 @@
       :limit.sync="listQuery.limit"
       @pagination="getList"
     />
+    <el-dialog :visible.sync="dialogUploadVisible">
+      <upload-excel-component :on-success="handleSuccess" :before-upload="beforeUpload" />
+    </el-dialog>
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form
@@ -208,13 +219,14 @@
 
 <script>
 // eslint-disable-next-line no-unused-vars
-import { getList, update, add, del, findByIP, findByOwner, findByType } from '@/api/assest'
+import { getList, update, add, del, findByIP, findByOwner, findByType, addFromExcel } from '@/api/assest'
 import { parseTime } from '@/utils'
+import UploadExcelComponent from '@/components/UploadExcel/index.vue'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 export default {
   name: 'AssestList',
-  components: { Pagination },
+  components: { Pagination, UploadExcelComponent },
   directives: { waves },
   filters: {
     parseTime: parseTime
@@ -233,6 +245,7 @@ export default {
       list: null,
       listLoading: false,
       dialogFormVisible: false,
+      dialogUploadVisible: false,
       dialogStatus: '',
       textMap: {
         update: 'Edit',
@@ -273,7 +286,15 @@ export default {
           }, 1.5 * 1000)
         })
       } else if (this.listQuery.type !== undefined && this.listQuery.type !== '') {
-        findByIP(this.listQuery.page, this.listQuery.limit, this.listQuery.domain).then(response => {
+        findByType(this.listQuery.page, this.listQuery.limit, this.listQuery.type).then(response => {
+          this.total = response.data.count
+          this.list = response.data.docs
+          setTimeout(() => {
+            this.listLoading = false
+          }, 1.5 * 1000)
+        })
+      } else if (this.listQuery.ip !== undefined && this.listQuery.ip !== '') {
+        findByIP(this.listQuery.page, this.listQuery.limit, this.listQuery.ip).then(response => {
           this.total = response.data.count
           this.list = response.data.docs
           setTimeout(() => {
@@ -380,6 +401,30 @@ export default {
       })
     },
     handleUpload() {
+      this.dialogUploadVisible = true
+    },
+    beforeUpload(file) {
+      if (file) {
+        return true
+      }
+      this.$message({
+        message: '请参照模板上传文件',
+        type: 'warning'
+      })
+      return false
+    },
+    handleSuccess({ results, header }) {
+      addFromExcel({ results, header }).then(response => {
+        getList()
+        this.$notify({
+          title: 'Success',
+          message: 'Update Successfully',
+          type: 'success',
+          duration: 2000
+        })
+      })
+    },
+    handleDownloadTemplate() {
     },
     formatJson(filterVal) {
       return this.list.map(v => filterVal.map(j => {
