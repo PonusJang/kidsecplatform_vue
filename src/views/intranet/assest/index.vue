@@ -176,6 +176,9 @@
         <el-form-item label="归属部门" prop="title">
           <el-input v-model="temp.owner" />
         </el-form-item>
+        <el-form-item label="资产编号" prop="title">
+          <el-input v-model="temp.code" />
+        </el-form-item>
         <el-form-item label="资产名称" prop="title">
           <el-input v-model="temp.name" />
         </el-form-item>
@@ -185,10 +188,9 @@
         <el-form-item label="IP地址" prop="title">
           <el-input v-model="temp.ip" />
         </el-form-item>
-      </el-form>
-      <el-form-item label="负责人员" prop="title">
-        <el-input v-model="temp.manager" />
-      </el-form-item>
+        <el-form-item label="负责人员" prop="title">
+          <el-input v-model="temp.manager" />
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">
@@ -198,6 +200,7 @@
           确认
         </el-button>
       </div>
+
     </el-dialog>
 
   </div>

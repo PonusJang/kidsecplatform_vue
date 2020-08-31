@@ -36,9 +36,18 @@
         icon="el-icon-download"
         @click="handleDownload"
       >
-        导出EXCEL
+        导出Nginx配置
       </el-button>
-
+      <el-button
+        v-waves
+        :loading="uploadLoading"
+        class="filter-item"
+        type="primary"
+        icon="el-icon-upload"
+        @click="handleUpload"
+      >
+        导入Nginx配置
+      </el-button>
     </div>
 
     <el-table
@@ -177,6 +186,7 @@ export default {
         domain: [{ required: true, message: '域名 is required', trigger: 'blur' }]
       },
       downloadLoading: false,
+      uploadLoading: false,
       temp: {
         id: undefined,
         local_ip: '',
@@ -251,17 +261,7 @@ export default {
         this.list.splice(index, 1)
       })
     },
-    handleDeleteAll(row, index) {
-      // console.log(row.domain)
-      delAll(row.domain, 'delete_all_ip').then(() => {
-        this.$notify({
-          title: 'Success',
-          message: 'Delete Successfully',
-          type: 'success',
-          duration: 2000
-        })
-        this.list.splice(index, 1)
-      })
+    handleUpload() {
     },
     handleFilter() {
       this.listQuery.page = 1
