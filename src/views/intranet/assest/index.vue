@@ -425,6 +425,9 @@ export default {
       })
     },
     handleDownloadTemplate() {
+      const aTag = document.createElement('a')
+      aTag.href = '/api/assets/getAssetsTemplate'
+      aTag.click()
     },
     formatJson(filterVal) {
       return this.list.map(v => filterVal.map(j => {
