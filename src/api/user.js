@@ -1,5 +1,4 @@
 import request from '@/utils/request'
-import { getToken } from '@/utils/auth'
 
 export function login(data) {
   return request({
@@ -24,9 +23,43 @@ export function logout() {
   })
 }
 
-export function getRouters() {
+export function getList(page, limit) {
   return request({
-    url: '/getRouters?username=' + getToken(),
-    method: 'get'
+    url: '/user/getList',
+    method: 'get',
+    params: { page, limit }
   })
 }
+
+export function update(data) {
+  return request({
+    url: '/user/update',
+    method: 'post',
+    data
+  })
+}
+
+export function add(data) {
+  return request({
+    url: '/user/add',
+    method: 'post',
+    data
+  })
+}
+
+export function del(domain) {
+  return request({
+    url: '/user/delete',
+    method: 'get',
+    params: { domain }
+  })
+}
+
+export function findByUsername(page, limit, username) {
+  return request({
+    url: '/user/findByUsername',
+    method: 'get',
+    params: { page, limit, username }
+  })
+}
+

@@ -87,19 +87,19 @@ export const asyncRoutes = [
         path: 'domain',
         component: () => import('@/views/internet/domain/domainList'),
         name: '域名监控',
-        meta: { title: '域名监控', roles: ['admin'] }
+        meta: { title: '域名监控', icon: 'table', roles: ['admin'] }
       },
       {
         path: 'ip',
         component: () => import('@/views/internet/ip/ipList'),
         name: 'IP监控',
-        meta: { title: 'IP监控', roles: ['admin'] }
+        meta: { title: 'IP监控', icon: 'table', roles: ['admin'] }
       },
       {
         path: 'task',
         component: () => import('@/views/internet/task/taskList'),
         name: '任务管理',
-        meta: { title: '任务管理', roles: ['admin'] }
+        meta: { title: '任务管理', icon: 'table', roles: ['admin'] }
       }
     ]
   },
@@ -117,13 +117,43 @@ export const asyncRoutes = [
         path: 'nginx',
         component: () => import('@/views/intranet/nginx/index'),
         name: 'Nginx映射',
-        meta: { title: 'Nginx映射', roles: ['admin'] }
+        meta: { title: 'Nginx映射', icon: 'table', roles: ['admin'] }
       },
       {
         path: 'assest',
         component: () => import('@/views/intranet/assest/index'),
         name: '资产管理',
-        meta: { title: '资产管理', roles: ['admin'] }
+        meta: { title: '资产管理', icon: 'table', roles: ['admin'] }
+      }
+    ]
+  },
+  {
+    path: '/userManager',
+    component: Layout,
+    redirect: '/users/userManager/index',
+    name: '用户管理',
+    meta: {
+      title: '用户管理',
+      icon: 'nested'
+    },
+    children: [
+      {
+        path: 'userList',
+        name: 'userList',
+        component: () => import('@/views/users/userManager/index'),
+        meta: { title: '用户管理', icon: 'table', roles: ['admin'] }
+      },
+      {
+        path: 'roleList',
+        name: 'roleList',
+        component: () => import('@/views/users/roleManager/index'),
+        meta: { title: '角色管理', icon: 'table', roles: ['admin'] }
+      },
+      {
+        path: 'departList',
+        name: 'departList',
+        component: () => import('@/views/users/departManager/index'),
+        meta: { title: '部门管理', icon: 'table', roles: ['admin'] }
       }
     ]
   },
