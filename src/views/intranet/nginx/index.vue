@@ -136,6 +136,15 @@
         <el-form-item label="域名" prop="title">
           <el-input v-model="temp.domain" />
         </el-form-item>
+        <el-form-item label="本地端口" prop="title">
+          <el-input v-model="temp.local_port" />
+        </el-form-item>
+        <el-form-item label="转发IP" prop="title">
+          <el-input v-model="temp.proxy_ip" />
+        </el-form-item>
+        <el-form-item label="转发端口" prop="title">
+          <el-input v-model="temp.proxy_port" />
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">
@@ -147,12 +156,27 @@
       </div>
     </el-dialog>
 
+    <el-dialog :visible.sync="dialogUploadVisible">
+      <el-upload
+        class="upload-demo"
+        drag
+        action="#"
+        auto-upload="true"
+        multiple
+        :on-success="handleSuccess"
+        :http-request="uploadNginxConf"
+      >
+        <i class="el-icon-upload" />
+        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+        <!--        <div slot="tip" class="el-upload__tip">只能上传conf文件</div>-->
+      </el-upload>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 // eslint-disable-next-line no-unused-vars
-import { getList, update, add, del, findByDomain, findByOwner } from '@/api/nginx'
+import { getList, update, add, del, findByDomain, findByOwner, uploadNginxConf } from '@/api/nginx'
 import { parseTime } from '@/utils'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
@@ -175,6 +199,7 @@ export default {
       list: null,
       listLoading: false,
       dialogFormVisible: false,
+      dialogUploadVisible: false,
       dialogStatus: '',
       textMap: {
         update: 'Edit',
@@ -183,14 +208,20 @@ export default {
       dialogPvVisible: false,
       rules: {
         local_ip: [{ required: true, message: '服务器 is required', trigger: 'blur' }],
-        domain: [{ required: true, message: '域名 is required', trigger: 'blur' }]
+        domain: [{ required: true, message: '域名 is required', trigger: 'blur' }],
+        proxy_ip: [{ required: true, message: '转发IP is required', trigger: 'blur' }],
+        proxy_port: [{ required: true, message: '转发端口 is required', trigger: 'blur' }],
+        local_port: [{ required: true, message: '本地端口 is required', trigger: 'blur' }]
       },
       downloadLoading: false,
       uploadLoading: false,
       temp: {
         id: undefined,
         local_ip: '',
-        domain: ''
+        domain: '',
+        proxy_ip: '',
+        proxy_port: '',
+        local_port: ''
       }
     }
   },
@@ -250,8 +281,7 @@ export default {
       })
     },
     handleDelete(row, index) {
-      // console.log(row.domain)
-      del(row.domain).then(() => {
+      del(row._id).then(() => {
         this.$notify({
           title: 'Success',
           message: 'Delete Successfully',
@@ -262,6 +292,7 @@ export default {
       })
     },
     handleUpload() {
+      this.dialogUploadVisible = true
     },
     handleFilter() {
       this.listQuery.page = 1
@@ -277,7 +308,6 @@ export default {
     },
     handleUpdate(row) {
       this.temp = Object.assign({}, row) // copy obj
-      console.log(row.domian)
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       this.$nextTick(() => {
@@ -314,6 +344,21 @@ export default {
           filename: 'Nginx映射列表'
         })
         this.downloadLoading = false
+      })
+    },
+    uploadNginxConf(file) {
+      const formData = new FormData()
+      formData.append('file', this.file)
+      uploadNginxConf(formData).then(() => {
+        this.dialogUploadVisible = false
+      })
+    },
+    handleSuccess() {
+      this.$notify({
+        title: 'Success',
+        message: 'Created Successfully',
+        type: 'success',
+        duration: 2000
       })
     },
     formatJson(filterVal) {

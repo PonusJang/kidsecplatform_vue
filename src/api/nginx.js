@@ -24,19 +24,11 @@ export function add(data) {
   })
 }
 
-export function del(domain) {
+export function del(id) {
   return request({
     url: '/nginx/delete',
     method: 'get',
-    params: { domain }
-  })
-}
-
-export function delAll(domain, option) {
-  return request({
-    url: '/nginx/delete',
-    method: 'get',
-    params: { domain, option }
+    params: { id }
   })
 }
 
@@ -53,5 +45,13 @@ export function findByDomain(page, limit, domain) {
     url: '/nginx/findByDomain',
     method: 'get',
     params: { page, limit, domain }
+  })
+}
+
+export function uploadNginxConf(data) {
+  return request({
+    url: '/nginx/uploadNginxConf',
+    method: 'post',
+    data
   })
 }
