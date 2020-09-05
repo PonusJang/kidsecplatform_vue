@@ -28,25 +28,40 @@
       >
         新增
       </el-button>
+
+      <el-upload
+        ref="upload"
+        style="display: inline"
+        :show-file-list="false"
+        :on-success="handleSuccess"
+        accept="*"
+        action="#"
+        :http-request="uploadConf"
+        :on-change="handleChange"
+        :file-list="fileList"
+        name="file"
+      >
+        <el-button
+          v-waves
+          type="primary"
+          style="margin-left: 10px;"
+          class="filter-item"
+          icon="el-icon-upload"
+          :disabled="!enableUploadBtn"
+        >
+          导入Nginx配置
+        </el-button>
+      </el-upload>
       <el-button
         v-waves
         :loading="downloadLoading"
         class="filter-item"
         type="primary"
         icon="el-icon-download"
+        style="margin-left: 10px;"
         @click="handleDownload"
       >
         导出Nginx配置
-      </el-button>
-      <el-button
-        v-waves
-        :loading="uploadLoading"
-        class="filter-item"
-        type="primary"
-        icon="el-icon-upload"
-        @click="handleUpload"
-      >
-        导入Nginx配置
       </el-button>
     </div>
 
@@ -156,21 +171,21 @@
       </div>
     </el-dialog>
 
-    <el-dialog :visible.sync="dialogUploadVisible">
-      <el-upload
-        class="upload-demo"
-        drag
-        action="#"
-        auto-upload="true"
-        multiple
-        :on-success="handleSuccess"
-        :http-request="uploadNginxConf"
-      >
-        <i class="el-icon-upload" />
-        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-        <!--        <div slot="tip" class="el-upload__tip">只能上传conf文件</div>-->
-      </el-upload>
-    </el-dialog>
+    <!--    <el-dialog :visible.sync="dialogUploadVisible">-->
+    <!--      <el-upload-->
+    <!--        class="upload-demo"-->
+    <!--        drag-->
+    <!--        action="#"-->
+    <!--        auto-upload="true"-->
+    <!--        multiple-->
+    <!--        :on-success="handleSuccess"-->
+    <!--        :http-request="uploadNginxConf"-->
+    <!--      >-->
+    <!--        <i class="el-icon-upload" />-->
+    <!--        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>-->
+    <!--        &lt;!&ndash;        <div slot="tip" class="el-upload__tip">只能上传conf文件</div>&ndash;&gt;-->
+    <!--      </el-upload>-->
+    <!--    </el-dialog>-->
   </div>
 </template>
 
@@ -199,7 +214,9 @@ export default {
       list: null,
       listLoading: false,
       dialogFormVisible: false,
-      dialogUploadVisible: false,
+      enableUploadBtn: true,
+      file: '',
+      fileList: [],
       dialogStatus: '',
       textMap: {
         update: 'Edit',
@@ -346,14 +363,23 @@ export default {
         this.downloadLoading = false
       })
     },
-    uploadNginxConf(file) {
+    uploadConf(file) {
+      this.enableUploadBtn = false
+      console.log(file)
+      console.log(this.fileList)
       const formData = new FormData()
       formData.append('file', this.file)
       uploadNginxConf(formData).then(() => {
-        this.dialogUploadVisible = false
+        this.enableUploadBtn = true
       })
     },
+    handleChange(file, fileList) {
+      this.fileList = [fileList[fileList.length - 1]] // 覆盖
+      console.log(fileList[0])
+      this.file = file.raw
+    },
     handleSuccess() {
+      this.enableUploadBtn = true
       this.$notify({
         title: 'Success',
         message: 'Created Successfully',
