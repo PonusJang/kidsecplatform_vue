@@ -124,6 +124,12 @@ export const asyncRoutes = [
         component: () => import('@/views/intranet/assest/index'),
         name: '资产管理',
         meta: { title: '资产管理', icon: 'table', roles: ['admin'] }
+      },
+      {
+        path: 'aliveMonitor',
+        component: () => import('@/views/intranet/aliveMonitor/index'),
+        name: '可用监控',
+        meta: { title: '可用监控', icon: 'table', roles: ['admin'] }
       }
     ]
   },
