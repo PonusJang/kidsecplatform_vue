@@ -49,7 +49,7 @@
       </el-table-column>
       <el-table-column label="角色名" align="center">
         <template slot-scope="scope">
-          <span class="link-type" @click="handleUpdate(row)"> {{ scope.row.rolename }}</span>
+          <span class="link-type" @click="handleUpdate(row)"> {{ scope.row.roleName }}</span>
         </template>
       </el-table-column>
 
@@ -84,7 +84,7 @@
         style="width: 400px; margin-left:50px;"
       >
         <el-form-item label="角色名" prop="title">
-          <el-input v-model="temp.rolename" />
+          <el-input v-model="temp.roleName" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -119,7 +119,7 @@ export default {
       listQuery: {
         page: 1,
         limit: 10,
-        rolename: undefined
+        roleName: undefined
 
       },
       list: null,
@@ -132,12 +132,12 @@ export default {
       },
       dialogPvVisible: false,
       rules: {
-        rolename: [{ required: true, message: '角色名 is required', trigger: 'blur' }]
+        roleName: [{ required: true, message: '角色名 is required', trigger: 'blur' }]
       },
       downloadLoading: false,
       temp: {
         id: undefined,
-        rolename: ''
+        roleName: ''
       }
     }
   },
@@ -147,8 +147,8 @@ export default {
   methods: {
     getList() {
       this.listLoading = false
-      if (this.listQuery.rolename !== undefined && this.listQuery.rolename !== '') {
-        findByConfigItem(this.listQuery.page, this.listQuery.limit, this.listQuery.rolename).then(response => {
+      if (this.listQuery.roleName !== undefined && this.listQuery.roleName !== '') {
+        findByRole(this.listQuery.page, this.listQuery.limit, this.listQuery.roleName).then(response => {
           this.total = response.data.count
           this.list = response.data.docs
           setTimeout(() => {
@@ -168,7 +168,7 @@ export default {
     resetTemp() {
       this.temp = {
         id: undefined,
-        rolename: ''
+        roleName: ''
       }
     },
     createData() {
@@ -188,7 +188,7 @@ export default {
       })
     },
     handleDelete(row, index) {
-      del(row.configItem).then(() => {
+      del(row.roleName).then(() => {
         this.$notify({
           title: 'Success',
           message: 'Delete Successfully',
@@ -240,8 +240,8 @@ export default {
     handleDownload() {
       this.downloadLoading = true
       import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['rolename']
-        const filterVal = ['rolename']
+        const tHeader = ['roleName']
+        const filterVal = ['roleName']
         const data = this.formatJson(filterVal)
         excel.export_json_to_excel({
           header: tHeader,

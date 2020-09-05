@@ -122,7 +122,39 @@
           <el-input v-model="temp.realname" />
         </el-form-item>
         <el-form-item label="部门" prop="title">
-          <el-input v-model="temp.department" />
+          <el-select
+            v-model="temp.department"
+            filterable
+            default-first-option
+            placeholder="请选择部门"
+            collapse-tags
+            @focus="getDepart"
+          >
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.value"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="角色" prop="title">
+          <el-select
+            v-model="temp.roles"
+            multiple
+            filterable
+            default-first-option
+            placeholder="请选择角色"
+            collapse-tags
+            @focus="getRoles"
+          >
+            <el-option
+              v-for="item in optionRoles"
+              :key="item.value"
+              :label="item.value"
+              :value="item.value"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item label="QQ" prop="title">
           <el-input v-model="temp.qq" />
@@ -150,6 +182,8 @@
 <script>
 // eslint-disable-next-line no-unused-vars
 import { getList, update, add, del, findByUsername } from '@/api/user'
+import { getDepart } from '@/api/depart'
+import { getRoles } from '@/api/role'
 import { parseTime } from '@/utils'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination/index' // secondary package based on el-pagination
@@ -186,15 +220,37 @@ export default {
       downloadLoading: false,
       temp: {
         id: undefined,
-        configItem: '',
-        configValue: ''
-      }
+        username: '',
+        realname: '',
+        password: '',
+        qq: '',
+        email: '',
+        telephone: '',
+        roles: [],
+        department: ''
+      },
+      options: [],
+      optionRoles: []
     }
   },
   created() {
     this.getList()
   },
   methods: {
+    getDepart() {
+      getDepart().then(res => {
+        if (res.code === 200) {
+          this.options = res.data.dataList
+        }
+      })
+    },
+    getRoles() {
+      getRoles().then(res => {
+        if (res.code === 200) {
+          this.optionRoles = res.data.dataList
+        }
+      })
+    },
     getList() {
       this.listLoading = false
       if (this.listQuery.username !== undefined && this.listQuery.username !== '') {

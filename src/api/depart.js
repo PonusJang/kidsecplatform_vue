@@ -8,6 +8,13 @@ export function getList(page, limit) {
   })
 }
 
+export function getDepart() {
+  return request({
+    url: '/depart/getDepart',
+    method: 'get'
+  })
+}
+
 export function update(data) {
   return request({
     url: '/depart/update',

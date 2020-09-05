@@ -8,6 +8,13 @@ export function getList(page, limit) {
   })
 }
 
+export function getRoles() {
+  return request({
+    url: '/role/getRoles',
+    method: 'get'
+  })
+}
+
 export function update(data) {
   return request({
     url: '/role/update',
@@ -24,11 +31,11 @@ export function add(data) {
   })
 }
 
-export function del(role) {
+export function del(roleName) {
   return request({
     url: '/role/delete',
     method: 'get',
-    params: { role }
+    params: { roleName }
   })
 }
 
