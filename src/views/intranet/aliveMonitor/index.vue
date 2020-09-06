@@ -22,7 +22,17 @@
       >
         导出EXCEL
       </el-button>
-
+      <el-date-picker
+        v-model="dateValue"
+        type="daterange"
+        align="right"
+        unlink-panels
+        range-separator="至"
+        start-placeholder="开始日期"
+        end-placeholder="结束日期"
+        :picker-options="pickerOptions"
+        @change="handleFilterByDate"
+      />
     </div>
 
     <el-table
@@ -63,13 +73,12 @@
       :limit.sync="listQuery.limit"
       @pagination="getList"
     />
-
   </div>
 </template>
 
 <script>
 // eslint-disable-next-line no-unused-vars
-import { findByParam, getList } from '@/api/result'
+import { findByParam, flterByDate, getList } from '@/api/result'
 import { parseTime } from '@/utils'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
@@ -89,13 +98,53 @@ export default {
         param: undefined,
         result: undefined
       },
+      dateValue: null,
       list: null,
       listLoading: false,
       downloadLoading: false,
       temp: {
         id: undefined,
-        configItem: '',
-        configValue: ''
+        param: '',
+        result: ''
+      },
+      minDate: '',
+      maxDate: '',
+      pickerOptions: {
+        shortcuts: [{
+          text: '最近一周',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近一个月',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近三个月',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
+            picker.$emit('pick', [start, end])
+          }
+        }],
+        onPick: ({ maxDate, minDate }) => {
+          this.minDate = minDate
+          this.maxDate = maxDate
+        },
+        disabledDate: time => {
+          if (this.minDate) {
+            return time.getTime() < Date.now() - 30 * 24 * 60 * 60 * 1000 || time > new Date(this.minDate.getTime() + 90 * 24 * 60 * 60 * 1000)
+          }
+          return time.getTime() < Date.now() - 30 * 24 * 60 * 60 * 1000
+        }
       }
     }
   },
@@ -131,13 +180,34 @@ export default {
       }
     },
     resultFormat(scope, value) {
-      console.log(value)
       if (value === 'false') {
         return '×'
       } else if (value === 'true') {
         return '√'
       } else {
         return 'unknown'
+      }
+    },
+    handleFilterByDate(e) {
+      if (e === null) {
+        this.minDate = ''
+        this.maxDate = ''
+        this.pickerOptions = {
+          disabledDate: time => { // disabledDate 文档上：设置禁用状态，参数为当前日期，要求返回 Boolean
+            if (this.minDate) {
+              return time.getTime() < Date.now() - 24 * 60 * 60 * 1000 || time > new Date(this.minDate.getTime() + 90 * 24 * 60 * 60 * 1000)
+            }
+            return time.getTime() < Date.now() - 24 * 60 * 60 * 1000
+          }
+        }
+      } else {
+        flterByDate(this.listQuery.page, this.listQuery.limit, this.minDate, this.maxDate).then(response => {
+          this.total = response.data.count
+          this.list = response.data.docs
+          setTimeout(() => {
+            this.listLoading = false
+          }, 1.5 * 1000)
+        })
       }
     },
     handleFilter() {

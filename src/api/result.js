@@ -15,3 +15,11 @@ export function findByParam(page, limit, param) {
     params: { page, limit, param }
   })
 }
+
+export function flterByDate(page, limit, minDate, maxDate) {
+  return request({
+    url: '/result/flterByDate',
+    method: 'get',
+    params: { page, limit, minDate, maxDate }
+  })
+}
