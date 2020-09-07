@@ -130,6 +130,12 @@ export const asyncRoutes = [
         component: () => import('@/views/intranet/aliveMonitor/index'),
         name: '可用监控',
         meta: { title: '可用监控', icon: 'table', roles: ['admin'] }
+      },
+      {
+        path: 'aliveMonitor2',
+        component: () => import('@/views/intranet/aliveMonitor2/index'),
+        name: '可用监控2',
+        meta: { title: '可用监控2', icon: 'table', roles: ['admin'] }
       }
     ]
   },
@@ -160,6 +166,19 @@ export const asyncRoutes = [
         name: 'departList',
         component: () => import('@/views/users/departManager/index'),
         meta: { title: '部门管理', icon: 'table', roles: ['admin'] }
+      }
+    ]
+  },
+  {
+    path: '/plugin',
+    component: Layout,
+    redirect: '/plugin/pluginList',
+    children: [
+      {
+        path: 'pluginList',
+        name: 'pluginList',
+        component: () => import('@/views/plugin/pluginList'),
+        meta: { title: '插件管理', icon: 'table', roles: ['admin'] }
       }
     ]
   },
