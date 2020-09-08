@@ -23,3 +23,12 @@ export function flterByDate(page, limit, minDate, maxDate) {
     params: { page, limit, minDate, maxDate }
   })
 }
+
+export function findByStatus(page, limit, status) {
+  return request({
+    url: '/result/findByStatus',
+    method: 'get',
+    params: { page, limit, status }
+  })
+}
+

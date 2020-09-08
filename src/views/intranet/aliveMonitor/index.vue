@@ -9,6 +9,17 @@
         class="filter-item"
         @keyup.enter.native="handleFilter"
       />
+      <el-select
+        v-model="listQuery.type"
+        placeholder="状态"
+        clearable
+        class="filter-item"
+        style="width: 150px"
+        @change="handleSelectStatus"
+      >
+        <el-option value="true">在线</el-option>
+        <el-option value="false">离线</el-option>
+      </el-select>
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         搜索
       </el-button>
@@ -42,6 +53,8 @@
       border
       fit
       highlight-current-row
+      :cell-style="changeCellColor"
+      :header-cell-style="{background:'#f6c308',color:'#0a0a0a'}"
     >
       <el-table-column align="center" label="ID" width="95">
         <template slot-scope="scope">
@@ -55,7 +68,7 @@
       </el-table-column>
       <el-table-column label="Alive" align="center">
         <template slot-scope="scope">
-          <span class="link-type" v-html="resultFormat(scope, scope.row.result)" />
+          <span class="link-type" v-html="resultFormat(scope, scope.row.result) " />
           <!--          <span class="link-type">{{ scope.row.result }}</span>-->
         </template>
       </el-table-column>
@@ -78,10 +91,11 @@
 
 <script>
 // eslint-disable-next-line no-unused-vars
-import { findByParam, flterByDate, getList } from '@/api/result'
+import { findByParam, flterByDate, getList, findByStatus } from '@/api/result'
 import { parseTime } from '@/utils'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
+
 export default {
   name: 'SystemList',
   components: { Pagination },
@@ -162,6 +176,14 @@ export default {
             this.listLoading = false
           }, 1.5 * 1000)
         })
+      } else if (this.listQuery.type !== undefined && this.listQuery.type !== '') {
+        findByStatus(this.listQuery.page, this.listQuery.limit, this.listQuery.type).then(response => {
+          this.total = response.data.count
+          this.list = response.data.docs
+          setTimeout(() => {
+            this.listLoading = false
+          }, 1.5 * 1000)
+        })
       } else {
         getList(this.listQuery.page, this.listQuery.limit).then(response => {
           this.total = response.data.count
@@ -186,6 +208,18 @@ export default {
         return '√'
       } else {
         return 'unknown'
+      }
+    },
+    handleSelectStatus() {
+      this.listQuery.page = 1
+      this.getList()
+      this.listQuery.type = null
+    },
+    changeCellColor({ row, column, rowIndex, columnIndex }) {
+      if (row.result === 'true') {
+        return { background: '#62c758', color: '#0a0a0a' }
+      } else if (row.result === 'false') {
+        return { background: '#db4040', color: '#0a0a0a' }
       }
     },
     handleFilterByDate(e) {
