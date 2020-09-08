@@ -9,17 +9,6 @@
         class="filter-item"
         @keyup.enter.native="handleFilter"
       />
-      <el-select
-        v-model="listQuery.type"
-        placeholder="状态"
-        clearable
-        class="filter-item"
-        style="width: 150px"
-        @change="handleSelectStatus"
-      >
-        <el-option value="true">在线</el-option>
-        <el-option value="false">离线</el-option>
-      </el-select>
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         搜索
       </el-button>
@@ -44,6 +33,17 @@
         :picker-options="pickerOptions"
         @change="handleFilterByDate"
       />
+      <el-select
+        v-model="listQuery.type"
+        placeholder="状态"
+        clearable
+        class="filter-item"
+        style="width: 150px"
+        @change="handleSelectStatus"
+      >
+        <el-option value="true">在线</el-option>
+        <el-option value="false">离线</el-option>
+      </el-select>
     </div>
 
     <el-table
@@ -213,7 +213,7 @@ export default {
     handleSelectStatus() {
       this.listQuery.page = 1
       this.getList()
-      this.listQuery.type = null
+      this.listQuery.type = undefined
     },
     changeCellColor({ row, column, rowIndex, columnIndex }) {
       if (row.result === 'true') {
