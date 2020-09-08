@@ -156,7 +156,7 @@ export default {
   methods: {
     getList() {
       this.listLoading = false
-      if (this.listQuery.name != undefined && this.listQuery.name != '') {
+      if (this.listQuery.name !== undefined && this.listQuery.name !== '') {
         findByName(this.listQuery.page, this.listQuery.limit, this.listQuery.ip).then(response => {
           this.total = response.data.count
           this.list = response.data.docs
