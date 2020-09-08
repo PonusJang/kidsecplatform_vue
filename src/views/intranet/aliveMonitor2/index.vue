@@ -513,9 +513,9 @@ export default {
       }
     },
     parserResult(value) {
-      if (value === 'false') {
+      if (value === false) {
         return '×'
-      } else if (value === 'true') {
+      } else if (value === true) {
         return '√'
       } else {
         return ''
@@ -559,7 +559,9 @@ export default {
           return parseTime(v[j])
         }
         const reg = /day/
+        console.log(v[j])
         if (reg.test(j)) {
+          console.log(this.parserResult(v[j]))
           return this.parserResult(v[j])
         } else {
           return v[j]
