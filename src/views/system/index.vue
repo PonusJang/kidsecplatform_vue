@@ -157,7 +157,7 @@ export default {
   methods: {
     getList() {
       this.listLoading = false
-      if (this.listQuery.configItem != undefined && this.listQuery.configItem != '') {
+      if (this.listQuery.configItem !== undefined && this.listQuery.configItem !== '') {
         findByConfigItem(this.listQuery.page, this.listQuery.limit, this.listQuery.owner).then(response => {
           this.total = response.data.count
           this.list = response.data.docs

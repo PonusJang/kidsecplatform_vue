@@ -63,12 +63,12 @@
         </template>
       </el-table-column>
       <div v-if="true" style="display: inline">
-        <el-table-column label="IP" align="center">
+        <el-table-column label="IP" align="center" width="130">
           <template slot-scope="scope">
             <span class="link-type">{{ scope.row.ip }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="设备名称" align="center">
+        <el-table-column label="设备名称" align="center" width="170">
           <template slot-scope="scope">
             <span class="link-type"> {{ scope.row.assets }}</span>
           </template>
