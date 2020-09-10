@@ -5,8 +5,8 @@
       <el-button
         class="filter-item"
         style="margin-left: 10px;"
-        type="primary"
-        icon="el-icon-edit"
+        type="success"
+        icon="el-icon-sort"
         @click="handleStartAll"
       >
         启动全部
@@ -14,23 +14,23 @@
       <el-button
         class="filter-item"
         style="margin-left: 10px;"
-        type="primary"
-        icon="el-icon-edit"
+        type="danger"
+        icon="el-icon-close"
         @click="handleStopAll"
       >
-        暂停全部
+        停止全部
       </el-button>
       <el-button
         class="filter-item"
         style="margin-left: 10px;"
-        type="primary"
-        icon="el-icon-edit"
+        type="warning"
+        icon="el-icon-refresh"
         @click="handleRestartAll"
       >
         重启全部
       </el-button>
     </div>
-
+    <br>
     <el-table
       v-loading="listLoading"
       :data="list"
