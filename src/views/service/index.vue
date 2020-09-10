@@ -117,8 +117,9 @@
 import { info, start, stop, restart } from '@/api/service'
 import { parseTime } from '@/utils'
 import waves from '@/directive/waves' // waves directive
-// import { VeLine } from 'v-charts'
+
 export default {
+
   name: 'ServiceIndex',
   components: { },
   directives: { waves },
