@@ -183,6 +183,17 @@ export const asyncRoutes = [
     ]
   },
   {
+    path: '/service',
+    component: Layout,
+    redirect: '/service',
+    children: [{
+      path: 'serviceIndex',
+      name: 'serviceIndex',
+      component: () => import('@/views/service/index'),
+      meta: { title: '服务管理', icon: 'dashboard' }
+    }]
+  },
+  {
     path: '/system',
     component: Layout,
     redirect: '/system/sysConfigList',

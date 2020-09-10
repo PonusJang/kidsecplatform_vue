@@ -1,26 +1,26 @@
 import request from '@/utils/request'
 
-export function start(service) {
+export function start(app) {
   return request({
     url: '/service/start',
     method: 'get',
-    params: { service }
+    params: { app }
   })
 }
 
-export function stop(service) {
+export function stop(app) {
   return request({
     url: '/service/stop',
     method: 'get',
-    params: { service }
+    params: { app }
   })
 }
 
-export function restart(service) {
+export function restart(app) {
   return request({
     url: '/service/restart',
     method: 'get',
-    params: { service }
+    params: { app }
   })
 }
 
