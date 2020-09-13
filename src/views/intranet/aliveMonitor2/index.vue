@@ -384,108 +384,108 @@ export default {
         }
         if (row.day11 === true && columnIndex === 12) {
           return { background: '#4ce23b' }
-        } else if (row.day11 === true && columnIndex === 12) {
+        } else if (row.day11 === false && columnIndex === 12) {
           return { background: '#e53535' }
         }
         if (row.day12 === true && columnIndex === 13) {
           return { background: '#4ce23b' }
-        } else if (row.day12 === true && columnIndex === 13) {
+        } else if (row.day12 === false && columnIndex === 13) {
           return { background: '#e53535' }
         }
         if (row.day13 === true && columnIndex === 14) {
           return { background: '#4ce23b' }
-        } else if (row.day13 === true && columnIndex === 14) {
+        } else if (row.day13 === false && columnIndex === 14) {
           return { background: '#e53535' }
         }
         if (row.day14 === true && columnIndex === 15) {
           return { background: '#4ce23b' }
-        } else if (row.day14 === true && columnIndex === 15) {
+        } else if (row.day14 === false && columnIndex === 15) {
           return { background: '#e53535' }
         }
         if (row.day15 === true && columnIndex === 16) {
           return { background: '#4ce23b' }
-        } else if (row.day15 === true && columnIndex === 16) {
+        } else if (row.day15 === false && columnIndex === 16) {
           return { background: '#e53535' }
         }
       } else {
         if (row.day16 === true && columnIndex === 2) {
           return { background: '#4ce23b' }
-        } else if (row.day16 === true && columnIndex === 2) {
+        } else if (row.day16 === false && columnIndex === 2) {
           return { background: '#e53535' }
         }
         if (row.day17 === true && columnIndex === 3) {
           return { background: '#4ce23b' }
-        } else if (row.day17 === true && columnIndex === 3) {
+        } else if (row.day17 === false && columnIndex === 3) {
           return { background: '#e53535' }
         }
         if (row.day18 === true && columnIndex === 4) {
           return { background: '#4ce23b' }
-        } else if (row.day18 === true && columnIndex === 4) {
+        } else if (row.day18 === false && columnIndex === 4) {
           return { background: '#e53535' }
         }
         if (row.day19 === true && columnIndex === 5) {
           return { background: '#4ce23b' }
-        } else if (row.day19 === true && columnIndex === 5) {
+        } else if (row.day19 === false && columnIndex === 5) {
           return { background: '#e53535' }
         }
         if (row.day20 === true && columnIndex === 6) {
           return { background: '#4ce23b' }
-        } else if (row.day20 === true && columnIndex === 6) {
+        } else if (row.day20 === false && columnIndex === 6) {
           return { background: '#e53535' }
         }
         if (row.day21 === true && columnIndex === 7) {
           return { background: '#4ce23b' }
-        } else if (row.day21 === true && columnIndex === 7) {
+        } else if (row.day21 === false && columnIndex === 7) {
           return { background: '#e53535' }
         }
         if (row.day22 === true && columnIndex === 8) {
           return { background: '#4ce23b' }
-        } else if (row.day22 === true && columnIndex === 8) {
+        } else if (row.day22 === false && columnIndex === 8) {
           return { background: '#e53535' }
         }
         if (row.day23 === true && columnIndex === 9) {
           return { background: '#4ce23b' }
-        } else if (row.day23 === true && columnIndex === 9) {
+        } else if (row.day23 === false && columnIndex === 9) {
           return { background: '#e53535' }
         }
         if (row.day24 === true && columnIndex === 10) {
           return { background: '#4ce23b' }
-        } else if (row.day24 === true && columnIndex === 10) {
+        } else if (row.day24 === false && columnIndex === 10) {
           return { background: '#e53535' }
         }
         if (row.day25 === true && columnIndex === 11) {
           return { background: '#4ce23b' }
-        } else if (row.day25 === true && columnIndex === 11) {
+        } else if (row.day25 === false && columnIndex === 11) {
           return { background: '#e53535' }
         }
         if (row.day26 === true && columnIndex === 12) {
           return { background: '#4ce23b' }
-        } else if (row.day26 === true && columnIndex === 12) {
+        } else if (row.day26 === false && columnIndex === 12) {
           return { background: '#e53535' }
         }
         if (row.day27 === true && columnIndex === 13) {
           return { background: '#4ce23b' }
-        } else if (row.day27 === true && columnIndex === 13) {
+        } else if (row.day27 === false && columnIndex === 13) {
           return { background: '#e53535' }
         }
         if (row.day28 === true && columnIndex === 14) {
           return { background: '#4ce23b' }
-        } else if (row.day28 === true && columnIndex === 14) {
+        } else if (row.day28 === false && columnIndex === 14) {
           return { background: '#e53535' }
         }
         if (row.day29 === true && columnIndex === 15) {
           return { background: '#4ce23b' }
-        } else if (row.day29 === true && columnIndex === 15) {
+        } else if (row.day29 === false && columnIndex === 15) {
           return { background: '#e53535' }
         }
         if (row.day30 === true && columnIndex === 16) {
           return { background: '#4ce23b' }
-        } else if (row.day30 === true && columnIndex === 16) {
+        } else if (row.day30 === false && columnIndex === 16) {
           return { background: '#e53535' }
         }
         if (row.day31 === true && columnIndex === 17) {
           return { background: '#4ce23b' }
-        } else if (row.day31 === true && columnIndex === 17) {
+        } else if (row.day31 === false && columnIndex === 17) {
           return { background: '#e53535' }
         }
       }

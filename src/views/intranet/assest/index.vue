@@ -148,10 +148,13 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="操作" align="center" width="250" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" width="300" class-name="small-padding fixed-width">
         <template slot-scope="{row,$index}">
-          <el-button type="primary" size="mini" @click="handleUpdate(row)">
+          <el-button type="primary" size="mini" @click="handleDetail(row)">
             详情
+          </el-button>
+          <el-button type="primary" size="mini" @click="handleScan(row)">
+            扫描
           </el-button>
           <el-button type="primary" size="mini" @click="handleUpdate(row)">
             编辑
@@ -219,7 +222,7 @@
 
 <script>
 // eslint-disable-next-line no-unused-vars
-import { getList, update, add, del, findByIP, findByOwner, findByType, addFromExcel } from '@/api/assest'
+import { add, addFromExcel, del, findByIP, findByOwner, findByType, getList, update, scan, getDetail } from '@/api/assest'
 import { parseTime } from '@/utils'
 import UploadExcelComponent from '@/components/UploadExcel/index.vue'
 import waves from '@/directive/waves' // waves directive
@@ -366,6 +369,20 @@ export default {
       this.dialogFormVisible = true
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
+      })
+    },
+    handleScan(row) {
+      scan(row.ip).then(() => {
+        this.$notify({
+          title: 'Success',
+          message: '主机' + row.ip + '开始扫描',
+          type: 'success',
+          duration: 2000
+        })
+      })
+    },
+    handleDetail(row) {
+      getDetail(row.ip).then(() => {
       })
     },
     updateData() {

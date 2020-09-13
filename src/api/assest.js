@@ -64,3 +64,18 @@ export function addFromExcel(data) {
   })
 }
 
+export function scan(ip) {
+  return request({
+    url: '/assets/scan',
+    method: 'get',
+    params: { ip }
+  })
+}
+
+export function getDetail(ip) {
+  return request({
+    url: '/assets/',
+    method: 'get',
+    params: { ip }
+  })
+}
