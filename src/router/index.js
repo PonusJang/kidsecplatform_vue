@@ -100,7 +100,7 @@ export const asyncRoutes = [
     name: '内网资产',
     meta: {
       title: '内网资产',
-      icon: 'list'
+      icon: 'paragraph-center'
     },
     children: [
       {
@@ -222,7 +222,7 @@ export const asyncRoutes = [
         path: 'pluginList',
         name: 'pluginList',
         component: () => import('@/views/plugin/pluginList'),
-        meta: { title: '插件管理', icon: 'paragraph-center', roles: ['admin'] }
+        meta: { title: '插件管理', icon: 'list', roles: ['admin'] }
       }
     ]
   },
