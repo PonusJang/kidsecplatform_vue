@@ -7,6 +7,7 @@ Vue.use(Router)
 import Layout from '@/layout'
 
 import Login from '../views/login/'
+
 const dashboard = resolve => require(['../views/dashboard/index'], resolve)
 /**
  * Note: sub-menu only appear when route children.length >= 1
@@ -54,17 +55,6 @@ export const constantRoutes = [
       component: () => import('@/views/dashboard/index'),
       meta: { title: 'Dashboard', icon: 'dashboard' }
     }]
-  },
-
-  {
-    path: 'external-link',
-    component: Layout,
-    children: [
-      {
-        path: 'https://ponusjang.github.io/',
-        meta: { title: '关于', icon: 'link' }
-      }
-    ]
   },
 
   // 404 page must be placed at the end !!!
@@ -203,6 +193,17 @@ export const asyncRoutes = [
         name: 'sysConfigList',
         component: () => import('@/views/system/index'),
         meta: { title: '系统配置', icon: 'table', roles: ['admin'] }
+      }
+    ]
+  },
+
+  {
+    path: 'external-link',
+    component: Layout,
+    children: [
+      {
+        path: 'https://ponusjang.github.io/',
+        meta: { title: '关于', icon: 'link' }
       }
     ]
   }

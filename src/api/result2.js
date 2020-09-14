@@ -8,6 +8,13 @@ export function getList(page, limit) {
   })
 }
 
+export function getAllList() {
+  return request({
+    url: '/result2/getAllList',
+    method: 'get'
+  })
+}
+
 export function findByAssets(page, limit, assets) {
   return request({
     url: '/result2/findByAssets',

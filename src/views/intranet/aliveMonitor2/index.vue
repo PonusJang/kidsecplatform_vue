@@ -249,7 +249,7 @@
 
 <script>
 // eslint-disable-next-line no-unused-vars
-import { findByAssets, findByMonth, getList } from '@/api/result2'
+import { findByAssets, findByMonth, getList, getAllList } from '@/api/result2'
 import { parseTime } from '@/utils'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
@@ -272,6 +272,7 @@ export default {
         assets: undefined,
         selectMonth: null
       },
+      exportList: null,
       list: null,
       listLoading: false,
       downloadLoading: false,
@@ -554,19 +555,22 @@ export default {
       })
     },
     formatJson(filterVal) {
-      return this.list.map(v => filterVal.map(j => {
-        if (j === 'add_time') {
-          return parseTime(v[j])
-        }
-        const reg = /day/
-        console.log(v[j])
-        if (reg.test(j)) {
-          console.log(this.parserResult(v[j]))
-          return this.parserResult(v[j])
-        } else {
-          return v[j]
-        }
-      }))
+      getAllList().then(res => {
+        this.exportList = res.data.docs
+        return this.exportList.map(v => filterVal.map(j => {
+          if (j === 'add_time') {
+            return parseTime(v[j])
+          }
+          const reg = /day/
+          console.log(v[j])
+          if (reg.test(j)) {
+            console.log(this.parserResult(v[j]))
+            return this.parserResult(v[j])
+          } else {
+            return v[j]
+          }
+        }))
+      })
     }
   }
 }
