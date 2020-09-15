@@ -1,121 +1,219 @@
 <template>
-
   <div class="app-container">
-    <div class="filter-container">
-      <el-input
-        v-model="listQuery.configItem"
-        placeholder="域名"
-        style="width: 200px;"
-        class="filter-item"
-        @keyup.enter.native="handleFilter"
-      />
-      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
-        搜索
-      </el-button>
-      <el-button
-        class="filter-item"
-        style="margin-left: 10px;"
-        type="primary"
-        icon="el-icon-edit"
-        @click="handleCreate"
-      >
-        新增
-      </el-button>
-      <el-button
-        v-waves
-        :loading="downloadLoading"
-        class="filter-item"
-        type="primary"
-        icon="el-icon-download"
-        @click="handleDownload"
-      >
-        导出EXCEL
-      </el-button>
 
-    </div>
+    <el-tabs :tab-position="tabPosition" style="height: 900px;">
+      <el-tab-pane label="Dashboard">
+        Dashboard
+      </el-tab-pane>
+      <el-tab-pane label="目标管理">
 
-    <el-table
-      v-loading="listLoading"
-      :data="list"
-      element-loading-text="Loading"
-      border
-      fit
-      highlight-current-row
-    >
-      <el-table-column align="center" label="ID" width="95">
-        <template slot-scope="scope">
-          {{ scope.$index }}
-        </template>
-      </el-table-column>
-      <el-table-column label="配置项" align="center">
-        <template slot-scope="scope">
-          <span class="link-type" @click="handleUpdate(row)"> {{ scope.row.configItem }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="值" align="center">
-        <template slot-scope="scope">
-          <span class="link-type" @click="handleUpdate(row)">{{ scope.row.configValue }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column label="操作" align="center" width="250" class-name="small-padding fixed-width">
-        <template slot-scope="{row,$index}">
-          <el-button type="primary" size="mini" @click="handleUpdate(row)">
-            编辑
+        <div class="filter-container">
+          <el-input
+            v-model="targetListQuery.configItem"
+            placeholder="域名"
+            style="width: 200px;"
+            class="filter-item"
+            @keyup.enter.native="handleTargetFilter"
+          />
+          <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleTargetFilter">
+            搜索
           </el-button>
-          <el-button size="mini" type="danger" @click="handleDelete(row,$index)">
-            删除
+
+          <el-button
+            class="filter-item"
+            style="margin-left: 10px;"
+            type="primary"
+            icon="el-icon-edit"
+            @click="handleTargetCreate"
+          >
+            新增
           </el-button>
-        </template>
-      </el-table-column>
+          <el-button
+            v-waves
+            :loading="downloadLoading"
+            class="filter-item"
+            type="primary"
+            icon="el-icon-download"
+            @click="handleTargetDownload"
+          >
+            导出EXCEL
+          </el-button>
 
-    </el-table>
+        </div>
+        <el-table
+          v-loading="listLoading"
+          :data="targetList"
+          element-loading-text="Loading"
+          border
+          fit
+          highlight-current-row
+        >
+          <el-table-column align="center" label="ID" width="95">
+            <template slot-scope="scope">
+              {{ scope.$index }}
+            </template>
+          </el-table-column>
+          <el-table-column label="网址URL" align="center">
+            <template slot-scope="scope">
+              <span class="link-type"> {{ scope.row.param }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="TargetID" align="center">
+            <template slot-scope="scope">
+              <span class="link-type">{{ scope.row.result }}</span>
+            </template>
+          </el-table-column>
 
-    <pagination
-      v-show="total>0"
-      :total="total"
-      :page.sync="listQuery.page"
-      :limit.sync="listQuery.limit"
-      @pagination="getList"
-    />
+          <el-table-column label="操作" align="center" width="250" class-name="small-padding fixed-width">
+            <template slot-scope="{row,$index}">
+              <el-button type="primary" size="mini" @click="handleTargetScan(row)">
+                扫描
+              </el-button>
 
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form
-        ref="dataForm"
-        :rules="rules"
-        :model="temp"
-        label-position="left"
-        label-width="70px"
-        style="width: 400px; margin-left:50px;"
-      >
-        <el-form-item label="配置项" prop="title">
-          <el-input v-model="temp.configItem" />
-        </el-form-item>
-        <el-form-item label="值" prop="title">
-          <el-input v-model="temp.configValue" />
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">
-          取消
-        </el-button>
-        <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
-          确认
-        </el-button>
-      </div>
-    </el-dialog>
+              <el-button size="mini" type="danger" @click="handleTargetDelete(row,$index)">
+                删除
+              </el-button>
+            </template>
+          </el-table-column>
 
+        </el-table>
+
+        <pagination
+          v-show="targetTotal>0"
+          :total="targetTotal"
+          :page.sync="targetListQuery.page"
+          :limit.sync="targetListQuery.limit"
+          @pagination="getTargetList"
+        />
+
+        <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
+          <el-form
+            ref="dataForm"
+            :rules="rules"
+            :model="temp"
+            label-position="left"
+            label-width="70px"
+            style="width: 400px; margin-left:50px;"
+          >
+            <el-form-item label="网址URL" prop="title">
+              <el-input v-model="temp.url" />
+            </el-form-item>
+            <el-form-item label="描述" prop="title">
+              <el-input v-model="temp.desc" />
+            </el-form-item>
+            <el-form-item label="危险程度" prop="title">
+              <el-input v-model="temp.criticality" />
+            </el-form-item>
+          </el-form>
+          <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogFormVisible = false">
+              取消
+            </el-button>
+            <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
+              确认
+            </el-button>
+          </div>
+        </el-dialog>
+
+      </el-tab-pane>
+      <el-tab-pane label="任务管理">
+
+        <div class="filter-container">
+          <el-input
+            v-model="targetListQuery.param"
+            placeholder="域名"
+            style="width: 200px;"
+            class="filter-item"
+            @keyup.enter.native="handleScanFilter"
+          />
+          <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleScanFilter">
+            搜索
+          </el-button>
+
+          <el-button
+            v-waves
+            :loading="downloadLoading"
+            class="filter-item"
+            type="primary"
+            icon="el-icon-download"
+            @click="handleScanDownload"
+          >
+            导出EXCEL
+          </el-button>
+
+        </div>
+        <el-table
+          v-loading="listLoading"
+          :data="scanList"
+          element-loading-text="Loading"
+          border
+          fit
+          highlight-current-row
+        >
+          <el-table-column align="center" label="ID" width="95">
+            <template slot-scope="scope">
+              {{ scope.$index }}
+            </template>
+          </el-table-column>
+          <el-table-column label="网址URL" align="center">
+            <template slot-scope="scope">
+              <span class="link-type"> {{ scope.row.target }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="ScanID" align="center">
+            <template slot-scope="scope">
+              <span class="link-type">{{ scope.row.scan_id }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="状态" align="center">
+            <template slot-scope="scope">
+              <span class="link-type">{{ scope.row.status }}</span>
+            </template>
+          </el-table-column>
+
+          <el-table-column label="操作" align="center" width="250" class-name="small-padding fixed-width">
+            <template slot-scope="{row,$index}">
+              <el-button size="mini" type="danger" @click="handleScanDelete(row,$index)">
+                删除
+              </el-button>
+            </template>
+          </el-table-column>
+
+        </el-table>
+
+        <pagination
+          v-show="scanTotal>0"
+          :total="scanTotal"
+          :page.sync="targetListQuery.page"
+          :limit.sync="targetListQuery.limit"
+          @pagination="getScanList"
+        />
+
+      </el-tab-pane>
+    </el-tabs>
   </div>
 </template>
 
 <script>
-// eslint-disable-next-line no-unused-vars
-import { getList, update, add, del, findByConfigItem } from '@/api/system'
+import {
+  getTargetList,
+  deleteTarget,
+  getScanList,
+  getStatus,
+  addTarget,
+  stopScan,
+  deleteScan,
+  getVulnerabilitiesInfo,
+  getReports,
+  filterScan,
+  filterTarget, startScan
+} from '@/api/acunetix'
 import { parseTime } from '@/utils'
 import waves from '@/directive/waves' // waves directive
-import Pagination from '@/components/Pagination' // secondary package based on el-pagination
+import Pagination from '@/components/Pagination'
+
 export default {
-  name: 'SystemList',
+  name: 'Index',
   components: { Pagination },
   directives: { waves },
   filters: {
@@ -123,70 +221,126 @@ export default {
   },
   data() {
     return {
-      total: 0,
-      listQuery: {
+      targetTotal: 0,
+      scanTotal: 0,
+      targetListQuery: {
         page: 1,
         limit: 10,
-        configItem: undefined,
-        configValue: undefined
+        param: undefined
       },
-      list: null,
+      scanListQuery: {
+        page: 1,
+        limit: 10,
+        param: undefined
+      },
+      targetList: null,
+      scanList: null,
       listLoading: false,
       dialogFormVisible: false,
       dialogStatus: '',
       textMap: {
-        update: 'Edit',
-        create: '新增'
+        create: '新增',
+        update: '更新'
       },
       dialogPvVisible: false,
-      rules: {
-        configItem: [{ required: true, message: '配置项 is required', trigger: 'blur' }],
-        configValue: [{ required: true, message: '值 is required', trigger: 'blur' }]
-      },
       downloadLoading: false,
       temp: {
         id: undefined,
-        configItem: '',
-        configValue: ''
-      }
+        url: '',
+        desc: '',
+        param: '',
+        criticality: ''
+      },
+      tabPosition: 'left'
     }
   },
   created() {
-    this.getList()
+    this.getTargetList()
+    this.getScanList()
   },
   methods: {
-    getList() {
+    getTargetList() {
       this.listLoading = false
-      if (this.listQuery.configItem !== undefined && this.listQuery.configItem !== '') {
-        findByConfigItem(this.listQuery.page, this.listQuery.limit, this.listQuery.owner).then(response => {
-          this.total = response.data.count
-          this.list = response.data.docs
+      if (this.targetListQuery.param !== undefined && this.targetListQuery.param !== '') {
+        filterTarget(this.targetListQuery.page, this.targetListQuery.limit, this.targetListQuery.param).then(response => {
+          this.targetTotal = response.data.count
+          this.targetList = response.data.docs
           setTimeout(() => {
             this.listLoading = false
           }, 1.5 * 1000)
         })
       } else {
-        getList(this.listQuery.page, this.listQuery.limit).then(response => {
-          this.total = response.data.count
-          this.list = response.data.docs
+        getTargetList(this.targetListQuery.page, this.targetListQuery.limit).then(response => {
+          this.targetTotal = response.data.count
+          this.targetList = response.data.docs
           setTimeout(() => {
             this.listLoading = false
           }, 1.5 * 1000)
         })
       }
     },
+    getScanList() {
+      this.listLoading = false
+      if (this.scanListQuery.param !== undefined && this.scanListQuery.param !== '') {
+        filterScan(this.scanListQuery.page, this.scanListQuery.limit, this.scanListQuery.param).then(response => {
+          this.scanTotal = response.data.count
+          this.scanList = response.data.docs
+          setTimeout(() => {
+            this.listLoading = false
+          }, 1.5 * 1000)
+        })
+      } else {
+        getScanList(this.scanListQuery.page, this.scanListQuery.limit).then(response => {
+          this.scanTotal = response.data.count
+          this.scanList = response.data.docs
+          setTimeout(() => {
+            this.listLoading = false
+          }, 1.5 * 1000)
+        })
+      }
+    },
+    handleTargetFilter() {
+      this.targetList.page = 1
+      this.getTargetList()
+    },
+    handleTargetDownload() {
+    },
+    handleTargetDelete() {
+    },
     resetTemp() {
       this.temp = {
         id: undefined,
-        configItem: '',
-        configValue: ''
+        url: '',
+        desc: '',
+        criticality: ''
       }
+    },
+    handleTargetCreate() {
+      this.resetTemp()
+      this.dialogStatus = 'create'
+      this.dialogFormVisible = true
+      this.$nextTick(() => {
+        this.$refs['dataForm'].clearValidate()
+      })
+    },
+    handleTargetUpdate() {
+    },
+    handleTargetScan(row) {
+      console.log(row)
+      startScan(row.result).then(() => {
+        this.$notify({
+          title: 'Success',
+          message: '扫描任务启动',
+          type: 'success',
+          duration: 2000
+        })
+      })
     },
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          add(this.temp).then(() => {
-            this.list.unshift(this.temp)
+          addTarget(this.temp).then(() => {
+            this.getTargetList()
             this.dialogFormVisible = false
             this.$notify({
               title: 'Success',
@@ -198,8 +352,15 @@ export default {
         }
       })
     },
-    handleDelete(row, index) {
-      del(row.configItem).then(() => {
+
+    handleScanFilter() {
+      this.scanListQuery.page = 1
+      this.getScanList()
+    },
+    handleScanDownload() {
+    },
+    handleScanDelete(row, index) {
+      deleteScan(row.url).then(() => {
         this.$notify({
           title: 'Success',
           message: 'Delete Successfully',
@@ -208,63 +369,7 @@ export default {
         })
         this.list.splice(index, 1)
       })
-    },
-    handleFilter() {
-      this.listQuery.page = 1
-      this.getList()
-    },
-    handleCreate() {
-      this.resetTemp()
-      this.dialogStatus = 'create'
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
-    },
-    handleUpdate(row) {
-      this.temp = Object.assign({}, row) // copy obj
-      console.log(row.configItem)
-      this.dialogStatus = 'update'
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
-    },
-    updateData() {
-      this.$refs['dataForm'].validate((valid) => {
-        if (valid) {
-          const tempData = Object.assign({}, this.temp)
-          update(tempData).then(() => {
-            const index = this.list.findIndex(v => v._id === this.temp._id)
-            this.list.splice(index, 1, this.temp)
-            this.dialogFormVisible = false
-            this.$notify({
-              title: 'Success',
-              message: 'Update Successfully',
-              type: 'success',
-              duration: 2000
-            })
-          })
-        }
-      })
-    },
-    handleDownload() {
-      this.downloadLoading = true
-      import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['add_time', 'owner', 'domain']
-        const filterVal = ['add_time', 'owner', 'domain']
-        const data = this.formatJson(filterVal)
-        excel.export_json_to_excel({
-          header: tHeader,
-          data,
-          filename: '系统配置项列表'
-        })
-        this.downloadLoading = false
-      })
     }
   }
 }
 </script>
-
-<style scoped>
-</style>
