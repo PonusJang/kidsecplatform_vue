@@ -172,7 +172,16 @@
           </el-table-column>
 
           <el-table-column label="操作" align="center" width="250" class-name="small-padding fixed-width">
+
             <template slot-scope="{row,$index}">
+              <router-link :to="'vulnsInfo/'+scope.scan_id">
+                <el-button size="mini" type="primary">
+                  查看
+                </el-button>
+              </router-link>
+              <el-button size="mini" type="warning" @click="handleScanDown(row,$index)">
+                下载
+              </el-button>
               <el-button size="mini" type="danger" @click="handleScanDelete(row,$index)">
                 删除
               </el-button>
@@ -260,7 +269,7 @@ export default {
   },
   methods: {
     getTargetList() {
-      this.listLoading = false
+      this.listLoading = true
       if (this.targetListQuery.param !== undefined && this.targetListQuery.param !== '') {
         filterTarget(this.targetListQuery.page, this.targetListQuery.limit, this.targetListQuery.param).then(response => {
           this.targetTotal = response.data.count
@@ -280,11 +289,11 @@ export default {
       }
     },
     getScanList() {
-      this.listLoading = false
+      this.listLoading = true
       if (this.scanListQuery.param !== undefined && this.scanListQuery.param !== '') {
         filterScan(this.scanListQuery.page, this.scanListQuery.limit, this.scanListQuery.param).then(response => {
           this.scanTotal = response.data.count
-          this.scanList = response.data.docs
+          this.scanList = response.data.data
           setTimeout(() => {
             this.listLoading = false
           }, 1.5 * 1000)
@@ -292,12 +301,13 @@ export default {
       } else {
         getScanList(this.scanListQuery.page, this.scanListQuery.limit).then(response => {
           this.scanTotal = response.data.count
-          this.scanList = response.data.docs
+          this.scanList = response.data.data
           setTimeout(() => {
             this.listLoading = false
           }, 1.5 * 1000)
         })
       }
+      console.log(this.scanList)
     },
     handleTargetFilter() {
       this.targetList.page = 1
@@ -327,13 +337,22 @@ export default {
     },
     handleTargetScan(row) {
       console.log(row)
-      startScan(row.result).then(() => {
-        this.$notify({
-          title: 'Success',
-          message: '扫描任务启动',
-          type: 'success',
-          duration: 2000
-        })
+      startScan(row.result).then(res => {
+        if (res.data === true) {
+          this.$notify({
+            title: 'Success',
+            message: '扫描任务启动',
+            type: 'success',
+            duration: 2000
+          })
+        } else {
+          this.$notify({
+            title: 'Failure',
+            message: '扫描任务失败',
+            type: 'failure',
+            duration: 2000
+          })
+        }
       })
     },
     createData() {
@@ -352,7 +371,11 @@ export default {
         }
       })
     },
+    handleScanDetail(row, index) {
+      getVulnerabilitiesInfo(row.scan_id).then(() => {
 
+      })
+    },
     handleScanFilter() {
       this.scanListQuery.page = 1
       this.getScanList()
@@ -360,7 +383,7 @@ export default {
     handleScanDownload() {
     },
     handleScanDelete(row, index) {
-      deleteScan(row.url).then(() => {
+      deleteScan(row.scan_id).then(() => {
         this.$notify({
           title: 'Success',
           message: 'Delete Successfully',

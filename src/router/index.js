@@ -182,6 +182,13 @@ export const asyncRoutes = [
         meta: { title: 'Web漏扫管理', icon: 'menu', roles: ['admin'] }
       },
       {
+        path: 'vulnsInfo/:scan_id',
+        name: 'Web漏洞详情',
+        component: () => import('@/views/scanner/acunetix/vulnsInfo'),
+        meta: { title: 'Web漏洞详情', noCache: true, icon: 'menu', roles: ['admin'] },
+        hidden: true
+      },
+      {
         path: 'index',
         name: 'index',
         component: () => import('@/views/scanner/nessus/index'),

@@ -13,7 +13,7 @@
       </el-button>
       <el-button
         v-waves
-        :loading="downloadLoading"
+        :loading="downloadLoading1"
         class="filter-item"
         type="primary"
         icon="el-icon-download"
@@ -23,7 +23,7 @@
       </el-button>
       <el-button
         v-waves
-        :loading="downloadLoading"
+        :loading="downloadLoading2"
         class="filter-item"
         type="primary"
         icon="el-icon-download"
@@ -227,7 +227,7 @@
             <span class="link-type" v-html="resultFormat(scope,scope.row.day30)" />
           </template>
         </el-table-column>
-        <div v-if="false" style="display:inline;">
+        <div v-if="show_31" style="display:inline;">
           <el-table-column label="31" align="center">
             <template slot-scope="scope">
               <span class="link-type" v-html=" resultFormat(scope,scope.row.day31)" />
@@ -275,7 +275,8 @@ export default {
       exportList: null,
       list: null,
       listLoading: false,
-      downloadLoading: false,
+      downloadLoading1: false,
+      downloadLoading2: false,
       temp: {
         id: undefined,
         param: '',
@@ -286,7 +287,8 @@ export default {
   created() {
     this.getList()
     const today = new Date()
-    if (Number(today.getDay()) < 15) {
+
+    if (Number(today.getDay()) > 15) {
       this.show_before = true
       this.show_after = false
       this.show_31 = false
@@ -299,7 +301,7 @@ export default {
         findByAssets(this.listQuery.page, this.listQuery.limit, this.listQuery.assets).then(response => {
           this.total = response.data.count
           this.list = response.data.docs
-          console.log(this.list)
+
           setTimeout(() => {
             this.listLoading = false
           }, 1.5 * 1000)
@@ -308,7 +310,7 @@ export default {
         findByMonth(this.listQuery.page, this.listQuery.limit, this.listQuery.selectMonth).then(response => {
           this.total = response.data.count
           this.list = response.data.docs
-          console.log(this.list)
+
           setTimeout(() => {
             this.listLoading = false
           }, 1.5 * 1000)
@@ -317,7 +319,7 @@ export default {
         getList(this.listQuery.page, this.listQuery.limit).then(response => {
           this.total = response.data.count
           this.list = response.data.docs
-          console.log(this.list)
+
           setTimeout(() => {
             this.listLoading = false
           }, 1.5 * 1000)
@@ -527,50 +529,52 @@ export default {
       this.getList()
     },
     handleDownload_before_15() {
-      this.downloadLoading = true
-      import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['设备名称', 'IP', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15']
-        const filterVal = ['assets', 'ip', 'day1', 'day2', 'day3', 'day4', 'day5', 'day6', 'day7', 'day8', 'day9', 'day10', 'day11', 'day12', 'day13', 'day14', 'day15']
-        const data = this.formatJson(filterVal)
-        excel.export_json_to_excel({
-          header: tHeader,
-          data,
-          filename: (new Date().getFullYear()).toString() + '-' + (new Date().getMonth()).toString() + '前15日设备可用监控'
+      getAllList().then((res) => {
+        this.exportList = res.data.docs
+        this.downloadLoading1 = true
+        import('@/vendor/Export2Excel').then(excel => {
+          const tHeader = ['设备名称', 'IP', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15']
+          const filterVal = ['assets', 'ip', 'day1', 'day2', 'day3', 'day4', 'day5', 'day6', 'day7', 'day8', 'day9', 'day10', 'day11', 'day12', 'day13', 'day14', 'day15']
+          const data = this.formatJson(filterVal)
+          excel.export_json_to_excel({
+            header: tHeader,
+            data,
+            filename: (new Date().getFullYear()).toString() + '-' + (new Date().getMonth()).toString() + '前15日设备可用监控'
+          })
+          this.downloadLoading1 = false
         })
-        this.downloadLoading = false
       })
     },
     handleDownload_after_15() {
-      this.downloadLoading = true
-      import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['设备名称', 'IP', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31']
-        const filterVal = ['assets', 'ip', 'day16', 'day17', 'day18', 'day19', 'day20', 'day21', 'day22', 'day23', 'day24', 'day25', 'day26', 'day27', 'day28', 'day29', 'day30', 'day31']
-        const data = this.formatJson(filterVal)
-        excel.export_json_to_excel({
-          header: tHeader,
-          data,
-          filename: (new Date().getFullYear()).toString() + '-' + (new Date().getMonth()).toString() + '后15日设备可用监控'
+      getAllList().then((res) => {
+        this.exportList = res.data.docs
+        this.downloadLoading2 = true
+        import('@/vendor/Export2Excel').then(excel => {
+          const tHeader = ['设备名称', 'IP', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31']
+          const filterVal = ['assets', 'ip', 'day16', 'day17', 'day18', 'day19', 'day20', 'day21', 'day22', 'day23', 'day24', 'day25', 'day26', 'day27', 'day28', 'day29', 'day30', 'day31']
+          const data = this.formatJson(filterVal)
+          console.log(data)
+          excel.export_json_to_excel({
+            header: tHeader,
+            data,
+            filename: (new Date().getFullYear()).toString() + '-' + (new Date().getMonth()).toString() + '后15日设备可用监控'
+          })
+          this.downloadLoading2 = false
         })
-        this.downloadLoading = false
       })
     },
     formatJson(filterVal) {
-      getAllList().then(res => {
-        this.exportList = res.data.docs
-        return this.exportList.map(v => filterVal.map(j => {
-          if (j === 'add_time') {
-            return parseTime(v[j])
-          }
-          const reg = /day/
-          console.log(v[j])
-          if (reg.test(j)) {
-            console.log(this.parserResult(v[j]))
-            return this.parserResult(v[j])
-          } else {
-            return v[j]
-          }
-        }))
-      })
+      return this.exportList.map(v => filterVal.map(j => {
+        if (j === 'add_time') {
+          return parseTime(v[j])
+        }
+        const reg = /day/
+        if (reg.test(j)) {
+          return this.parserResult(v[j])
+        } else {
+          return v[j]
+        }
+      }))
     }
   }
 }
