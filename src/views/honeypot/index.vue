@@ -115,7 +115,7 @@ import { parseTime } from '@/utils'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 export default {
-  name: 'SystemList',
+  name: 'SystsemList',
   components: { Pagination },
   directives: { waves },
   filters: {

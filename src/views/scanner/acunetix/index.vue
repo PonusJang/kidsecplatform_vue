@@ -2,10 +2,10 @@
   <div class="app-container">
 
     <el-tabs :tab-position="tabPosition" style="height: 900px;">
-      <el-tab-pane label="Dashboard">
-        Dashboard
-      </el-tab-pane>
-      <el-tab-pane label="目标管理">
+
+      <el-tab-pane label="Dashboard" name="Dashboard" />
+
+      <el-tab-pane label="目标管理" name="tagetsManger">
 
         <div class="filter-container">
           <el-input
@@ -89,7 +89,6 @@
         <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
           <el-form
             ref="dataForm"
-            :rules="rules"
             :model="temp"
             label-position="left"
             label-width="70px"
@@ -116,7 +115,7 @@
         </el-dialog>
 
       </el-tab-pane>
-      <el-tab-pane label="任务管理">
+      <el-tab-pane label="任务管理" name="scansManager">
 
         <div class="filter-container">
           <el-input
@@ -174,7 +173,7 @@
           <el-table-column label="操作" align="center" width="250" class-name="small-padding fixed-width">
 
             <template slot-scope="{row,$index}">
-              <router-link :to="'vulnsInfo/'+scope.scan_id">
+              <router-link :to="{path :'vulnsInfo/'+ row.scan_id , query:{url:row.target,scan_id: row.scan_id}}">
                 <el-button size="mini" type="primary">
                   查看
                 </el-button>
@@ -204,15 +203,16 @@
 </template>
 
 <script>
+import echarts from 'echarts'
+import VCharts from 'v-charts-v2'
 import {
+  getStatics,
   getTargetList,
   deleteTarget,
   getScanList,
-  getStatus,
   addTarget,
   stopScan,
   deleteScan,
-  getVulnerabilitiesInfo,
   getReports,
   filterScan,
   filterTarget, startScan
@@ -223,13 +223,19 @@ import Pagination from '@/components/Pagination'
 
 export default {
   name: 'Index',
-  components: { Pagination },
+  components: {
+    Pagination,
+    echarts,
+    VCharts
+  },
   directives: { waves },
   filters: {
     parseTime: parseTime
   },
   data() {
     return {
+      staticsData: undefined,
+      activePane: 'Dashboard',
       targetTotal: 0,
       scanTotal: 0,
       targetListQuery: {
@@ -264,10 +270,18 @@ export default {
     }
   },
   created() {
+    this.getStatics()
     this.getTargetList()
     this.getScanList()
+    // this.handlePane()
   },
   methods: {
+    getStatics() {
+      getStatics().then(res => {
+        this.staticsData = res.data
+        console.log(this.staticsData)
+      })
+    },
     getTargetList() {
       this.listLoading = true
       if (this.targetListQuery.param !== undefined && this.targetListQuery.param !== '') {
@@ -307,7 +321,6 @@ export default {
           }, 1.5 * 1000)
         })
       }
-      console.log(this.scanList)
     },
     handleTargetFilter() {
       this.targetList.page = 1
@@ -336,7 +349,6 @@ export default {
     handleTargetUpdate() {
     },
     handleTargetScan(row) {
-      console.log(row)
       startScan(row.result).then(res => {
         if (res.data === true) {
           this.$notify({
@@ -371,16 +383,15 @@ export default {
         }
       })
     },
-    handleScanDetail(row, index) {
-      getVulnerabilitiesInfo(row.scan_id).then(() => {
 
-      })
-    },
     handleScanFilter() {
       this.scanListQuery.page = 1
       this.getScanList()
     },
-    handleScanDownload() {
+    handleScanDown(row, index) {
+      getReports(row.scan_id).then(res => {
+        console.log(res.data)
+      })
     },
     handleScanDelete(row, index) {
       deleteScan(row.scan_id).then(() => {
