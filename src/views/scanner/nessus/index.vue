@@ -1,174 +1,198 @@
 <template>
-
   <div class="app-container">
-    <div class="filter-container">
-      <el-input
-        v-model="listQuery.configItem"
-        placeholder="域名"
-        style="width: 200px;"
-        class="filter-item"
-        @keyup.enter.native="handleFilter"
-      />
-      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
-        搜索
-      </el-button>
-      <el-button
-        class="filter-item"
-        style="margin-left: 10px;"
-        type="primary"
-        icon="el-icon-edit"
-        @click="handleCreate"
-      >
-        新增
-      </el-button>
-      <el-button
-        v-waves
-        :loading="downloadLoading"
-        class="filter-item"
-        type="primary"
-        icon="el-icon-download"
-        @click="handleDownload"
-      >
-        导出EXCEL
-      </el-button>
 
-    </div>
+    <el-tabs :tab-position="tabPosition" style="height: 900px;">
 
-    <el-table
-      v-loading="listLoading"
-      :data="list"
-      element-loading-text="Loading"
-      border
-      fit
-      highlight-current-row
-    >
-      <el-table-column align="center" label="ID" width="95">
-        <template slot-scope="scope">
-          {{ scope.$index }}
-        </template>
-      </el-table-column>
-      <el-table-column label="配置项" align="center">
-        <template slot-scope="scope">
-          <span class="link-type" @click="handleUpdate(row)"> {{ scope.row.configItem }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="值" align="center">
-        <template slot-scope="scope">
-          <span class="link-type" @click="handleUpdate(row)">{{ scope.row.configValue }}</span>
-        </template>
-      </el-table-column>
+      <el-tab-pane label="Dashboard" name="Dashboard" />
 
-      <el-table-column label="操作" align="center" width="250" class-name="small-padding fixed-width">
-        <template slot-scope="{row,$index}">
-          <el-button type="primary" size="mini" @click="handleUpdate(row)">
-            编辑
+      <el-tab-pane label="扫描管理" name="scansManger">
+
+        <div class="filter-container">
+          <el-input
+            v-model="scanListQuery.configItem"
+            placeholder="IP"
+            style="width: 200px;"
+            class="filter-item"
+            @keyup.enter.native="handleScanFilter"
+          />
+          <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleScanFilter">
+            搜索
           </el-button>
-          <el-button size="mini" type="danger" @click="handleDelete(row,$index)">
-            删除
+
+          <el-button
+            class="filter-item"
+            style="margin-left: 10px;"
+            type="primary"
+            icon="el-icon-edit"
+            @click="handleScanCreate"
+          >
+            新增
           </el-button>
-        </template>
-      </el-table-column>
+          <el-button
+            v-waves
+            :loading="downloadLoading"
+            class="filter-item"
+            type="primary"
+            icon="el-icon-download"
+            @click="handleScanDownload"
+          >
+            导出EXCEL
+          </el-button>
 
-    </el-table>
+        </div>
+        <el-table
+          v-loading="listLoading"
+          :data="scanList"
+          element-loading-text="Loading"
+          border
+          fit
+          highlight-current-row
+        >
+          <el-table-column align="center" label="ID" width="95">
+            <template slot-scope="scope">
+              {{ scope.$index }}
+            </template>
+          </el-table-column>
+          <el-table-column label="ip" align="center">
+            <template slot-scope="scope">
+              <span class="link-type"> {{ scope.row.param }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="scan_id" align="center">
+            <template slot-scope="scope">
+              <span class="link-type">{{ scope.row.result }}</span>
+            </template>
+          </el-table-column>
 
-    <pagination
-      v-show="total>0"
-      :total="total"
-      :page.sync="listQuery.page"
-      :limit.sync="listQuery.limit"
-      @pagination="getList"
-    />
+          <el-table-column label="操作" align="center" width="250" class-name="small-padding fixed-width">
+            <template slot-scope="{row,$index}">
+              <el-button type="primary" size="mini" @click="handleStartScan(row)">
+                启动
+              </el-button>
 
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form
-        ref="dataForm"
-        :rules="rules"
-        :model="temp"
-        label-position="left"
-        label-width="70px"
-        style="width: 400px; margin-left:50px;"
-      >
-        <el-form-item label="配置项" prop="title">
-          <el-input v-model="temp.configItem" />
-        </el-form-item>
-        <el-form-item label="值" prop="title">
-          <el-input v-model="temp.configValue" />
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">
-          取消
-        </el-button>
-        <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
-          确认
-        </el-button>
-      </div>
-    </el-dialog>
+              <el-button size="mini" type="danger" @click="handleScanDelete(row,$index)">
+                删除
+              </el-button>
+            </template>
+          </el-table-column>
 
+        </el-table>
+
+        <pagination
+          v-show="scanTotal>0"
+          :total="scanTotal"
+          :page.sync="scanListQuery.page"
+          :limit.sync="scanListQuery.limit"
+          @pagination="getScanList"
+        />
+
+        <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
+          <el-form
+            ref="dataForm"
+            :model="temp"
+            label-position="left"
+            label-width="70px"
+            style="width: 400px; margin-left:50px;"
+          >
+            <el-form-item label="IP" prop="title">
+              <el-input v-model="temp.ip" />
+            </el-form-item>
+            <el-form-item label="策略 " prop="title">
+              <el-input v-model="temp.ip" />
+            </el-form-item>
+            <div slot="footer" class="dialog-footer">
+              <el-button @click="dialogFormVisible = false">
+                取消
+              </el-button>
+              <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
+                确认
+              </el-button>
+            </div>
+          </el-form>
+        </el-dialog>
+
+      </el-tab-pane>
+
+    </el-tabs>
   </div>
 </template>
 
 <script>
-// eslint-disable-next-line no-unused-vars
-import { getList, update, add, del, findByConfigItem } from '@/api/system'
+
+import {
+  getPolicies,
+  getStatics,
+  getScanList,
+  getVulnInfo,
+  add,
+  launch,
+  del, filterByIP
+} from '@/api/nessus'
 import { parseTime } from '@/utils'
 import waves from '@/directive/waves' // waves directive
-import Pagination from '@/components/Pagination' // secondary package based on el-pagination
+import Pagination from '@/components/Pagination'
+
 export default {
-  name: 'SystemList',
-  components: { Pagination },
+  name: 'NessusIndex',
+  components: {
+    Pagination
+  },
   directives: { waves },
   filters: {
     parseTime: parseTime
   },
   data() {
     return {
-      total: 0,
-      listQuery: {
+      policies: [],
+      staticsData: undefined,
+      activePane: 'Dashboard',
+      scanTotal: 0,
+      scanListQuery: {
         page: 1,
         limit: 10,
-        configItem: undefined,
-        configValue: undefined
+        param: undefined
       },
-      list: null,
       listLoading: false,
       dialogFormVisible: false,
       dialogStatus: '',
       textMap: {
-        update: 'Edit',
-        create: '新增'
+        create: '新增',
+        update: '更新'
       },
       dialogPvVisible: false,
-      rules: {
-        configItem: [{ required: true, message: '配置项 is required', trigger: 'blur' }],
-        configValue: [{ required: true, message: '值 is required', trigger: 'blur' }]
-      },
       downloadLoading: false,
       temp: {
         id: undefined,
-        configItem: '',
-        configValue: ''
-      }
+        ip: undefined
+      },
+      tabPosition: 'left'
     }
   },
   created() {
-    this.getList()
+    // this.getStatics()
+    this.getScanList()
   },
   methods: {
-    getList() {
-      this.listLoading = false
-      if (this.listQuery.configItem !== undefined && this.listQuery.configItem !== '') {
-        findByConfigItem(this.listQuery.page, this.listQuery.limit, this.listQuery.owner).then(response => {
-          this.total = response.data.count
-          this.list = response.data.docs
+    getStatics() {
+      getStatics().then(res => {
+        this.staticsData = res.data
+        console.log(this.staticsData)
+      })
+    },
+    getScanList() {
+      this.listLoading = true
+      if (this.scanListQuery.param !== undefined && this.scanListQuery.param !== '') {
+        filterByIP(this.scanListQuery.page, this.scanListQuery.limit, this.scanListQuery.param).then(response => {
+          this.scanTotal = response.data.count
+          this.scanList = response.data.data
           setTimeout(() => {
             this.listLoading = false
           }, 1.5 * 1000)
         })
       } else {
-        getList(this.listQuery.page, this.listQuery.limit).then(response => {
-          this.total = response.data.count
-          this.list = response.data.docs
+        getScanList(this.scanListQuery.page, this.scanListQuery.limit).then(response => {
+          this.scanTotal = response.data.count
+          this.scanList = response.data.data
           setTimeout(() => {
             this.listLoading = false
           }, 1.5 * 1000)
@@ -177,16 +201,47 @@ export default {
     },
     resetTemp() {
       this.temp = {
-        id: undefined,
-        configItem: '',
-        configValue: ''
+        id: undefined
+
       }
+    },
+    handleScanCreate() {
+      getPolicies().then(res => {
+        this.policies = res.data
+        this.resetTemp()
+        this.dialogStatus = 'create'
+        this.dialogFormVisible = true
+        this.$nextTick(() => {
+          this.$refs['dataForm'].clearValidate()
+        })
+      })
+    },
+    handleTargetUpdate() {
+    },
+    handleStartScan(row) {
+      launch(row.result).then(res => {
+        if (res.data === true) {
+          this.$notify({
+            title: 'Success',
+            message: '扫描任务启动',
+            type: 'success',
+            duration: 2000
+          })
+        } else {
+          this.$notify({
+            title: 'Failure',
+            message: '扫描任务失败',
+            type: 'failure',
+            duration: 2000
+          })
+        }
+      })
     },
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           add(this.temp).then(() => {
-            this.list.unshift(this.temp)
+            this.getTargetList()
             this.dialogFormVisible = false
             this.$notify({
               title: 'Success',
@@ -198,8 +253,17 @@ export default {
         }
       })
     },
-    handleDelete(row, index) {
-      del(row.configItem).then(() => {
+    handleScanFilter() {
+      this.scanListQuery.page = 1
+      this.getScanList()
+    },
+    handleScanDown(row, index) {
+      getVulnInfo(row.scan_id).then(res => {
+        console.log(res.data)
+      })
+    },
+    handleScanDelete(row, index) {
+      del(row.scan_id).then(() => {
         this.$notify({
           title: 'Success',
           message: 'Delete Successfully',
@@ -208,63 +272,7 @@ export default {
         })
         this.list.splice(index, 1)
       })
-    },
-    handleFilter() {
-      this.listQuery.page = 1
-      this.getList()
-    },
-    handleCreate() {
-      this.resetTemp()
-      this.dialogStatus = 'create'
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
-    },
-    handleUpdate(row) {
-      this.temp = Object.assign({}, row) // copy obj
-      console.log(row.configItem)
-      this.dialogStatus = 'update'
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
-    },
-    updateData() {
-      this.$refs['dataForm'].validate((valid) => {
-        if (valid) {
-          const tempData = Object.assign({}, this.temp)
-          update(tempData).then(() => {
-            const index = this.list.findIndex(v => v._id === this.temp._id)
-            this.list.splice(index, 1, this.temp)
-            this.dialogFormVisible = false
-            this.$notify({
-              title: 'Success',
-              message: 'Update Successfully',
-              type: 'success',
-              duration: 2000
-            })
-          })
-        }
-      })
-    },
-    handleDownload() {
-      this.downloadLoading = true
-      import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['add_time', 'owner', 'domain']
-        const filterVal = ['add_time', 'owner', 'domain']
-        const data = this.formatJson(filterVal)
-        excel.export_json_to_excel({
-          header: tHeader,
-          data,
-          filename: '系统配置项列表'
-        })
-        this.downloadLoading = false
-      })
     }
   }
 }
 </script>
-
-<style scoped>
-</style>

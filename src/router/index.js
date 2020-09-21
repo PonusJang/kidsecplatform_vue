@@ -189,8 +189,8 @@ export const asyncRoutes = [
         hidden: true
       },
       {
-        path: 'index',
-        name: 'index',
+        path: 'nessusIndex',
+        name: 'nessusIndex',
         component: () => import('@/views/scanner/nessus/index'),
         meta: { title: '主机漏扫管理', icon: 'menu', roles: ['admin'] }
       }
