@@ -161,7 +161,40 @@ export default {
           history: []
         },
         {
-          app: 'Cron',
+          app: 'CronGetSubdomain',
+          status: null,
+          pid: null,
+          cpu: 0,
+          memory: 0,
+          UptTime: null,
+          StartTime: null,
+          RestartTimes: null,
+          history: []
+        },
+        {
+          app: 'CronGetIP',
+          status: null,
+          pid: null,
+          cpu: 0,
+          memory: 0,
+          UptTime: null,
+          StartTime: null,
+          RestartTimes: null,
+          history: []
+        },
+        {
+          app: 'CronGetPorts',
+          status: null,
+          pid: null,
+          cpu: 0,
+          memory: 0,
+          UptTime: null,
+          StartTime: null,
+          RestartTimes: null,
+          history: []
+        },
+        {
+          app: 'CronGetWebTag',
           status: null,
           pid: null,
           cpu: 0,
