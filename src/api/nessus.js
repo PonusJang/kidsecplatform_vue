@@ -15,10 +15,11 @@ export function getPolicies() {
   })
 }
 
-export function getScanList() {
+export function getScanList(page, limit) {
   return request({
-    url: '/nessus/getPolicies',
-    method: 'get'
+    url: '/nessus/getScanList',
+    method: 'get',
+    params: { page, limit }
   })
 }
 
@@ -32,9 +33,9 @@ export function add(data) {
 
 export function launch(sid) {
   return request({
-    url: '/nessus/add',
+    url: '/nessus/launch',
     method: 'get',
-    param: { sid }
+    params: { sid }
   })
 }
 
@@ -42,15 +43,15 @@ export function del(sid) {
   return request({
     url: '/nessus/delete',
     method: 'get',
-    param: { sid }
+    params: { sid }
   })
 }
 
-export function filterByIP(ip) {
+export function filterByIP(ip, page, limit) {
   return request({
     url: '/nessus/filterByIP',
     method: 'get',
-    param: { ip }
+    params: { ip, page, limit }
   })
 }
 
@@ -58,7 +59,7 @@ export function getVulnInfo(ip) {
   return request({
     url: '/nessus/getVulnInfo',
     method: 'get',
-    param: { ip }
+    params: { ip }
   })
 }
 

@@ -1,12 +1,9 @@
 <template>
   <div class="app-container">
-
     <el-tabs :tab-position="tabPosition" style="height: 900px;">
-
       <el-tab-pane label="Dashboard" name="Dashboard" />
 
       <el-tab-pane label="扫描管理" name="scansManger">
-
         <div class="filter-container">
           <el-input
             v-model="scanListQuery.configItem"
@@ -63,6 +60,11 @@
               <span class="link-type">{{ scope.row.result }}</span>
             </template>
           </el-table-column>
+          <el-table-column label="状态" align="center">
+            <template slot-scope="scope">
+              <span class="link-type">{{ scope.row.status }}</span>
+            </template>
+          </el-table-column>
 
           <el-table-column label="操作" align="center" width="250" class-name="small-padding fixed-width">
             <template slot-scope="{row,$index}">
@@ -94,21 +96,40 @@
             label-width="70px"
             style="width: 400px; margin-left:50px;"
           >
-            <el-form-item label="IP" prop="title">
-              <el-input v-model="temp.ip" />
+            <el-form-item label="任务名称" prop="title" placeholder="IP">
+              <el-input v-model="temp.name" />
             </el-form-item>
+
+            <el-form-item label="IP" prop="title" placeholder="IP">
+              <el-input v-model="temp.targets" />
+            </el-form-item>
+
             <el-form-item label="策略 " prop="title">
-              <el-input v-model="temp.ip" />
+              <el-select
+                v-model="temp.uuid"
+                placeholder="Policy"
+                clearable
+                class="filter-item"
+                style="width: 330px"
+              >
+                <el-option
+                  v-for="item in policies"
+                  :key="item.uuid"
+                  :label="item.title"
+                  :value="item.uuid"
+                />
+              </el-select>
             </el-form-item>
-            <div slot="footer" class="dialog-footer">
-              <el-button @click="dialogFormVisible = false">
-                取消
-              </el-button>
-              <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
-                确认
-              </el-button>
-            </div>
           </el-form>
+          <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogFormVisible = false">
+              取消
+            </el-button>
+            <el-button type="primary" @click="createData">
+              确认
+            </el-button>
+          </div>
+
         </el-dialog>
 
       </el-tab-pane>
@@ -163,7 +184,9 @@ export default {
       downloadLoading: false,
       temp: {
         id: undefined,
-        ip: undefined
+        name: undefined,
+        targets: undefined,
+        uuid: undefined
       },
       tabPosition: 'left'
     }
@@ -184,7 +207,7 @@ export default {
       if (this.scanListQuery.param !== undefined && this.scanListQuery.param !== '') {
         filterByIP(this.scanListQuery.page, this.scanListQuery.limit, this.scanListQuery.param).then(response => {
           this.scanTotal = response.data.count
-          this.scanList = response.data.data
+          this.scanList = response.data.docs
           setTimeout(() => {
             this.listLoading = false
           }, 1.5 * 1000)
@@ -192,7 +215,7 @@ export default {
       } else {
         getScanList(this.scanListQuery.page, this.scanListQuery.limit).then(response => {
           this.scanTotal = response.data.count
-          this.scanList = response.data.data
+          this.scanList = response.data.docs
           setTimeout(() => {
             this.listLoading = false
           }, 1.5 * 1000)
@@ -201,13 +224,15 @@ export default {
     },
     resetTemp() {
       this.temp = {
-        id: undefined
-
+        id: undefined,
+        name: undefined,
+        targets: undefined,
+        uuid: undefined
       }
     },
     handleScanCreate() {
       getPolicies().then(res => {
-        this.policies = res.data
+        this.policies = res.data.data
         this.resetTemp()
         this.dialogStatus = 'create'
         this.dialogFormVisible = true
@@ -220,13 +245,14 @@ export default {
     },
     handleStartScan(row) {
       launch(row.result).then(res => {
-        if (res.data === true) {
+        if (res.data) {
           this.$notify({
             title: 'Success',
             message: '扫描任务启动',
             type: 'success',
             duration: 2000
           })
+          this.getScanList()
         } else {
           this.$notify({
             title: 'Failure',
@@ -241,7 +267,7 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           add(this.temp).then(() => {
-            this.getTargetList()
+            this.getScanList()
             this.dialogFormVisible = false
             this.$notify({
               title: 'Success',
@@ -258,19 +284,28 @@ export default {
       this.getScanList()
     },
     handleScanDown(row, index) {
-      getVulnInfo(row.scan_id).then(res => {
+      getVulnInfo(row.result).then(res => {
         console.log(res.data)
       })
     },
     handleScanDelete(row, index) {
-      del(row.scan_id).then(() => {
-        this.$notify({
-          title: 'Success',
-          message: 'Delete Successfully',
-          type: 'success',
-          duration: 2000
-        })
-        this.list.splice(index, 1)
+      del(row.result).then(res => {
+        if (res.data.data === 'falied') {
+          this.$notify({
+            title: 'Failed',
+            message: 'Delete Failed',
+            type: 'failure',
+            duration: 2000
+          })
+        } else {
+          this.$notify({
+            title: 'Success',
+            message: 'Delete Successfully',
+            type: 'success',
+            duration: 2000
+          })
+          this.list.splice(index, 1)
+        }
       })
     }
   }
