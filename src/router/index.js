@@ -193,6 +193,13 @@ export const asyncRoutes = [
         name: 'nessusIndex',
         component: () => import('@/views/scanner/nessus/index'),
         meta: { title: '主机漏扫管理', icon: 'menu', roles: ['admin'] }
+      },
+      {
+        path: 'vulnsInfo/:sid',
+        name: '主机漏洞详情',
+        component: () => import('@/views/scanner/nessus/vulnsInfo'),
+        meta: { title: '主机漏洞详情', noCache: true, icon: 'menu', roles: ['admin'] },
+        hidden: true
       }
     ]
   },

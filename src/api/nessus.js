@@ -55,11 +55,26 @@ export function filterByIP(ip, page, limit) {
   })
 }
 
-export function getVulnInfo(ip) {
+export function getVulnInfo(sid) {
   return request({
     url: '/nessus/getVulnInfo',
     method: 'get',
-    params: { ip }
+    params: { sid }
   })
 }
 
+export function resume(sid) {
+  return request({
+    url: '/nessus/resume',
+    method: 'get',
+    params: { sid }
+  })
+}
+
+export function stop(sid) {
+  return request({
+    url: '/nessus/stop',
+    method: 'get',
+    params: { sid }
+  })
+}

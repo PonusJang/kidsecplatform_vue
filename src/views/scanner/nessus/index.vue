@@ -68,11 +68,27 @@
 
           <el-table-column label="操作" align="center" width="250" class-name="small-padding fixed-width">
             <template slot-scope="{row,$index}">
-              <el-button type="primary" size="mini" @click="handleStartScan(row)">
+
+              <el-button v-show="row.status !== 'running'" type="primary" size="mini" @click="handleStartScan(row)">
                 启动
               </el-button>
-
-              <el-button size="mini" type="danger" @click="handleScanDelete(row,$index)">
+              <el-button v-show="row.status === 'running'" type="primary" size="mini" @click="handleResumeScan(row)">
+                暂停
+              </el-button>
+              <el-button v-show="row.status === 'running'" type="primary" size="mini" @click="handleStopScan(row)">
+                停止
+              </el-button>
+              <router-link :to="{path :'vulnsInfo/'+ row.result , query:{sid :row.result}}">
+                <el-button v-show="row.status === 'completed'" type="primary" size="mini">
+                  查看结果
+                </el-button>
+              </router-link>
+              <el-button
+                v-show="row.status !== 'running'"
+                size="mini"
+                type="danger"
+                @click="handleScanDelete(row,$index)"
+              >
                 删除
               </el-button>
             </template>
@@ -165,6 +181,7 @@ export default {
   data() {
     return {
       policies: [],
+      show: true,
       staticsData: undefined,
       activePane: 'Dashboard',
       scanTotal: 0,
@@ -242,6 +259,12 @@ export default {
       })
     },
     handleTargetUpdate() {
+    },
+    handleScanDownload() {
+    },
+    handleStopScan() {
+    },
+    handleResumeScan() {
     },
     handleStartScan(row) {
       launch(row.result).then(res => {

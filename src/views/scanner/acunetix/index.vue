@@ -390,7 +390,6 @@ export default {
     },
     handleScanDown(row, index) {
       getReports(row.scan_id).then(res => {
-        console.log(res.data)
       })
     },
     handleScanDelete(row, index) {

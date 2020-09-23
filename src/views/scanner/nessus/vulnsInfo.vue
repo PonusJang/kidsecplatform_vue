@@ -65,7 +65,7 @@
 </template>
 
 <script>
-import { getVulnerabilitiesInfo } from '@/api/acunetix'
+import { getVulnInfo } from '@/api/nessus'
 import waves from '@/directive/waves' // waves directive
 export default {
   name: 'VulnsInfo',
@@ -89,9 +89,9 @@ export default {
     backTo() {
       this.$router.go(-1)
     },
-    handleScanDetail(scan_id) {
+    handleScanDetail(sid) {
       this.listLoading = true
-      getVulnerabilitiesInfo(scan_id).then(res => {
+      getVulnInfo(sid).then(res => {
         if (res.code === 200) {
           this.data = res.data
           this.listLoading = false
