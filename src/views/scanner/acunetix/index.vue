@@ -173,7 +173,7 @@
           <el-table-column label="操作" align="center" width="250" class-name="small-padding fixed-width">
 
             <template slot-scope="{row,$index}">
-              <router-link :to="{path :'vulnsInfo/'+ row.scan_id , query:{url:row.target,scan_id: row.scan_id}}">
+              <router-link :to="{path :'webVulnsInfo/'+ row.scan_id , query:{url:row.target,scan_id: row.scan_id}}">
                 <el-button size="mini" type="primary">
                   查看
                 </el-button>

@@ -78,7 +78,7 @@
               <el-button v-show="row.status === 'running'" type="primary" size="mini" @click="handleStopScan(row)">
                 停止
               </el-button>
-              <router-link :to="{path :'vulnsInfo/'+ row.result , query:{sid :row.result}}">
+              <router-link :to="{path :'hostVulnsInfo/'+ row.result , query:{sid :row.result}}">
                 <el-button v-show="row.status === 'completed'" type="primary" size="mini">
                   查看结果
                 </el-button>
@@ -160,7 +160,6 @@ import {
   getPolicies,
   getStatics,
   getScanList,
-  getVulnInfo,
   add,
   launch,
   del, filterByIP
@@ -305,11 +304,6 @@ export default {
     handleScanFilter() {
       this.scanListQuery.page = 1
       this.getScanList()
-    },
-    handleScanDown(row, index) {
-      getVulnInfo(row.result).then(res => {
-        console.log(res.data)
-      })
     },
     handleScanDelete(row, index) {
       del(row.result).then(res => {

@@ -182,7 +182,7 @@ export const asyncRoutes = [
         meta: { title: 'Web漏扫管理', icon: 'menu', roles: ['admin'] }
       },
       {
-        path: 'vulnsInfo/:scan_id',
+        path: 'webVulnsInfo/:scan_id',
         name: 'Web漏洞详情',
         component: () => import('@/views/scanner/acunetix/vulnsInfo'),
         meta: { title: 'Web漏洞详情', noCache: true, icon: 'menu', roles: ['admin'] },
@@ -195,7 +195,7 @@ export const asyncRoutes = [
         meta: { title: '主机漏扫管理', icon: 'menu', roles: ['admin'] }
       },
       {
-        path: 'vulnsInfo/:sid',
+        path: 'hostVulnsInfo/:sid',
         name: '主机漏洞详情',
         component: () => import('@/views/scanner/nessus/vulnsInfo'),
         meta: { title: '主机漏洞详情', noCache: true, icon: 'menu', roles: ['admin'] },

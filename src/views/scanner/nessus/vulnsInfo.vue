@@ -24,11 +24,12 @@
     </div>
     <el-table
       v-loading="listLoading"
-      :data="data"
+      :data="list"
       element-loading-text="Loading"
       border
       fit
       highlight-current-row
+      :default-sort="{prop: 'severity', order: 'descending'}"
     >
       <el-table-column align="center" label="ID" width="95">
         <template slot-scope="scope">
@@ -37,28 +38,24 @@
       </el-table-column>
       <el-table-column label="漏洞名称" align="center">
         <template slot-scope="scope">
-          <span class="link-type"> {{ scope.row.vt_name }}</span>
+          <span class="link-type"> {{ scope.row.plugin_name }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="漏洞URL" align="center">
+      <el-table-column label="漏洞类别" align="center">
         <template slot-scope="scope">
-          <span class="link-type">{{ scope.row.affects_url }}</span>
+          <span class="link-type">{{ scope.row.plugin_family }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="危害程度" align="center">
+      <el-table-column prop="severity" label="危害程度" align="center">
         <template slot-scope="scope">
           <span class="link-type">{{ scope.row.severity }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="可信度" align="center">
-        <template slot-scope="scope">
-          <span class="link-type">{{ scope.row.confidence }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="Tags" align="center">
-        <template slot-scope="scope">
-          <span class="link-type">{{ scope.row.tags | formatter }}</span>
-        </template>
+
+      <el-table-column label="" align="center">
+        <el-button type="primary" size="mini">
+          查看漏洞描述
+        </el-button>
       </el-table-column>
     </el-table>
   </div>
@@ -72,15 +69,13 @@ export default {
   directives: { waves },
   data() {
     return {
-      url: undefined,
-      data: undefined,
+      list: undefined,
       downloadLoading: false,
       listLoading: false
     }
   },
   created() {
-    this.url = this.$route.query.target
-    this.handleScanDetail(this.$route.query.scan_id)
+    this.handleScanDetail(this.$route.query.sid)
   },
   methods: {
     formatter: (row, column, scope) => {
@@ -93,7 +88,7 @@ export default {
       this.listLoading = true
       getVulnInfo(sid).then(res => {
         if (res.code === 200) {
-          this.data = res.data
+          this.list = res.data.data
           this.listLoading = false
         }
       })
