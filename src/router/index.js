@@ -224,6 +224,12 @@ export const asyncRoutes = [
         name: 'deploy',
         component: () => import('@/views/honeypot/deploy'),
         meta: { title: '蜜罐部署', icon: 'menu', roles: ['admin'] }
+      },
+      {
+        path: 'bigIndex',
+        name: 'bigIndex',
+        component: () => import('@/views/honeypot/bigIndex'),
+        meta: { title: '大屏', icon: 'menu', roles: ['admin'] }
       }
     ]
   },
