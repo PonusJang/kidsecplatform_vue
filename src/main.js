@@ -16,7 +16,7 @@ import router from './router'
 import '@/icons' // icon
 import '@/permission' // permission control
 import './utils/error-log' // error log
-
+import dataV from '@jiaminghi/data-view'
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api
@@ -36,6 +36,7 @@ import './utils/error-log' // error log
 Vue.use(ElementUI)
 // 如果想要中文版 element-ui，按如下方式声明
 Vue.use(VCharts)
+Vue.use(dataV)
 
 Vue.config.productionTip = false
 

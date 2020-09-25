@@ -42,3 +42,40 @@ export function getAttackInfo() {
     method: 'get'
   })
 }
+
+export function getList(page, pageSize, type, colony) {
+  return request({
+    url: '/honeypot/getList',
+    method: 'get',
+    params: { page, pageSize, type, colony }
+  })
+}
+
+export function getTopIP() {
+  return request({
+    url: '/honeypot/getTopIP',
+    method: 'get'
+  })
+}
+
+export function getTopWord() {
+  return request({
+    url: '/honeypot/getTopWord',
+    method: 'get'
+  })
+}
+
+export function getTopType() {
+  return request({
+    url: '/honeypot/getTopType',
+    method: 'get'
+  })
+}
+
+export function restart(teminal) {
+  return request({
+    url: '/honeypot/restart',
+    method: 'get',
+    params: { teminal }
+  })
+}
