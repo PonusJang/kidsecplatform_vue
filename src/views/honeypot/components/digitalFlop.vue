@@ -99,10 +99,10 @@ export default {
               fontWeight: 'bold'
             }
           },
-          unit: '个'
+          unit: ''
         },
         {
-          title: '服务区',
+          title: 'Memcache蜜罐',
           number: {
             number: [randomExtend(5, 10)],
             content: '{nt}',
@@ -112,10 +112,10 @@ export default {
               fontWeight: 'bold'
             }
           },
-          unit: '个'
+          unit: ''
         },
         {
-          title: '收费站',
+          title: 'Redis蜜罐',
           number: {
             number: [randomExtend(5, 10)],
             content: '{nt}',
@@ -125,10 +125,10 @@ export default {
               fontWeight: 'bold'
             }
           },
-          unit: '个'
+          unit: ''
         },
         {
-          title: '超限站',
+          title: 'Telnet蜜罐',
           number: {
             number: [randomExtend(5, 10)],
             content: '{nt}',
@@ -138,10 +138,10 @@ export default {
               fontWeight: 'bold'
             }
           },
-          unit: '个'
+          unit: ''
         },
         {
-          title: '停车区',
+          title: 'Web蜜罐',
           number: {
             number: [randomExtend(5, 10)],
             content: '{nt}',
@@ -151,7 +151,7 @@ export default {
               fontWeight: 'bold'
             }
           },
-          unit: '个'
+          unit: ''
         }
       ]
     },
@@ -189,8 +189,8 @@ export default {
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      border-left: 3px solid rgb(6, 30, 93);
-      border-right: 3px solid rgb(6, 30, 93);
+      border-left: 3px solid rgb(179, 189, 215);
+      border-right: 3px solid rgb(213, 220, 238);
     }
     .digital-flop-title {
       font-size: 20px;

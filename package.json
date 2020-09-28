@@ -1,5 +1,5 @@
 {
-  "name": "KidSecPaltform",
+  "name": "kidsecplatform",
   "version": "1.0.0",
   "description": "KidSecPaltform",
   "author": "Ponus <ponujang@gmail.com>",
@@ -33,8 +33,8 @@
     "xlsx": "^0.16.6",
     "@jiaminghi/data-view": "^2.10.0",
     "vue-fullscreen": "^2.1.6",
-    "less-loader": "^7.0.1",
-    "less": "^3.12.2"
+    "less-loader": "^4.1.0",
+    "less": "^3.9.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "4.4.4",
@@ -55,11 +55,12 @@
     "runjs": "4.3.2",
     "sass": "1.26.8",
     "sass-loader": "8.0.2",
+    "screenfull": "^5.0.2",
     "script-ext-html-webpack-plugin": "2.1.3",
     "serve-static": "1.13.2",
+    "superagent": "^6.1.0",
     "svg-sprite-loader": "4.1.3",
     "svgo": "1.2.2",
-    "superagent": "^6.1.0",
     "vue-template-compiler": "2.6.10"
   },
   "browserslist": [

@@ -53,43 +53,71 @@
       </el-table-column>
       <el-table-column label="Ftp" align="center">
         <template slot-scope="scope">
-          <i v-if="scope.row.ftp_status === '1'" class="el-icon-success" style="font-size: 25px; color: mediumseagreen" />
+          <i
+            v-if="scope.row.ftp_status === '1'"
+            class="el-icon-success"
+            style="font-size: 25px; color: mediumseagreen"
+          />
           <i v-if="scope.row.ftp_status !== '1'" class="el-icon-error" style="font-size: 25px; color: red" />
         </template>
       </el-table-column>
       <el-table-column label="MySQL" align="center">
         <template slot-scope="scope">
-          <i v-if="scope.row.mysql_status === '1'" class="el-icon-success" style="font-size: 25px; color: mediumseagreen" />
+          <i
+            v-if="scope.row.mysql_status === '1'"
+            class="el-icon-success"
+            style="font-size: 25px; color: mediumseagreen"
+          />
           <i v-if="scope.row.mysql_status !== '1'" class="el-icon-error" style="font-size: 25px; color: red" />
         </template>
       </el-table-column>
       <el-table-column label="Redis" align="center">
         <template slot-scope="scope">
-          <i v-if="scope.row.redis_status === '1'" class="el-icon-success" style="font-size: 25px; color: mediumseagreen" />
+          <i
+            v-if="scope.row.redis_status === '1'"
+            class="el-icon-success"
+            style="font-size: 25px; color: mediumseagreen"
+          />
           <i v-if="scope.row.redis_status !== '1'" class="el-icon-error" style="font-size: 25px; color: red" />
         </template>
       </el-table-column>
       <el-table-column label="SSH" align="center">
         <template slot-scope="scope">
-          <i v-if="scope.row.ssh_status === '1'" class="el-icon-success" style="font-size: 25px; color: mediumseagreen" />
+          <i
+            v-if="scope.row.ssh_status === '1'"
+            class="el-icon-success"
+            style="font-size: 25px; color: mediumseagreen"
+          />
           <i v-if="scope.row.ssh_status !== '1'" class="el-icon-error" style="font-size: 25px; color: red" />
         </template>
       </el-table-column>
       <el-table-column label="Telnet" align="center">
         <template slot-scope="scope">
-          <i v-if="scope.row.telnet_status === '1'" class="el-icon-success" style="font-size: 25px; color: mediumseagreen" />
+          <i
+            v-if="scope.row.telnet_status === '1'"
+            class="el-icon-success"
+            style="font-size: 25px; color: mediumseagreen"
+          />
           <i v-if="scope.row.telnet_status !== '1'" class="el-icon-error" style="font-size: 25px; color: red" />
         </template>
       </el-table-column>
       <el-table-column label="Tftp" align="center">
         <template slot-scope="scope">
-          <i v-if="scope.row.tftp_status === '1'" class="el-icon-success" style="font-size: 25px; color: mediumseagreen" />
+          <i
+            v-if="scope.row.tftp_status === '1'"
+            class="el-icon-success"
+            style="font-size: 25px; color: mediumseagreen"
+          />
           <i v-if="scope.row.tftp_status !== '1'" class="el-icon-error" style="font-size: 25px; color: red" />
         </template>
       </el-table-column>
       <el-table-column label="VNC" align="center">
         <template slot-scope="scope">
-          <i v-if="scope.row.vnc_status === '1'" class="el-icon-success" style="font-size: 25px; color: mediumseagreen" />
+          <i
+            v-if="scope.row.vnc_status === '1'"
+            class="el-icon-success"
+            style="font-size: 25px; color: mediumseagreen"
+          />
           <i v-if="scope.row.vnc_status !== '1'" class="el-icon-error" style="font-size: 25px; color: red" />
         </template>
       </el-table-column>
@@ -121,11 +149,20 @@
         label-width="70px"
         style="width: 400px; margin-left:50px;"
       >
+        <el-form-item label="Agent" prop="agent_name">
+          <el-input v-model="temp.agent_name" />
+        </el-form-item>
         <el-form-item label="IP" prop="ip">
           <el-input v-model="temp.ip" />
         </el-form-item>
-        <el-form-item label="密码" prop="passwd">
-          <el-input v-model="temp.passwd" />
+        <el-form-item label="Port" prop="port">
+          <el-input v-model="temp.port" />
+        </el-form-item>
+        <el-form-item label="用户名" prop="username">
+          <el-input v-model="temp.username" />
+        </el-form-item>
+        <el-form-item label="密码" prop="password">
+          <el-input v-model="temp.password" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -143,7 +180,7 @@
 
 <script>
 // eslint-disable-next-line no-unused-vars
-import { getAgentList } from '@/api/honeypot'
+import { getAgentList, deployAgent, remove } from '@/api/honeypot'
 import { parseTime } from '@/utils'
 import waves from '@/directive/waves' // waves directive
 
@@ -166,14 +203,18 @@ export default {
       dialogPvVisible: false,
       rules: {
         ip: [{ required: true, message: 'IP is required', trigger: 'blur' }],
-        passwd: [{ required: true, message: '密码 is required', trigger: 'blur' }],
+        port: [{ required: true, message: 'Port is required', trigger: 'blur' }],
+        username: [{ required: true, message: '用户名 is required', trigger: 'blur' }],
+        password: [{ required: true, message: '密码 is required', trigger: 'blur' }],
         agent_name: [{ required: true, message: 'Agent名称 is required', trigger: 'blur' }]
       },
       downloadLoading: false,
       temp: {
         id: undefined,
         ip: '',
-        passwd: '',
+        port: '',
+        username: '',
+        password: '',
         agent_name: ''
       }
     }
@@ -195,14 +236,16 @@ export default {
       this.temp = {
         id: undefined,
         ip: '',
-        passwd: '',
+        port: '',
+        username: '',
+        password: '',
         agent_name: ''
       }
     },
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          add(this.temp).then(() => {
+          deployAgent(this.temp.ip, this.temp.port, this.temp.username, this.temp.passoword, this.temp.agent_name).then(() => {
             this.list.unshift(this.temp)
             this.dialogFormVisible = false
             this.$notify({
@@ -216,7 +259,7 @@ export default {
       })
     },
     handleDelete(row, index) {
-      del(row.configItem).then(() => {
+      remove(row.configItem).then(() => {
         this.$notify({
           title: 'Success',
           message: 'Delete Successfully',

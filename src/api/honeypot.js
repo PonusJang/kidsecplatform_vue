@@ -15,6 +15,14 @@ export function deployAgent(data) {
   })
 }
 
+export function remove(data) {
+  return request({
+    url: '/honeypot/remove',
+    method: 'post',
+    data
+  })
+}
+
 export function getIPandRegion() {
   return request({
     url: '/honeypot/getIPandRegion',
