@@ -63,6 +63,19 @@ export const constantRoutes = [
 
 export const asyncRoutes = [
   {
+    path: '/notification',
+    component: Layout,
+    redirect: '/notification/index',
+    children: [
+      {
+        path: 'notification',
+        name: 'notification',
+        component: () => import('@/views/notification/index'),
+        meta: { title: '通知', icon: 'list', roles: ['admin'] }
+      }
+    ]
+  },
+  {
     path: '/internet',
     component: Layout,
     redirect: '/internet/domain/domainList',
