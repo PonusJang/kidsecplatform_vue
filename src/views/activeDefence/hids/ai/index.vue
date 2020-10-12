@@ -1,10 +1,8 @@
-<template>
-  <div>test</div>
-</template>
+<template />
 
 <script>
 export default {
-  name: 'PolylineBoard'
+  name: 'Index'
 }
 </script>
 

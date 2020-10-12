@@ -3,22 +3,8 @@
   <div class="app-container">
     <div class="filter-container">
       <el-input
-        v-model="listQuery.ip"
-        placeholder="IP"
-        style="width: 200px;"
-        class="filter-item"
-        @keyup.enter.native="handleFilter"
-      />
-      <el-input
-        v-model="listQuery.port"
-        placeholder="端口"
-        style="width: 200px;"
-        class="filter-item"
-        @keyup.enter.native="handleFilter"
-      />
-      <el-input
-        v-model="listQuery.service"
-        placeholder="服务"
+        v-model="listQuery.configItem"
+        placeholder="配置项"
         style="width: 200px;"
         class="filter-item"
         @keyup.enter.native="handleFilter"
@@ -56,54 +42,23 @@
       fit
       highlight-current-row
     >
-
-      <el-table-column type="expand">
-        <template slot-scope="scope">
-          <el-table
-            class="demo-table-expand"
-            :data="scope.row.open_ports"
-            border
-            style="width: 100%"
-          >
-            <el-table-column
-              prop="port"
-              label="端口"
-            />
-            <el-table-column
-              prop="service"
-              label="服务"
-            />
-            <el-table-column
-              prop="add_time"
-              label="AddTime"
-            />
-          </el-table>
-        </template>
-      </el-table-column>
-
       <el-table-column align="center" label="ID" width="95">
         <template slot-scope="scope">
           {{ scope.$index }}
         </template>
       </el-table-column>
-      <el-table-column label="IP" align="center">
+      <el-table-column label="配置项" align="center">
         <template slot-scope="scope">
-          <span class="link-type" @click="handleUpdate(row)"> {{ scope.row.ip }}</span>
+          <span class="link-type" @click="handleUpdate(row)"> {{ scope.row.configItem }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="归属企业" align="center">
+      <el-table-column label="值" align="center">
         <template slot-scope="scope">
-          <span class="link-type" @click="handleUpdate(row)"> {{ scope.row.owner }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" prop="created_at" label="添加时间">
-        <template slot-scope="scope">
-          <i class="el-icon-time" />
-          <span>{{ scope.row.add_time | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+          <span class="link-type" @click="handleUpdate(row)">{{ scope.row.configValue }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" width="250" class-name="small-padding fixed-width">
         <template slot-scope="{row,$index}">
           <el-button type="primary" size="mini" @click="handleUpdate(row)">
             编辑
@@ -133,11 +88,11 @@
         label-width="70px"
         style="width: 400px; margin-left:50px;"
       >
-        <el-form-item label="IP" prop="title">
-          <el-input v-model="temp.ip" />
+        <el-form-item label="配置项" prop="title">
+          <el-input v-model="temp.configItem" />
         </el-form-item>
-        <el-form-item label="owner" prop="title">
-          <el-input v-model="temp.owner" />
+        <el-form-item label="值" prop="title">
+          <el-input v-model="temp.configValue" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -155,12 +110,12 @@
 
 <script>
 // eslint-disable-next-line no-unused-vars
-import { getList, update, add, del, findByIP, findByPort, findByService } from '@/api/ip'
+import { getList, update, add, del, findByConfigItem } from '@/api/system'
 import { parseTime } from '@/utils'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination/index' // secondary package based on el-pagination
 export default {
-  name: 'IpList',
+  name: 'SystemList',
   components: { Pagination },
   directives: { waves },
   filters: {
@@ -172,9 +127,8 @@ export default {
       listQuery: {
         page: 1,
         limit: 10,
-        ip: undefined,
-        port: undefined,
-        service: undefined
+        configItem: undefined,
+        configValue: undefined
       },
       list: null,
       listLoading: false,
@@ -186,14 +140,14 @@ export default {
       },
       dialogPvVisible: false,
       rules: {
-        ip: [{ required: true, message: 'IP is required', trigger: 'blur' }],
-        owner: [{ required: true, message: '归属企业 is required', trigger: 'blur' }]
+        configItem: [{ required: true, message: '配置项 is required', trigger: 'blur' }],
+        configValue: [{ required: true, message: '值 is required', trigger: 'blur' }]
       },
       downloadLoading: false,
       temp: {
         id: undefined,
-        ip: '',
-        owner: ''
+        configItem: '',
+        configValue: ''
       }
     }
   },
@@ -203,28 +157,8 @@ export default {
   methods: {
     getList() {
       this.listLoading = false
-      console.log(this.listQuery.ip)
-      if (this.listQuery.ip !== undefined && this.listQuery.ip !== '') {
-        findByIP(this.listQuery.page, this.listQuery.limit, this.listQuery.ip).then(response => {
-          // console.log(response.data.docs)
-          this.total = response.data.count
-          this.list = response.data.docs
-          setTimeout(() => {
-            this.listLoading = false
-          }, 1.5 * 1000)
-        })
-      } else if (this.listQuery.port !== undefined && this.listQuery.port !== '') {
-        findByPort(this.listQuery.page, this.listQuery.limit, this.listQuery.port).then(response => {
-          // console.log(response.data.docs)
-          this.total = response.data.count
-          this.list = response.data.docs
-          setTimeout(() => {
-            this.listLoading = false
-          }, 1.5 * 1000)
-        })
-      } else if (this.listQuery.service != undefined && this.listQuery.service != '') {
-        findByService(this.listQuery.page, this.listQuery.limit, this.listQuery.service).then(response => {
-          // console.log(response.data.docs)
+      if (this.listQuery.configItem !== undefined && this.listQuery.configItem !== '') {
+        findByConfigItem(this.listQuery.page, this.listQuery.limit, this.listQuery.owner).then(response => {
           this.total = response.data.count
           this.list = response.data.docs
           setTimeout(() => {
@@ -233,7 +167,6 @@ export default {
         })
       } else {
         getList(this.listQuery.page, this.listQuery.limit).then(response => {
-          // console.log(response.data.docs)
           this.total = response.data.count
           this.list = response.data.docs
           setTimeout(() => {
@@ -245,8 +178,8 @@ export default {
     resetTemp() {
       this.temp = {
         id: undefined,
-        ip: '',
-        owner: ''
+        configItem: '',
+        configValue: ''
       }
     },
     createData() {
@@ -266,8 +199,7 @@ export default {
       })
     },
     handleDelete(row, index) {
-      console.log(row)
-      del(row.ip).then(() => {
+      del(row.configItem).then(() => {
         this.$notify({
           title: 'Success',
           message: 'Delete Successfully',
@@ -291,6 +223,7 @@ export default {
     },
     handleUpdate(row) {
       this.temp = Object.assign({}, row) // copy obj
+      console.log(row.configItem)
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       this.$nextTick(() => {
@@ -318,25 +251,16 @@ export default {
     handleDownload() {
       this.downloadLoading = true
       import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['add_time', 'ip']
-        const filterVal = ['add_time', 'ip']
+        const tHeader = ['add_time', 'owner', 'domain']
+        const filterVal = ['add_time', 'owner', 'domain']
         const data = this.formatJson(filterVal)
         excel.export_json_to_excel({
           header: tHeader,
           data,
-          filename: 'IP列表'
+          filename: '系统配置项列表'
         })
         this.downloadLoading = false
       })
-    },
-    formatJson(filterVal) {
-      return this.list.map(v => filterVal.map(j => {
-        if (j === 'add_time') {
-          return parseTime(v[j])
-        } else {
-          return v[j]
-        }
-      }))
     }
   }
 }

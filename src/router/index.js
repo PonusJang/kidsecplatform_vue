@@ -76,105 +76,161 @@ export const asyncRoutes = [
     ]
   },
   {
-    path: '/internet',
+    path: '/assets',
     component: Layout,
-    redirect: '/internet/domain/domainList',
-    name: '互联网资产',
-    meta: {
-      title: '互联网资产',
-      icon: 'nested',
-      roles: ['admin']
-    },
+    redirect: '/assets/internet/domain/domainList',
+    name: '资产管理',
+    meta: { title: '资产管理', icon: 'menu', roles: ['admin'] },
     children: [
       {
-        path: 'domain',
-        component: () => import('@/views/internet/domain/domainList'),
-        name: '域名监控',
-        meta: { title: '域名监控', icon: 'menu', roles: ['admin'] }
+        path: 'internet',
+        component: () => import('@/views/assets/internet/index'),
+        redirect: '/assets/internet/domain/domainList',
+        name: '互联网资产',
+        meta: {
+          title: '互联网资产',
+          icon: 'nested',
+          roles: ['admin']
+        },
+        children: [
+          {
+            path: 'domain',
+            component: () => import('@/views/assets/internet/domain/domainList'),
+            name: '域名监控',
+            meta: { title: '域名监控', icon: 'menu', roles: ['admin'] }
+          },
+          {
+            path: 'ip',
+            component: () => import('@/views/assets/internet/ip/ipList'),
+            name: 'IP监控',
+            meta: { title: 'IP监控', icon: 'menu', roles: ['admin'] }
+          },
+          {
+            path: 'task',
+            component: () => import('@/views/assets/internet/task/taskList'),
+            name: '任务管理',
+            meta: { title: '任务管理', icon: 'menu', roles: ['admin'] }
+          }
+        ]
       },
       {
-        path: 'ip',
-        component: () => import('@/views/internet/ip/ipList'),
-        name: 'IP监控',
-        meta: { title: 'IP监控', icon: 'menu', roles: ['admin'] }
-      },
-      {
-        path: 'task',
-        component: () => import('@/views/internet/task/taskList'),
-        name: '任务管理',
-        meta: { title: '任务管理', icon: 'menu', roles: ['admin'] }
+        path: 'intranet',
+        component: () => import('@/views/assets/intranet/index'),
+        redirect: '/assets/internet/nginx/index',
+        name: '内网资产',
+        meta: {
+          title: '内网资产',
+          icon: 'paragraph-center'
+        },
+        children: [
+          {
+            path: 'nginx',
+            component: () => import('@/views/assets/intranet/nginx/index'),
+            name: 'Nginx映射',
+            meta: { title: 'Nginx映射', icon: 'menu', roles: ['admin'] }
+          },
+          {
+            path: 'assest',
+            component: () => import('@/views/assets/intranet/assest/index'),
+            name: '资产管理',
+            meta: { title: '资产管理', icon: 'menu', roles: ['admin'] }
+          },
+          {
+            path: 'aliveMonitor',
+            component: () => import('@/views/assets/intranet/aliveMonitor/index'),
+            name: '可用监控',
+            meta: { title: '可用监控', icon: 'menu', roles: ['admin'] }
+          },
+          {
+            path: 'aliveMonitor2',
+            component: () => import('@/views/assets/intranet/aliveMonitor2/index'),
+            name: '可用监控2',
+            meta: { title: '可用监控2', icon: 'menu', roles: ['admin'] }
+          }
+        ]
       }
     ]
   },
   {
-    path: '/intranet',
+    path: '/activeDefence',
     component: Layout,
-    redirect: '/intranet/nginx',
-    name: '内网资产',
-    meta: {
-      title: '内网资产',
-      icon: 'paragraph-center'
-    },
+    redirect: '/activeDefence/hids/dashboard/index',
+    name: '主动防御',
+    meta: { title: '主动防御', icon: 'menu', roles: ['admin'] },
     children: [
       {
-        path: 'nginx',
-        component: () => import('@/views/intranet/nginx/index'),
-        name: 'Nginx映射',
-        meta: { title: 'Nginx映射', icon: 'menu', roles: ['admin'] }
+        path: 'hidsManager',
+        component: () => import('@/views/activeDefence/hids/index'),
+        redirect: '/activeDefence/hids/dashboard/index',
+        name: '入侵检测',
+        meta: {
+          title: '入侵检测',
+          icon: 'nested'
+        },
+        children: [
+          {
+            path: 'hidsDashboard',
+            name: '监控平台',
+            component: () => import('@/views/activeDefence/hids/dashboard/index'),
+            meta: { title: '监控平台', icon: 'menu', roles: ['admin'] }
+          },
+          {
+            path: 'engine',
+            name: '规则引擎',
+            component: () => import('@/views/activeDefence/hids/engine/index'),
+            meta: { title: '规则引擎', icon: 'menu', roles: ['admin'] }
+          },
+          {
+            path: 'ai',
+            name: '机器学习',
+            component: () => import('@/views/activeDefence/hids/ai/index'),
+            meta: { title: '机器学习', icon: 'menu', roles: ['admin'] }
+          },
+          {
+            path: 'deploy',
+            name: '部署管理',
+            component: () => import('@/views/activeDefence/hids/deploy/index'),
+            meta: { title: '部署管理', icon: 'menu', roles: ['admin'] }
+          }
+        ]
       },
       {
-        path: 'assest',
-        component: () => import('@/views/intranet/assest/index'),
-        name: '资产管理',
-        meta: { title: '资产管理', icon: 'menu', roles: ['admin'] }
-      },
-      {
-        path: 'aliveMonitor',
-        component: () => import('@/views/intranet/aliveMonitor/index'),
-        name: '可用监控',
-        meta: { title: '可用监控', icon: 'menu', roles: ['admin'] }
-      },
-      {
-        path: 'aliveMonitor2',
-        component: () => import('@/views/intranet/aliveMonitor2/index'),
-        name: '可用监控2',
-        meta: { title: '可用监控2', icon: 'menu', roles: ['admin'] }
+        path: 'honeypotManager',
+        component: () => import('@/views/activeDefence/honeypot/index'),
+        redirect: '/activeDefence/honeypot/dashboard/index',
+        name: '蜜罐管理',
+        meta: {
+          title: '蜜罐管理',
+          icon: 'nested'
+        },
+        children: [
+          {
+            path: 'honeyDashboard',
+            name: 'Dashboard',
+            component: () => import('@/views/activeDefence/honeypot/dashboard/index'),
+            meta: { title: '蜜罐监控', icon: 'menu', roles: ['admin'] }
+          },
+          {
+            path: 'deploy',
+            name: '蜜罐部署',
+            component: () => import('@/views/activeDefence/honeypot/deploy/index'),
+            meta: { title: '蜜罐部署', icon: 'menu', roles: ['admin'] }
+          }
+        ]
       }
     ]
   },
   {
-    path: '/hidsManager',
+    path: '/trace',
     component: Layout,
-    redirect: '/hids/acunetix/index',
-    name: '入侵检测',
-    meta: {
-      title: '入侵检测',
-      icon: 'list2'
-    },
+    name: '溯源取证',
+    redirect: '/trace/index',
     children: [
       {
         path: 'index',
         name: 'index',
-        component: () => import('@/views/hids/index'),
-        meta: { title: '监控平台', icon: 'menu', roles: ['admin'] }
-      },
-      {
-        path: 'index',
-        name: 'index',
-        component: () => import('@/views/hids/index'),
-        meta: { title: '规则引擎', icon: 'menu', roles: ['admin'] }
-      },
-      {
-        path: 'index',
-        name: 'index',
-        component: () => import('@/views/hids/index'),
-        meta: { title: '机器学习', icon: 'menu', roles: ['admin'] }
-      },
-      {
-        path: 'index',
-        name: 'index',
-        component: () => import('@/views/hids/index'),
-        meta: { title: '部署管理', icon: 'menu', roles: ['admin'] }
+        component: () => import('@/views/trace/index'),
+        meta: { title: '溯源取证', icon: 'list', roles: ['admin'] }
       }
     ]
   },
@@ -217,32 +273,9 @@ export const asyncRoutes = [
     ]
   },
   {
-    path: '/honeypotManager',
-    component: Layout,
-    redirect: '/honeypot/index',
-    name: '蜜罐管理',
-    meta: {
-      title: '蜜罐管理',
-      icon: 'tree2'
-    },
-    children: [
-      {
-        path: 'index',
-        name: 'index',
-        component: () => import('@/views/honeypot/index'),
-        meta: { title: '蜜罐监控', icon: 'menu', roles: ['admin'] }
-      },
-      {
-        path: 'deploy',
-        name: 'deploy',
-        component: () => import('@/views/honeypot/deploy'),
-        meta: { title: '蜜罐部署', icon: 'menu', roles: ['admin'] }
-      }
-    ]
-  },
-  {
     path: '/plugin',
     component: Layout,
+    name: '插件管理',
     redirect: '/plugin/pluginList',
     children: [
       {
@@ -254,28 +287,17 @@ export const asyncRoutes = [
     ]
   },
 
-  {
-    path: '/service',
-    component: Layout,
-    redirect: '/service',
-    children: [{
-      path: 'serviceIndex',
-      name: 'serviceIndex',
-      component: () => import('@/views/service/index'),
-      meta: { title: '服务管理', icon: 'paragraph-justify' }
-    }]
-  },
-  {
-    path: '/tool',
-    component: Layout,
-    redirect: '/tool',
-    children: [{
-      path: 'Index',
-      name: 'Index',
-      component: () => import('@/views/tool/index'),
-      meta: { title: '在线工具', icon: 'table3' }
-    }]
-  },
+  // {
+  //   path: '/tool',
+  //   component: Layout,
+  //   redirect: '/tool',
+  //   children: [{
+  //     path: 'Index',
+  //     name: 'Index',
+  //     component: () => import('@/views/tool/index'),
+  //     meta: { title: '在线工具', icon: 'table3' }
+  //   }]
+  // },
   {
     path: '/userManager',
     component: Layout,
@@ -309,13 +331,30 @@ export const asyncRoutes = [
   {
     path: '/system',
     component: Layout,
-    redirect: '/system/sysConfigList',
+    name: '系统管理',
+    meta: {
+      title: '系统管理',
+      icon: 'indent-decrease'
+    },
+    redirect: '/system/sysConfig/index',
     children: [
       {
-        path: 'sysConfigList',
-        name: 'sysConfigList',
-        component: () => import('@/views/system/index'),
-        meta: { title: '系统配置', icon: 'menu3', roles: ['admin'] }
+        path: 'logger',
+        component: () => import('@/views/system/logger/index'),
+        name: '系统日志',
+        meta: { title: '系统日志', icon: 'menu', roles: ['admin'] }
+      },
+      {
+        path: 'service',
+        component: () => import('@/views/system/service/index'),
+        name: '服务管理',
+        meta: { title: '服务管理', icon: 'menu', roles: ['admin'] }
+      },
+      {
+        path: 'sysConfig',
+        component: () => import('@/views/system/sysConfig/index'),
+        name: '系统参数',
+        meta: { title: '系统参数', icon: 'menu', roles: ['admin'] }
       }
     ]
   },
