@@ -235,6 +235,20 @@ export const asyncRoutes = [
     ]
   },
   {
+    path: '/dataSecurity',
+    component: Layout,
+    name: '数据安全',
+    redirect: '/dataSecurity/index',
+    children: [
+      {
+        path: 'index',
+        name: 'index',
+        component: () => import('@/views/dataSecurity/index'),
+        meta: { title: '数据安全', icon: 'list', roles: ['admin'] }
+      }
+    ]
+  },
+  {
     path: '/scanManager',
     component: Layout,
     redirect: '/scanner/acunetix/index',
