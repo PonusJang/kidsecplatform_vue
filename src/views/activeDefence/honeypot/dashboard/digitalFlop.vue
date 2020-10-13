@@ -29,15 +29,18 @@ export default {
   },
   mounted() {
     const { createData } = this
+
     createData()
+
     setInterval(createData, 30000)
   },
   methods: {
     createData() {
       const { randomExtend } = this
+
       this.digitalFlopData = [
         {
-          title: 'SSH蜜罐',
+          title: 'SSH',
           number: {
             number: [randomExtend(20000, 30000)],
             content: '{nt}',
@@ -50,7 +53,7 @@ export default {
           unit: ''
         },
         {
-          title: 'ElasticSearch蜜罐',
+          title: 'FTP',
           number: {
             number: [randomExtend(20, 30)],
             content: '{nt}',
@@ -63,7 +66,7 @@ export default {
           unit: ''
         },
         {
-          title: 'FTP蜜罐',
+          title: 'TELNET',
           number: {
             number: [randomExtend(20, 30)],
             content: '{nt}',
@@ -76,7 +79,7 @@ export default {
           unit: ''
         },
         {
-          title: 'TFTP蜜罐',
+          title: 'VNC',
           number: {
             number: [randomExtend(10, 20)],
             content: '{nt}',
@@ -89,7 +92,7 @@ export default {
           unit: ''
         },
         {
-          title: 'VNC蜜罐',
+          title: 'MEMCACHE',
           number: {
             number: [randomExtend(5, 10)],
             content: '{nt}',
@@ -102,7 +105,7 @@ export default {
           unit: ''
         },
         {
-          title: 'Memcache蜜罐',
+          title: 'REDIS',
           number: {
             number: [randomExtend(5, 10)],
             content: '{nt}',
@@ -115,7 +118,7 @@ export default {
           unit: ''
         },
         {
-          title: 'Redis蜜罐',
+          title: 'MONGO',
           number: {
             number: [randomExtend(5, 10)],
             content: '{nt}',
@@ -128,7 +131,7 @@ export default {
           unit: ''
         },
         {
-          title: 'Telnet蜜罐',
+          title: 'MySQL',
           number: {
             number: [randomExtend(5, 10)],
             content: '{nt}',
@@ -141,7 +144,7 @@ export default {
           unit: ''
         },
         {
-          title: 'Web蜜罐',
+          title: 'TFTP',
           number: {
             number: [randomExtend(5, 10)],
             content: '{nt}',
@@ -174,7 +177,8 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: rgb(255, 255, 255);
+    background-color: rgba(6, 30, 93, 0.5);
+
     .dv-decoration-10 {
       position: absolute;
       width: 95%;
@@ -182,6 +186,7 @@ export default {
       height: 5px;
       bottom: 0px;
     }
+
     .digital-flop-item {
       width: 11%;
       height: 80%;
@@ -189,16 +194,19 @@ export default {
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      border-left: 3px solid rgb(179, 189, 215);
-      border-right: 3px solid rgb(213, 220, 238);
+      border-left: 3px solid rgb(6, 30, 93);
+      border-right: 3px solid rgb(6, 30, 93);
     }
+
     .digital-flop-title {
       font-size: 20px;
       margin-bottom: 20px;
     }
+
     .digital-flop {
       display: flex;
     }
+
     .unit {
       margin-left: 10px;
       display: flex;

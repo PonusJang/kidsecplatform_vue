@@ -1,82 +1,95 @@
 <template>
-  <div id="app" class="app">
+  <div id="data-view">
     <!--    <dv-full-screen-container>-->
+
     <top-header />
+
     <div class="main-content">
-      <digitalFlop />
+      <digital-flop />
+
       <div class="block-left-right-content">
-        <rankBoard_ip />
+        <rankingBoard_IP />
+
+        <div class="block-top-bottom-content">
+          <div class="block-top-content">
+
+            <scroll-board />
+          </div>
+
+        </div>
+        <rankingBoard_LOC />
       </div>
-      <div class="block-left-right-contents">
-        <rankBoard_location />
-      </div>
-      <div class="block-left-right-contents">
-        <scrollBoard />
-      </div>
-      <div class="block-left-right-contents">
-        <polylineBoard />
-      </div>
-      <div />
     </div>
     <!--    </dv-full-screen-container>-->
   </div>
 </template>
 
 <script>
+import topHeader from './topHeader'
+import digitalFlop from './digitalFlop'
+import rankingBoard_IP from './rankingBoard_IP'
+import rankingBoard_LOC from './rankingBoard_LOC'
 
-import topHeader from '../components/topHeader'
-import digitalFlop from '../components/digitalFlop'
-import rankBoard_ip from '../components/rankBoard_ip'
-import rankBoard_location from '../components/rankBoard_location'
-import scrollBoard from '../components/scrollBoard'
-import polylineBoard from '../components/polylineBoard'
+import scrollBoard from './scrollBoard'
 
 export default {
+  name: 'DataView',
   components: {
     topHeader,
     digitalFlop,
-    rankBoard_ip,
-    rankBoard_location,
-    scrollBoard,
-    polylineBoard
+    rankingBoard_IP,
+    rankingBoard_LOC,
+
+    scrollBoard
   },
   data() {
-    return {
-      fullscreen: false
-    }
+    return {}
   },
-  methods: {
-
-  }
+  methods: {}
 }
 </script>
 
 <style lang="less">
-  #app {
-    .main-content {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-    }
-    .block-left-right-content {
-      flex: 1;
-      display: flex;
-      margin-top: 20px;
-    }
-    .block-top-bottom-content {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      box-sizing: border-box;
-      padding-left: 20px;
-    }
-    .block-top-content {
-      height: 55%;
-      display: flex;
-      flex-grow: 0;
-      box-sizing: border-box;
-      padding-bottom: 20px;
-    }
+#data-view {
+  width: 100%;
+  height: 100%;
+  background-color: #030409;
+  color: #fff;
+
+  #dv-full-screen-container {
+    background-image: url('./img/bg.png');
+    background-size: 100% 100%;
+    box-shadow: 0 0 3px blue;
+    display: flex;
+    flex-direction: column;
   }
 
+  .main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .block-left-right-content {
+    flex: 1;
+    display: flex;
+    margin-top: 20px;
+  }
+
+  .block-top-bottom-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    padding-left: 20px;
+  }
+
+  .block-top-content {
+    height: 55%;
+    display: flex;
+    flex-grow: 0;
+    box-sizing: border-box;
+    padding-bottom: 30px;
+  }
+}
 </style>
