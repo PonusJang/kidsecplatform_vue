@@ -61,7 +61,7 @@
 
 <script>
 // eslint-disable-next-line no-unused-vars
-import { getList } from '@/api/notification'
+import { getList, read } from '@/api/notification'
 import { parseTime } from '@/utils'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination/index' // secondary package based on el-pagination
@@ -76,6 +76,10 @@ export default {
     return {
       total: 0,
       list: null,
+      listQuery: {
+        page: 0,
+        limit: 0
+      },
       listLoading: false
     }
   },
@@ -86,12 +90,12 @@ export default {
     getList() {
       this.listLoading = true
       getList().then(res => {
-        this.list = res.data
+        this.list = res.data.docs
         this.listLoading = false
       })
     },
     handleRead(row, index) {
-
+      read(row._id)
     },
     formatJson(filterVal) {
       return this.list.map(v => filterVal.map(j => {

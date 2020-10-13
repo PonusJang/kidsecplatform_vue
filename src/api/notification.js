@@ -7,3 +7,11 @@ export function getList() {
 
   })
 }
+
+export function read(id) {
+  return request({
+    url: '/notification/read',
+    method: 'get',
+    params: { id }
+  })
+}

@@ -248,7 +248,7 @@ export const asyncRoutes = [
         path: 'index',
         name: 'index',
         component: () => import('@/views/scanner/acunetix/index'),
-        meta: { title: 'Web漏扫管理', icon: 'menu', roles: ['admin'] }
+        meta: { title: 'Web漏扫', icon: 'menu', roles: ['admin'] }
       },
       {
         path: 'webVulnsInfo/:scan_id',
@@ -261,7 +261,7 @@ export const asyncRoutes = [
         path: 'nessusIndex',
         name: 'nessusIndex',
         component: () => import('@/views/scanner/nessus/index'),
-        meta: { title: '主机漏扫管理', icon: 'menu', roles: ['admin'] }
+        meta: { title: '主机漏扫', icon: 'menu', roles: ['admin'] }
       },
       {
         path: 'hostVulnsInfo/:sid',
@@ -269,6 +269,12 @@ export const asyncRoutes = [
         component: () => import('@/views/scanner/nessus/vulnsInfo'),
         meta: { title: '主机漏洞详情', noCache: true, icon: 'menu', roles: ['admin'] },
         hidden: true
+      },
+      {
+        path: 'index',
+        name: 'index',
+        component: () => import('@/views/scanner/check/index'),
+        meta: { title: '合规检查', icon: 'menu', roles: ['admin'] }
       }
     ]
   },
