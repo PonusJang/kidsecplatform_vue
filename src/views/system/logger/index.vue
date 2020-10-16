@@ -6,8 +6,7 @@
         <el-option
           v-for="item in options"
           :key="item.value"
-          v-model="listQuery.logFile"
-          style="width: 400px;"
+          style="width: 250px;"
           :label="item.label"
           :value="item.value"
         />
@@ -33,7 +32,7 @@
       </el-table-column>
       <el-table-column label="INFO" align="center">
         <template slot-scope="scope">
-          <span class="link-type" @click="handleUpdate(row)"> {{ scope.row.owner }}</span>
+          <span class="link-type"> {{ scope.row.log }}</span>
         </template>
       </el-table-column>
 
@@ -56,6 +55,8 @@ export default {
   },
   data() {
     return {
+      listLoading: false,
+      value: undefined,
       options: null,
       listQuery: {
         logFile: 1
@@ -72,10 +73,14 @@ export default {
         this.options = res.data.list
       })
     },
-    getLast50() {
-      getLast50().then(res => {
-        this.list = res.data.list
-      })
+
+    handleRead() {
+      if (this.value !== null && this.value !== undefined && this.value !== '') {
+        getLast50(this.value).then(res => {
+          this.list = res.data.list
+          this.listLoading = false
+        })
+      }
     }
   }
 }
