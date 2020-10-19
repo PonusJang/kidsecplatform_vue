@@ -259,8 +259,8 @@ export const asyncRoutes = [
     },
     children: [
       {
-        path: 'index',
-        name: 'index',
+        path: 'acunetix',
+        name: 'Web漏扫',
         component: () => import('@/views/scanner/acunetix/index'),
         meta: { title: 'Web漏扫', icon: 'menu', roles: ['admin'] }
       },
@@ -272,8 +272,8 @@ export const asyncRoutes = [
         hidden: true
       },
       {
-        path: 'nessusIndex',
-        name: 'nessusIndex',
+        path: 'nessus',
+        name: '主机漏扫',
         component: () => import('@/views/scanner/nessus/index'),
         meta: { title: '主机漏扫', icon: 'menu', roles: ['admin'] }
       },
@@ -285,8 +285,8 @@ export const asyncRoutes = [
         hidden: true
       },
       {
-        path: 'index',
-        name: 'index',
+        path: 'check',
+        name: '合规检查',
         component: () => import('@/views/scanner/check/index'),
         meta: { title: '合规检查', icon: 'menu', roles: ['admin'] }
       }
