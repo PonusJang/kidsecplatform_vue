@@ -202,7 +202,11 @@ export default {
   created() {
     this.getList()
   },
+  inject: ['reload'],
   methods: {
+    fresh() {
+      this.reload()
+    },
     getList() {
       this.listLoading = false
       if (this.listQuery.owner !== undefined && this.listQuery.owner !== '') {
