@@ -205,6 +205,17 @@ export default {
           history: []
         },
         {
+          app: 'CronGetWebTitle',
+          status: null,
+          pid: null,
+          cpu: 0,
+          memory: 0,
+          UptTime: null,
+          StartTime: null,
+          RestartTimes: null,
+          history: []
+        },
+        {
           app: 'CronCheck',
           status: null,
           pid: null,
