@@ -72,6 +72,11 @@
               label="子域名"
             />
             <el-table-column
+              prop="web_title"
+              label="网站标题"
+              :formatter="set_webtitle"
+            />
+            <el-table-column
               prop="web_tag"
               label="网站指纹"
               :formatter="set_webtag"
@@ -237,6 +242,10 @@ export default {
     },
     set_webtag(row, column) {
       const arr = new Array(row.web_tag)
+      return arr.join('<br>')
+    },
+    set_webtitle(row, column) {
+      const arr = new Array(row.web_title)
       return arr.join('<br>')
     },
     set_ip(row, column) {
