@@ -246,7 +246,9 @@ export default {
     },
     set_webtitle(row, column) {
       const arr = new Array(row.web_title)
-      return arr.join('<br>')
+
+      console.log(arr)
+      return arr.join('<br>').replaceAll(',,', '')
     },
     set_ip(row, column) {
       const arr = new Array(row.ip)
