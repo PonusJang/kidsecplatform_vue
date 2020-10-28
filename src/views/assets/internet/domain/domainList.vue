@@ -242,13 +242,14 @@ export default {
     },
     set_webtag(row, column) {
       const arr = new Array(row.web_tag)
-      return arr.join('<br>')
+      return arr.join('<br>').replaceAll('[null]', '')
     },
     set_webtitle(row, column) {
       const arr = new Array(row.web_title)
-
-      console.log(arr)
-      return arr.join('<br>').replaceAll(',,', '')
+      return arr.join('<br>')
+        .replaceAll(',,', '')
+        .replace(/^,/, '')
+        .replace(/,$/, '')
     },
     set_ip(row, column) {
       const arr = new Array(row.ip)
