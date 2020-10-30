@@ -103,11 +103,20 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" width="330" class-name="small-padding fixed-width">
         <template slot-scope="{row,$index}">
           <el-button type="primary" size="mini" @click="handleUpdate(row)">
             编辑
           </el-button>
+
+          <el-button type="primary" size="mini" @click="handleUpdate(row)">
+            主机漏扫
+          </el-button>
+
+          <el-button type="primary" size="mini" @click="handleUpdate(row)">
+            端口扫描
+          </el-button>
+
           <el-button size="mini" type="danger" @click="handleDelete(row,$index)">
             删除
           </el-button>

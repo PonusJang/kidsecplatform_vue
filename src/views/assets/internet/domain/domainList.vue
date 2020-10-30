@@ -81,7 +81,17 @@
               label="网站指纹"
               :formatter="set_webtag"
             />
+
+            <el-table-column
+              label="Web漏扫"
+            >
+              <el-button type="primary" size="mini" @click="handleUpdate(row)">
+                Web漏扫
+              </el-button>
+            </el-table-column>
+
           </el-table>
+
         </template>
       </el-table-column>
 
