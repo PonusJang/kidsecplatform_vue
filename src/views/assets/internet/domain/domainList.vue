@@ -61,32 +61,42 @@
             <el-table-column
               prop="add_time"
               label="CreatedTime"
+              align="center"
             />
             <el-table-column
               prop="ip"
               label="IP"
               :formatter="set_ip"
+              align="center"
             />
             <el-table-column
               prop="subdomain"
               label="子域名"
+              align="center"
             />
             <el-table-column
               prop="web_title"
               label="网站标题"
               :formatter="set_webtitle"
+              align="center"
             />
             <el-table-column
               prop="web_tag"
               label="网站指纹"
               :formatter="set_webtag"
+              align="center"
             />
 
             <el-table-column
-              label="Web漏扫"
+              width="200px"
+              label="操作"
+              align="center"
             >
               <el-button type="primary" size="mini" @click="handleUpdate(row)">
                 Web漏扫
+              </el-button>
+              <el-button type="primary" size="mini" @click="handleUpdate(row)">
+                获取指纹
               </el-button>
             </el-table-column>
 

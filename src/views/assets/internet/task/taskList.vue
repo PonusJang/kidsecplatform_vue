@@ -62,20 +62,32 @@
             <el-table-column
               prop="add_time"
               label="CreatedTime"
+              align="center"
             />
             <el-table-column
               prop="ip"
               label="IP"
+              align="center"
             />
             <el-table-column
               prop="port"
               label="端口"
+              align="center"
             />
             <el-table-column
               :formatter="stateFormat"
               prop="vuln"
               label="vulnable"
+              align="center"
             />
+            <el-table-column
+              label="操作"
+              align="center"
+            >
+              <el-button type="primary" size="mini" @click="handleUpdate(row)">
+                验证
+              </el-button>
+            </el-table-column>
           </el-table>
         </template>
       </el-table-column>

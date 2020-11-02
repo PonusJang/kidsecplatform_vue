@@ -68,14 +68,17 @@
             <el-table-column
               prop="port"
               label="端口"
+              align="center"
             />
             <el-table-column
               prop="service"
               label="服务"
+              align="center"
             />
             <el-table-column
               prop="add_time"
               label="AddTime"
+              align="center"
             />
           </el-table>
         </template>
