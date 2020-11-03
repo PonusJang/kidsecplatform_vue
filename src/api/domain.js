@@ -55,3 +55,19 @@ export function findByDomain(page, limit, domain) {
     params: { page, limit, domain }
   })
 }
+
+export function webScan(param) {
+  return request({
+    url: '/domain/webScan',
+    method: 'get',
+    params: { param }
+  })
+}
+
+export function getWebInfo(param) {
+  return request({
+    url: '/domain/getWebInfo',
+    method: 'get',
+    params: { param }
+  })
+}

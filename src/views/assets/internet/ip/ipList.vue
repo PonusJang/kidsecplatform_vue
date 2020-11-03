@@ -112,11 +112,11 @@
             编辑
           </el-button>
 
-          <el-button type="primary" size="mini" @click="handleUpdate(row)">
+          <el-button type="primary" size="mini" @click="handleHostScan(row)">
             主机漏扫
           </el-button>
 
-          <el-button type="primary" size="mini" @click="handleUpdate(row)">
+          <el-button type="primary" size="mini" @click="handlePortScan(row)">
             端口扫描
           </el-button>
 
@@ -167,10 +167,11 @@
 
 <script>
 // eslint-disable-next-line no-unused-vars
-import { getList, update, add, del, findByIP, findByPort, findByService } from '@/api/ip'
+import { getList, update, add, del, findByIP, findByPort, findByService, portScan, hostScan } from '@/api/ip'
 import { parseTime } from '@/utils'
 import waves from '@/directive/waves' // waves directive
-import Pagination from '@/components/Pagination/index' // secondary package based on el-pagination
+import Pagination from '@/components/Pagination/index'
+
 export default {
   name: 'IpList',
   components: { Pagination },
@@ -339,6 +340,44 @@ export default {
           filename: 'IP列表'
         })
         this.downloadLoading = false
+      })
+    },
+    handleHostScan(row) {
+      hostScan(row.ip).then(res => {
+        if (res.code === 200 && res.data === true) {
+          this.$notify({
+            title: 'Success',
+            message: 'Successfully',
+            type: 'success',
+            duration: 2000
+          })
+        } else {
+          this.$notify({
+            title: 'Failure',
+            message: 'Task Failed',
+            type: 'failure',
+            duration: 2000
+          })
+        }
+      })
+    },
+    handlePortScan(row) {
+      portScan(row.ip).then(res => {
+        if (res.code === 200 && res.data === true) {
+          this.$notify({
+            title: 'Success',
+            message: 'Successfully',
+            type: 'success',
+            duration: 2000
+          })
+        } else {
+          this.$notify({
+            title: 'Failure',
+            message: 'Task Failed',
+            type: 'failure',
+            duration: 2000
+          })
+        }
       })
     },
     formatJson(filterVal) {

@@ -63,3 +63,19 @@ export function searchIP(data) {
     data
   })
 }
+
+export function hostScan(param) {
+  return request({
+    url: '/ip/hostScan',
+    method: 'get',
+    params: { param }
+  })
+}
+
+export function portScan(param) {
+  return request({
+    url: '/ip/portScan',
+    method: 'get',
+    params: { param }
+  })
+}

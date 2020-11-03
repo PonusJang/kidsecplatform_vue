@@ -91,13 +91,14 @@
               width="200px"
               label="操作"
               align="center"
-            >
-              <el-button type="primary" size="mini" @click="handleUpdate(row)">
+            ><template slot-scope="{row}">
+              <el-button type="primary" size="mini" @click="handleWebScan(row)">
                 Web漏扫
               </el-button>
-              <el-button type="primary" size="mini" @click="handleUpdate(row)">
+              <el-button type="primary" size="mini" @click="handleGetWebInfo(row)">
                 获取指纹
               </el-button>
+            </template>
             </el-table-column>
 
           </el-table>
@@ -183,7 +184,7 @@
 
 <script>
 // eslint-disable-next-line no-unused-vars
-import { getList, update, add, del, delAll, findByDomain, findByOwner } from '@/api/domain'
+import { getList, update, add, del, delAll, findByDomain, findByOwner, getWebInfo, webScan } from '@/api/domain'
 import { parseTime } from '@/utils'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination/index' // secondary package based on el-pagination
@@ -336,7 +337,6 @@ export default {
     },
     handleUpdate(row) {
       this.temp = Object.assign({}, row) // copy obj
-      console.log(row.domian)
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       this.$nextTick(() => {
@@ -383,6 +383,44 @@ export default {
           return v[j]
         }
       }))
+    },
+    handleGetWebInfo(row) {
+      getWebInfo(row.subdomain).then(res => {
+        if (res.code === 200 && res.data === true) {
+          this.$notify({
+            title: 'Success',
+            message: 'Successfully',
+            type: 'success',
+            duration: 2000
+          })
+        } else {
+          this.$notify({
+            title: 'Failure',
+            message: 'Task Failed',
+            type: 'failure',
+            duration: 2000
+          })
+        }
+      })
+    },
+    handleWebScan(row) {
+      webScan(row.subdomain).then(res => {
+        if (res.code === 200 && res.data === true) {
+          this.$notify({
+            title: 'Success',
+            message: 'Successfully',
+            type: 'success',
+            duration: 2000
+          })
+        } else {
+          this.$notify({
+            title: 'Failure',
+            message: 'Task Failed',
+            type: 'failure',
+            duration: 2000
+          })
+        }
+      })
     }
   }
 }
