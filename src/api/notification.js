@@ -1,10 +1,10 @@
 import request from '@/utils/request'
 
-export function getList() {
+export function getList(page, limit) {
   return request({
     url: '/notification/getList',
-    method: 'get'
-
+    method: 'get',
+    params: { page, limit }
   })
 }
 

@@ -28,7 +28,8 @@
       </el-table-column>
       <el-table-column label="状态" align="center">
         <template slot-scope="scope">
-          <span class="link-type">{{ scope.row.status }}</span>
+          <span v-if="scope.row.status === false" class="link-type">未读</span>
+          <span v-if="scope.row.status === true" class="link-type">已读</span>
         </template>
       </el-table-column>
       <el-table-column align="center" prop="created_at" label="通告时间">
@@ -77,8 +78,8 @@ export default {
       total: 0,
       list: null,
       listQuery: {
-        page: 0,
-        limit: 0
+        page: 1,
+        limit: 10
       },
       listLoading: false
     }
@@ -89,11 +90,13 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
-      getList().then(res => {
+      getList(this.listQuery.page, this.listQuery.limit).then(res => {
         this.list = res.data.docs
+        this.total = res.data.count
         this.listLoading = false
       })
     },
+
     handleRead(row, index) {
       read(row._id)
     },
