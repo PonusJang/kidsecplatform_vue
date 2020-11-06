@@ -172,7 +172,7 @@ export default {
           history: []
         },
         {
-          app: 'CronGetIP',
+          app: 'CronGetIntranetPorts',
           status: null,
           pid: null,
           cpu: 0,
@@ -183,7 +183,7 @@ export default {
           history: []
         },
         {
-          app: 'CronGetPorts',
+          app: 'CronGetInternetPorts',
           status: null,
           pid: null,
           cpu: 0,
@@ -194,18 +194,7 @@ export default {
           history: []
         },
         {
-          app: 'CronGetWebTag',
-          status: null,
-          pid: null,
-          cpu: 0,
-          memory: 0,
-          UptTime: null,
-          StartTime: null,
-          RestartTimes: null,
-          history: []
-        },
-        {
-          app: 'CronGetWebTitle',
+          app: 'CronGetWebInfo',
           status: null,
           pid: null,
           cpu: 0,
