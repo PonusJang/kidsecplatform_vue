@@ -148,13 +148,16 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="操作" align="center" width="300" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" width="400" class-name="small-padding fixed-width">
         <template slot-scope="{row,$index}">
           <el-button type="primary" size="mini" @click="handleDetail(row)">
             详情
           </el-button>
-          <el-button type="primary" size="mini" @click="handleScan(row)">
-            扫描
+          <el-button type="primary" size="mini" @click="handleHostScan(row)">
+            主机扫描
+          </el-button>
+          <el-button type="primary" size="mini" @click="handlePortScan(row)">
+            端口扫描
           </el-button>
           <el-button type="primary" size="mini" @click="handleUpdate(row)">
             编辑
@@ -222,7 +225,7 @@
 
 <script>
 // eslint-disable-next-line no-unused-vars
-import { add, addFromExcel, del, findByIP, findByOwner, findByType, getList, update, scan, getDetail } from '@/api/assest'
+import { add, addFromExcel, del, findByIP, findByOwner, findByType, getList, update, hostScan, portScan, getDetail } from '@/api/assest'
 import { parseTime } from '@/utils'
 import UploadExcelComponent from '@/components/UploadExcel/index.vue'
 import waves from '@/directive/waves' // waves directive
@@ -371,14 +374,42 @@ export default {
         this.$refs['dataForm'].clearValidate()
       })
     },
-    handleScan(row) {
-      scan(row.ip).then(() => {
-        this.$notify({
-          title: 'Success',
-          message: '主机' + row.ip + '开始扫描',
-          type: 'success',
-          duration: 2000
-        })
+    handleHostScan(row) {
+      hostScan(row.ip).then(res => {
+        if (res.code === 200 && res.data === true) {
+          this.$notify({
+            title: 'Success',
+            message: 'Successfully',
+            type: 'success',
+            duration: 2000
+          })
+        } else {
+          this.$notify({
+            title: 'Failure',
+            message: 'Task Failed',
+            type: 'failure',
+            duration: 2000
+          })
+        }
+      })
+    },
+    handlePortScan(row) {
+      portScan(row.ip).then(res => {
+        if (res.code === 200 && res.data === true) {
+          this.$notify({
+            title: 'Success',
+            message: 'Successfully',
+            type: 'success',
+            duration: 2000
+          })
+        } else {
+          this.$notify({
+            title: 'Failure',
+            message: 'Task Failed',
+            type: 'failure',
+            duration: 2000
+          })
+        }
       })
     },
     handleDetail(row) {
