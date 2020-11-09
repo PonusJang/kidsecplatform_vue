@@ -56,6 +56,14 @@ export function findByService(page, limit, service) {
   })
 }
 
+export function findByOwner(page, limit, owner) {
+  return request({
+    url: '/ip/findByOwner',
+    method: 'get',
+    params: { page, limit, owner }
+  })
+}
+
 export function searchIP(data) {
   return request({
     url: '/ip/search',

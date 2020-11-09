@@ -17,6 +17,13 @@
         @keyup.enter.native="handleFilter"
       />
       <el-input
+        v-model="listQuery.owner"
+        placeholder="归属企业"
+        style="width: 200px;"
+        class="filter-item"
+        @keyup.enter.native="handleFilter"
+      />
+      <el-input
         v-model="listQuery.service"
         placeholder="服务"
         style="width: 200px;"
@@ -167,7 +174,18 @@
 
 <script>
 // eslint-disable-next-line no-unused-vars
-import { getList, update, add, del, findByIP, findByPort, findByService, portScan, hostScan } from '@/api/ip'
+import {
+  getList,
+  update,
+  add,
+  del,
+  findByIP,
+  findByOwner,
+  findByPort,
+  findByService,
+  portScan,
+  hostScan
+} from '@/api/ip'
 import { parseTime } from '@/utils'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination/index'
@@ -185,6 +203,7 @@ export default {
       listQuery: {
         page: 1,
         limit: 10,
+        owner: undefined,
         ip: undefined,
         port: undefined,
         service: undefined
@@ -226,6 +245,15 @@ export default {
             this.listLoading = false
           }, 1.5 * 1000)
         })
+      } else if (this.listQuery.owner !== undefined && this.listQuery.owner !== '') {
+        findByOwner(this.listQuery.page, this.listQuery.limit, this.listQuery.owner).then(response => {
+          // console.log(response.data.docs)
+          this.total = response.data.count
+          this.list = response.data.docs
+          setTimeout(() => {
+            this.listLoading = false
+          }, 1.5 * 1000)
+        })
       } else if (this.listQuery.port !== undefined && this.listQuery.port !== '') {
         findByPort(this.listQuery.page, this.listQuery.limit, this.listQuery.port).then(response => {
           // console.log(response.data.docs)
@@ -235,7 +263,7 @@ export default {
             this.listLoading = false
           }, 1.5 * 1000)
         })
-      } else if (this.listQuery.service != undefined && this.listQuery.service != '') {
+      } else if (this.listQuery.service !== undefined && this.listQuery.service != '') {
         findByService(this.listQuery.page, this.listQuery.limit, this.listQuery.service).then(response => {
           // console.log(response.data.docs)
           this.total = response.data.count
@@ -291,7 +319,7 @@ export default {
       })
     },
     handleFilter() {
-      this.listQuery.page = 1
+      // this.listQuery.page = 1
       this.getList()
     },
     handleCreate() {

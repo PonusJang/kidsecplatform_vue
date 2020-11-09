@@ -48,6 +48,14 @@ export function findByIP(page, limit, ip) {
   })
 }
 
+export function findByName(page, limit, name) {
+  return request({
+    url: '/assets/findByName',
+    method: 'get',
+    params: { page, limit, name }
+  })
+}
+
 export function findByType(page, limit, type) {
   return request({
     url: '/assets/findByType',

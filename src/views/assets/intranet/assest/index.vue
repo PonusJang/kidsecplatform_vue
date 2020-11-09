@@ -10,6 +10,13 @@
         @keyup.enter.native="handleFilter"
       />
       <el-input
+        v-model="listQuery.name"
+        placeholder="资产名称"
+        style="width: 150px;"
+        class="filter-item"
+        @keyup.enter.native="handleFilter"
+      />
+      <el-input
         v-model="listQuery.type"
         placeholder="资产类别"
         style="width: 150px;"
@@ -225,7 +232,20 @@
 
 <script>
 // eslint-disable-next-line no-unused-vars
-import { add, addFromExcel, del, findByIP, findByOwner, findByType, getList, update, hostScan, portScan, getDetail } from '@/api/assest'
+import {
+  add,
+  addFromExcel,
+  del,
+  findByIP,
+  findByOwner,
+  findByType,
+  findByName,
+  getList,
+  update,
+  hostScan,
+  portScan,
+  getDetail
+} from '@/api/assest'
 import { parseTime } from '@/utils'
 import UploadExcelComponent from '@/components/UploadExcel/index.vue'
 import waves from '@/directive/waves' // waves directive
@@ -243,6 +263,7 @@ export default {
       listQuery: {
         page: 1,
         limit: 10,
+        name: undefined,
         owner: undefined,
         ip: undefined,
         type: undefined,
@@ -307,6 +328,14 @@ export default {
             this.listLoading = false
           }, 1.5 * 1000)
         })
+      } else if (this.listQuery.name !== undefined && this.listQuery.name !== '') {
+        findByName(this.listQuery.page, this.listQuery.limit, this.listQuery.name).then(response => {
+          this.total = response.data.count
+          this.list = response.data.docs
+          setTimeout(() => {
+            this.listLoading = false
+          }, 1.5 * 1000)
+        })
       } else {
         getList(this.listQuery.page, this.listQuery.limit).then(response => {
           this.total = response.data.count
@@ -354,7 +383,7 @@ export default {
       })
     },
     handleFilter() {
-      this.listQuery.page = 1
+      // this.listQuery.page = 1
       this.getList()
     },
     handleCreate() {
