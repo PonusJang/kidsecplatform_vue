@@ -1,6 +1,6 @@
 module.exports = {
 
-  title: '易联众安全运维监控平台',
+  title: 'Kid DevSecOps Platform',
 
   /**
    * @type {boolean} true | false

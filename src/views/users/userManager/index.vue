@@ -62,6 +62,11 @@
           <span class="link-type" @click="handleUpdate(row)">{{ scope.row.department }}</span>
         </template>
       </el-table-column>
+      <el-table-column label="岗位" align="center">
+        <template slot-scope="scope">
+          <span class="link-type" @click="handleUpdate(row)">{{ scope.row.job }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="QQ" align="center">
         <template slot-scope="scope">
           <span class="link-type" @click="handleUpdate(row)">{{ scope.row.qq }}</span>
@@ -137,6 +142,9 @@
               :value="item.value"
             />
           </el-select>
+        </el-form-item>
+        <el-form-item label="岗位" prop="title">
+          <el-input v-model="temp.job" />
         </el-form-item>
         <el-form-item label="角色" prop="title">
           <el-select
@@ -227,7 +235,8 @@ export default {
         email: '',
         telephone: '',
         roles: [],
-        department: ''
+        department: '',
+        job: ''
       },
       options: [],
       optionRoles: []
@@ -278,6 +287,7 @@ export default {
         password: '',
         realname: '',
         department: '',
+        job: '',
         qq: '',
         email: '',
         telephone: ''
@@ -353,8 +363,8 @@ export default {
     handleDownload() {
       this.downloadLoading = true
       import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['username', 'realname', 'department', 'qq', 'email', 'telephone']
-        const filterVal = ['username', 'realname', 'department', 'qq', 'email', 'telephone']
+        const tHeader = ['username', 'realname', 'department', 'job', 'qq', 'email', 'telephone']
+        const filterVal = ['username', 'realname', 'department', 'job', 'qq', 'email', 'telephone']
         const data = this.formatJson(filterVal)
         excel.export_json_to_excel({
           header: tHeader,
