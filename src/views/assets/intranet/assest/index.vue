@@ -5,28 +5,28 @@
       <el-input
         v-model="listQuery.owner"
         placeholder="所属部门"
-        style="width: 150px;"
+        style="width: 120px;"
         class="filter-item"
         @keyup.enter.native="handleFilter"
       />
       <el-input
         v-model="listQuery.name"
         placeholder="资产名称"
-        style="width: 150px;"
+        style="width: 120px;"
         class="filter-item"
         @keyup.enter.native="handleFilter"
       />
       <el-input
         v-model="listQuery.type"
         placeholder="资产类别"
-        style="width: 150px;"
+        style="width: 120px;"
         class="filter-item"
         @keyup.enter.native="handleFilter"
       />
       <el-input
         v-model="listQuery.ip"
         placeholder="IP地址"
-        style="width: 150px;"
+        style="width: 120px;"
         class="filter-item"
         @keyup.enter.native="handleFilter"
       />

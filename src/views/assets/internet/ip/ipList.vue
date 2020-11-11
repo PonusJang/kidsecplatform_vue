@@ -5,28 +5,28 @@
       <el-input
         v-model="listQuery.ip"
         placeholder="IP"
-        style="width: 200px;"
+        style="width: 150px;"
         class="filter-item"
         @keyup.enter.native="handleFilter"
       />
       <el-input
         v-model="listQuery.port"
         placeholder="端口"
-        style="width: 200px;"
+        style="width: 150px;"
         class="filter-item"
         @keyup.enter.native="handleFilter"
       />
       <el-input
         v-model="listQuery.owner"
         placeholder="归属企业"
-        style="width: 200px;"
+        style="width: 150px;"
         class="filter-item"
         @keyup.enter.native="handleFilter"
       />
       <el-input
         v-model="listQuery.service"
         placeholder="服务"
-        style="width: 200px;"
+        style="width: 150px;"
         class="filter-item"
         @keyup.enter.native="handleFilter"
       />

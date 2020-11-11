@@ -3,37 +3,25 @@
   <div class="app-container">
     <div class="filter-container">
       <el-input
-        v-model="listQuery.hostname"
-        placeholder="主机名"
-        style="width: 200px;"
+        v-model="listQuery.param"
+        placeholder="Search"
+        style="width: 500px;"
         class="filter-item"
         @keyup.enter.native="handleFilter"
       />
-      <el-input
-        v-model="listQuery.ip"
-        placeholder="IP"
-        style="width: 200px;"
-        class="filter-item"
-        @keyup.enter.native="handleFilter"
-      />
-      <el-input
-        v-model="listQuery.system"
-        placeholder="系统"
-        style="width: 200px;"
-        class="filter-item"
-        @keyup.enter.native="handleFilter"
+      <el-date-picker
+        v-model="dateValue"
+        type="daterange"
+        align="right"
+        unlink-panels
+        range-separator="至"
+        start-placeholder="开始日期"
+        end-placeholder="结束日期"
+        :picker-options="pickerOptions"
+        @change="handleFilterByDate"
       />
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         搜索
-      </el-button>
-      <el-button
-        class="filter-item"
-        style="margin-left: 10px;"
-        type="primary"
-        icon="el-icon-edit"
-        @click="handleDeploy"
-      >
-        部署
       </el-button>
       <el-button
         v-waves
@@ -45,7 +33,6 @@
       >
         导出EXCEL
       </el-button>
-
     </div>
 
     <el-table
@@ -67,21 +54,6 @@
           <span class="link-type"> {{ scope.row.ip }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="主机名" align="center">
-        <template slot-scope="scope">
-          <span class="link-type">{{ scope.row.hostname }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="状态" align="center">
-        <template slot-scope="scope">
-          <span class="link-type">{{ scope.row.health }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="类别" align="center">
-        <template slot-scope="scope">
-          <span class="link-type">{{ scope.row.type }}</span>
-        </template>
-      </el-table-column>
       <el-table-column label="系统" align="center">
         <template slot-scope="scope">
           <span class="link-type">{{ scope.row.system }}</span>
@@ -93,18 +65,9 @@
           <span>{{ scope.row.uptime | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
         </template>
       </el-table-column>
-
-      <el-table-column label="操作" align="center" width="250" class-name="small-padding fixed-width">
-        <template slot-scope="{row,$index}">
-          <el-button type="primary" size="mini" @click="handleInfo(row)">
-            信息
-          </el-button>
-          <el-button size="mini" type="danger" @click="handleMonitor(row,$index)">
-            监控
-          </el-button>
-          <el-button size="mini" type="danger" @click="handleSendTask(row,$index)">
-            推送
-          </el-button>
+      <el-table-column label="Data" align="center">
+        <template slot-scope="scope">
+          <span class="link-type">{{ scope.row.data }}</span>
         </template>
       </el-table-column>
 
@@ -123,10 +86,11 @@
 
 <script>
 // eslint-disable-next-line no-unused-vars
-import { getClientList } from '@/api/hids'
+import { analysis } from '@/api/hids'
 import { parseTime } from '@/utils'
 import waves from '@/directive/waves' // waves directive
-import Pagination from '@/components/Pagination/index' // secondary package based on el-pagination
+import Pagination from '@/components/Pagination/index'
+import { flterByDate } from '@/api/result' // secondary package based on el-pagination
 export default {
   name: 'DomainList',
   components: { Pagination },
@@ -140,34 +104,68 @@ export default {
       listQuery: {
         page: 1,
         limit: 10,
-        ip: undefined,
-        hostname: undefined,
-        system: undefined
+        param: undefined
       },
       list: null,
       listLoading: false,
-
+      dateValue: null,
       downloadLoading: false,
       temp: {
-        id: undefined,
-        ip: undefined,
-        hostname: undefined,
-        system: undefined
+        param: undefined
       }
     }
   },
   created() {
-    this.getList()
+
   },
   inject: ['reload'],
   methods: {
     fresh() {
       this.reload()
     },
+    minDate: '',
+    maxDate: '',
+    pickerOptions: {
+      shortcuts: [{
+        text: '最近一周',
+        onClick(picker) {
+          const end = new Date()
+          const start = new Date()
+          start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+          picker.$emit('pick', [start, end])
+        }
+      }, {
+        text: '最近一个月',
+        onClick(picker) {
+          const end = new Date()
+          const start = new Date()
+          start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+          picker.$emit('pick', [start, end])
+        }
+      }, {
+        text: '最近三个月',
+        onClick(picker) {
+          const end = new Date()
+          const start = new Date()
+          start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
+          picker.$emit('pick', [start, end])
+        }
+      }],
+      onPick: ({ maxDate, minDate }) => {
+        this.minDate = minDate
+        this.maxDate = maxDate
+      },
+      disabledDate: time => {
+        if (this.minDate) {
+          return time.getTime() < Date.now() - 30 * 24 * 60 * 60 * 1000 || time > new Date(this.minDate.getTime() + 90 * 24 * 60 * 60 * 1000)
+        }
+        return time.getTime() < Date.now() - 30 * 24 * 60 * 60 * 1000
+      }
+    },
     getList() {
       this.listLoading = false
 
-      getClientList(this.listQuery.page, this.listQuery.limit).then(response => {
+      analysis(this.listQuery.page, this.listQuery.limit, this.param).then(response => {
         this.total = response.data.count
         this.list = response.data.docs
         setTimeout(() => {
@@ -177,12 +175,30 @@ export default {
     },
     resetTemp() {
       this.temp = {
-        id: undefined,
-        owner: '',
-        domain: ''
+        param: undefined
       }
     },
-    handleDeploy() {
+    handleFilterByDate(e) {
+      if (e === null) {
+        this.minDate = ''
+        this.maxDate = ''
+        this.pickerOptions = {
+          disabledDate: time => { // disabledDate 文档上：设置禁用状态，参数为当前日期，要求返回 Boolean
+            if (this.minDate) {
+              return time.getTime() < Date.now() - 24 * 60 * 60 * 1000 || time > new Date(this.minDate.getTime() + 90 * 24 * 60 * 60 * 1000)
+            }
+            return time.getTime() < Date.now() - 24 * 60 * 60 * 1000
+          }
+        }
+      } else {
+        flterByDate(this.listQuery.page, this.listQuery.limit, this.minDate, this.maxDate).then(response => {
+          this.total = response.data.count
+          this.list = response.data.docs
+          setTimeout(() => {
+            this.listLoading = false
+          }, 1.5 * 1000)
+        })
+      }
     },
     handleFilter() {
       this.listQuery.page = 1
@@ -197,7 +213,7 @@ export default {
         excel.export_json_to_excel({
           header: tHeader,
           data,
-          filename: 'HIDS监控主机列表'
+          filename: 'HIDS数据分析结果'
         })
         this.downloadLoading = false
       })

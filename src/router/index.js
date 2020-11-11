@@ -175,10 +175,10 @@ export const asyncRoutes = [
             meta: { title: '监控平台', icon: 'menu', roles: ['admin'] }
           },
           {
-            path: 'engine',
-            name: '规则引擎',
-            component: () => import('@/views/activeDefence/hids/engine/index'),
-            meta: { title: '规则引擎', icon: 'menu', roles: ['admin'] }
+            path: 'analysis',
+            name: '数据分析',
+            component: () => import('@/views/activeDefence/hids/analysis/index'),
+            meta: { title: '数据分析', icon: 'menu', roles: ['admin'] }
           },
           {
             path: 'ai',
@@ -191,6 +191,18 @@ export const asyncRoutes = [
             name: '部署管理',
             component: () => import('@/views/activeDefence/hids/deploy/index'),
             meta: { title: '部署管理', icon: 'menu', roles: ['admin'] }
+          },
+          {
+            path: 'engine',
+            name: '规则引擎',
+            component: () => import('@/views/activeDefence/hids/engine/index'),
+            meta: { title: '规则引擎', icon: 'menu', roles: ['admin'] }
+          },
+          {
+            path: 'config',
+            name: '检测配置',
+            component: () => import('@/views/activeDefence/hids/config/index'),
+            meta: { title: '检测配置', icon: 'menu', roles: ['admin'] }
           }
         ]
       },

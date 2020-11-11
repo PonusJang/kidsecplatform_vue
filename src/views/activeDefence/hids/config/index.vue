@@ -45,7 +45,6 @@
       >
         导出EXCEL
       </el-button>
-
     </div>
 
     <el-table
@@ -183,6 +182,7 @@ export default {
       }
     },
     handleDeploy() {
+
     },
     handleFilter() {
       this.listQuery.page = 1
@@ -197,7 +197,7 @@ export default {
         excel.export_json_to_excel({
           header: tHeader,
           data,
-          filename: 'HIDS监控主机列表'
+          filename: 'HIDS数据分析结果'
         })
         this.downloadLoading = false
       })
