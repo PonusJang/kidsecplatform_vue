@@ -193,6 +193,12 @@ export const asyncRoutes = [
             meta: { title: '部署管理', icon: 'menu', roles: ['admin'] }
           },
           {
+            path: 'task',
+            name: '任务管理',
+            component: () => import('@/views/activeDefence/hids/task/index'),
+            meta: { title: '任务管理', icon: 'menu', roles: ['admin'] }
+          },
+          {
             path: 'engine',
             name: '规则引擎',
             component: () => import('@/views/activeDefence/hids/engine/index'),

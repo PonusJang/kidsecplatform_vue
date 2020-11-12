@@ -96,6 +96,12 @@ export function getWhiteListConfig() {
     method: 'get'
   })
 }
+export function getNoticeConfig() {
+  return request({
+    url: '/hids/getNoticeConfig',
+    method: 'get'
+  })
+}
 
 export function getTaskList(page, limit) {
   return request({

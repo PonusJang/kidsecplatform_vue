@@ -1,219 +1,541 @@
 <template>
+  <div class="tab-container">
 
-  <div class="app-container">
-    <div class="filter-container">
-      <el-input
-        v-model="listQuery.hostname"
-        placeholder="主机名"
-        style="width: 200px;"
-        class="filter-item"
-        @keyup.enter.native="handleFilter"
-      />
-      <el-input
-        v-model="listQuery.ip"
-        placeholder="IP"
-        style="width: 200px;"
-        class="filter-item"
-        @keyup.enter.native="handleFilter"
-      />
-      <el-input
-        v-model="listQuery.system"
-        placeholder="系统"
-        style="width: 200px;"
-        class="filter-item"
-        @keyup.enter.native="handleFilter"
-      />
-      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
-        搜索
-      </el-button>
-      <el-button
-        class="filter-item"
-        style="margin-left: 10px;"
-        type="primary"
-        icon="el-icon-edit"
-        @click="handleDeploy"
+    <el-tabs v-model="activeName" style="margin-top:10px;position: relative; left: 10px;" type="border-card">
+      <el-tab-pane
+        v-for="item in tabMapOptions"
+        :key="item.key"
+        style="margin: 25px;position: relative;left: 10px"
+        :label="item.label"
+        :name="item.key"
       >
-        部署
-      </el-button>
-      <el-button
-        v-waves
-        :loading="downloadLoading"
-        class="filter-item"
-        type="primary"
-        icon="el-icon-download"
-        @click="handleDownload"
-      >
-        导出EXCEL
-      </el-button>
-    </div>
+        <keep-alive>
+          <tab-pane v-if="activeName=='client'" :type="item.key" @create="showCreatedTimes">
+            <div>
+              <el-form :inline="true">
+                <el-form-item>
+                  间隔
+                </el-form-item>
+                <el-form-item>
+                  <el-input-number
+                    v-model="client.cycle"
+                    style="display: inline-block;position: relative;left:120px"
+                    :min="1"
+                    :max="10"
+                    label="描述文字"
+                    @change="handleChange"
+                  />
+                </el-form-item>
+              </el-form>
+              <el-form :inline="true">
+                <el-form-item>
+                  内网连接
+                </el-form-item>
+                <el-form-item>
+                  <el-switch
+                    v-model="client.lan"
+                    style="display: inline-block;position: relative;left:90px"
+                    active-color="#13ce66"
+                    inactive-color="#ff4949"
+                  />
+                </el-form-item>
+              </el-form>
+              <el-form :inline="true">
+                <el-form-item>
+                  <span style="display: inline-block">监控目录</span>
+                </el-form-item>
+                <el-form-item style="position: relative;left: 90px">
+                  <el-table
+                    :data="client.monitorPath.slice((curPage-1)*pageSize,curPage*pageSize)"
+                    border
+                    fit
+                    highlight-current-row
+                  >
+                    <el-table-column label="监控目录" align="center" width="250">
+                      <template slot-scope="scope">
+                        <span class="link-type">{{ scope.row }}</span>
+                      </template>
+                    </el-table-column>
 
-    <el-table
-      v-loading="listLoading"
-      :data="list"
-      element-loading-text="Loading"
-      border
-      fit
-      highlight-current-row
-    >
+                    <el-table-column label="操作" align="center" width="150" class-name="small-padding fixed-width">
+                      <template slot-scope="{row,$index}">
+                        <el-button icon="el-icon-delete" size="mini" type="danger" @click="handleDelete(row,$index)">
+                          删除
+                        </el-button>
+                      </template>
+                    </el-table-column>
+                  </el-table>
+                  <el-pagination
+                    :current-page.sync="curPage"
+                    :page-size="pageSize"
+                    layout="total,prev,pager,next,jumper"
+                    :total="client.monitorPath.length"
+                    @current-change="handleCurrentChange"
+                  />
+                </el-form-item>
 
-      <el-table-column align="center" label="ID" width="95">
-        <template slot-scope="scope">
-          {{ scope.$index }}
-        </template>
-      </el-table-column>
-      <el-table-column label="IP" align="center">
-        <template slot-scope="scope">
-          <span class="link-type"> {{ scope.row.ip }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="主机名" align="center">
-        <template slot-scope="scope">
-          <span class="link-type">{{ scope.row.hostname }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="状态" align="center">
-        <template slot-scope="scope">
-          <span class="link-type">{{ scope.row.health }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="类别" align="center">
-        <template slot-scope="scope">
-          <span class="link-type">{{ scope.row.type }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="系统" align="center">
-        <template slot-scope="scope">
-          <span class="link-type">{{ scope.row.system }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" prop="uptime" label="uptime">
-        <template slot-scope="scope">
-          <i class="el-icon-time" />
-          <span>{{ scope.row.uptime | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
-        </template>
-      </el-table-column>
+                <el-form-item>
+                  <el-button type="primary" style="position: relative;left: 120px" icon="el-icon-circle-plus-outline">添加</el-button>
+                </el-form-item>
+              </el-form>
+              <el-form :inline="true">
+                <el-form-item>
+                  记录UDP
+                </el-form-item>
+                <el-form-item>
+                  <el-switch
+                    v-model="client.udp"
+                    style="display: inline-block;position: relative;left:90px"
+                    active-color="#13ce66"
+                    inactive-color="#ff4949"
+                  />
+                </el-form-item>
+              </el-form>
+            </div>
+          </tab-pane>
+        </keep-alive>
+        <keep-alive>
+          <tab-pane v-if="activeName=='server'" :type="item.key" @create="showCreatedTimes">
+            <div>
+              <el-form :inline="true">
+                <el-form-item>
+                  观察模式
+                </el-form-item>
+                <el-form-item>
+                  <el-switch
+                    v-model="server.learn"
+                    style="display: inline-block;position: relative;left:30px"
+                    active-color="#13ce66"
+                    inactive-color="#ff4949"
+                  />
+                </el-form-item>
+              </el-form>
+              <el-form :inline="true">
+                <el-form-item>
+                  离线告警
+                </el-form-item>
+                <el-form-item>
+                  <el-switch
+                    v-model="server.offlinecheck"
+                    style="display: inline-block;position: relative;left:30px"
+                    active-color="#13ce66"
+                    inactive-color="#ff4949"
+                  />
+                </el-form-item>
+              </el-form>
+              <el-form :inline="true">
+                <el-form-item>
+                  <span style="display: inline-block">证书</span>
+                </el-form-item>
+                <el-form-item>
+                  <el-input
+                    v-model="server.cert"
+                    style="width: 300px;position: relative;left: 55px"
+                    placeholder="请输入内容"
+                    :disabled="true"
+                  />
+                </el-form-item>
+              </el-form>
+              <el-form :inline="true">
+                <el-form-item>
+                  <span style="display: inline-block">私钥</span>
 
-      <el-table-column label="操作" align="center" width="250" class-name="small-padding fixed-width">
-        <template slot-scope="{row,$index}">
-          <el-button type="primary" size="mini" @click="handleInfo(row)">
-            信息
-          </el-button>
-          <el-button size="mini" type="danger" @click="handleMonitor(row,$index)">
-            监控
-          </el-button>
-          <el-button size="mini" type="danger" @click="handleSendTask(row,$index)">
-            推送
-          </el-button>
-        </template>
-      </el-table-column>
+                </el-form-item>
+                <el-form-item>
+                  <el-input
+                    v-model="server.privatekey"
+                    style="width: 300px;position: relative;left: 55px"
+                    placeholder="请输入内容"
+                    :disabled="true"
+                  />
+                </el-form-item>
+              </el-form>
+              <el-form :inline="true">
+                <el-form-item>
+                  <span style="display: inline-block">公钥</span>
 
-    </el-table>
+                </el-form-item>
+                <el-form-item>
+                  <el-input
+                    v-model="server.publickey"
+                    style="width: 300px;position: relative;left: 55px"
+                    placeholder="请输入内容"
+                    :disabled="true"
+                  />
+                </el-form-item>
+              </el-form>
+            </div>
+          </tab-pane>
+        </keep-alive>
+        <keep-alive>
+          <tab-pane v-if="activeName=='intelligence'" :type="item.key" @create="showCreatedTimes">
+            <div>
+              <el-form :inline="true">
+                <el-form-item>
+                  文件检测接口
+                </el-form-item>
+                <el-form-item>
+                  <el-input
+                    v-model="intelligence.fileapi"
+                    style="width: 300px;position: relative;left: 25px"
+                    placeholder="请输入内容"
+                    :disabled="true"
+                  />
+                </el-form-item>
+                <el-form-item>
+                  <el-button style="position: relative;left: 25px" type="primary" icon="el-icon-edit" />
+                </el-form-item>
+              </el-form>
+              <el-form :inline="true">
+                <el-form-item>
+                  IP检测接口
+                </el-form-item>
+                <el-form-item>
+                  <el-input
+                    v-model="intelligence.ipapi"
+                    style="width: 300px;position: relative;left: 40px"
+                    placeholder="请输入内容"
+                    :disabled="true"
+                  />
+                </el-form-item>
+                <el-form-item>
+                  <el-button style="position: relative;left: 40px" type="primary" icon="el-icon-edit" />
+                </el-form-item>
+              </el-form>
 
-    <pagination
-      v-show="total>0"
-      :total="total"
-      :page.sync="listQuery.page"
-      :limit.sync="listQuery.limit"
-      @pagination="getList"
-    />
+              <el-form :inline="true">
+                <el-form-item>
+                  正则匹配
+                </el-form-item>
+                <el-form-item>
+                  <el-input
+                    v-model="intelligence.regex"
+                    style="width: 300px;position: relative;left: 55px"
+                    placeholder="请输入内容"
+                    :disabled="true"
+                  />
+                </el-form-item>
+                <el-form-item>
+                  <el-button style="position: relative;left: 55px" type="primary" icon="el-icon-edit" />
+                </el-form-item>
+              </el-form>
 
+              <el-form :inline="true">
+                <el-form-item>
+                  开关
+                </el-form-item>
+                <el-form-item>
+                  <el-switch
+                    v-model="intelligence.switch"
+                    style="display: inline-block;position: relative;left:80px"
+                    active-color="#13ce66"
+                    inactive-color="#ff4949"
+                  />
+                </el-form-item>
+              </el-form>
+
+            </div>
+          </tab-pane>
+        </keep-alive>
+        <keep-alive>
+          <tab-pane v-if="activeName=='notice'" :type="item.key" @create="showCreatedTimes">
+            <div>
+              <el-form :inline="true">
+                <el-form-item>
+                  通知接口
+                </el-form-item>
+                <el-form-item>
+                  <el-input
+                    v-model="notice.api"
+                    style="width: 300px;position: relative;left: 40px"
+                    placeholder="请输入内容"
+                    :disabled="true"
+                  />
+                </el-form-item>
+              </el-form>
+              <el-form :inline="true">
+                <el-form-item>
+                  仅危险告警
+                </el-form-item>
+                <el-form-item>
+                  <el-switch
+                    v-model="notice.onlyhigh"
+                    style="display: inline-block;position: relative;left:100px"
+                    active-color="#13ce66"
+                    inactive-color="#ff4949"
+                  />
+                </el-form-item>
+              </el-form>
+              <el-form :inline="true">
+                <el-form-item>
+                  开关
+                </el-form-item>
+                <el-form-item>
+                  <el-switch
+                    v-model="notice.switch"
+                    style="display: inline-block;position: relative;left:140px"
+                    active-color="#13ce66"
+                    inactive-color="#ff4949"
+                  />
+                </el-form-item>
+              </el-form>
+            </div>
+          </tab-pane>
+        </keep-alive>
+        <keep-alive>
+          <tab-pane v-if="activeName=='whitelist'" :type="item.key" @create="showCreatedTimes">
+            <div>
+              <el-form>
+                <el-form-item>
+                  <span style="display: inline-block">文件</span>
+
+                </el-form-item>
+              </el-form>
+              <el-form>
+                <el-form-item>
+                  <span style="display: inline-block">IP</span>
+
+                </el-form-item>
+              </el-form>
+
+              <el-form>
+                <el-form-item>
+                  <span style="display: inline-block">进程</span>
+
+                </el-form-item>
+              </el-form>
+              <el-form>
+                <el-form-item>
+                  <span style="display: inline-block">其他</span>
+
+                </el-form-item>
+              </el-form>
+            </div>
+          </tab-pane>
+        </keep-alive>
+        <keep-alive>
+          <tab-pane v-if="activeName=='blacklist'" :type="item.key" @create="showCreatedTimes">
+            <div>
+              <el-form :inline="true">
+                <el-form-item>
+                  <span style="display: inline-block">文件</span>
+
+                </el-form-item>
+              </el-form>
+              <el-form :inline="true">
+                <el-form-item>
+                  <span style="display: inline-block">IP</span>
+
+                </el-form-item>
+              </el-form>
+              <el-form :inline="true">
+                <el-form-item>
+                  <span style="display: inline-block">进程</span>
+
+                </el-form-item>
+              </el-form>
+              <el-form :inline="true">
+                <el-form-item>
+                  <span style="display: inline-block">其他</span>
+
+                </el-form-item>
+              </el-form>
+            </div>
+          </tab-pane>
+        </keep-alive>
+        <keep-alive>
+          <tab-pane v-if="activeName=='filter'" :type="item.key" @create="showCreatedTimes">
+            <div>
+              <el-form>
+                <el-form-item>
+                  <span style="display: inline-block">文件</span>
+
+                </el-form-item>
+              </el-form>
+              <el-form>
+                <el-form-item>
+                  <span style="display: inline-block">IP</span>
+
+                </el-form-item>
+              </el-form>
+              <el-form>
+                <el-form-item>
+                  <span style="display: inline-block">进程</span>
+
+                </el-form-item>
+              </el-form>
+            </div>
+          </tab-pane>
+        </keep-alive>
+        <keep-alive>
+          <tab-pane v-if="activeName=='update'" :type="item.key" @create="showCreatedTimes">
+            <div>
+              <el-form />
+            </div>
+          </tab-pane>
+        </keep-alive>
+      </el-tab-pane>
+    </el-tabs>
   </div>
 </template>
 
 <script>
-// eslint-disable-next-line no-unused-vars
-import { getClientList } from '@/api/hids'
+import {
+  getClientConfig,
+  getBlackListConfig,
+  getFilterConfig,
+  getServerConfig,
+  getWhiteListConfig,
+  getIntelligenceConfig,
+  getNoticeConfig
+} from '@/api/hids'
 import { parseTime } from '@/utils'
 import waves from '@/directive/waves' // waves directive
-import Pagination from '@/components/Pagination/index' // secondary package based on el-pagination
+
 export default {
-  name: 'DomainList',
-  components: { Pagination },
+  name: 'ConfigList',
+  components: { },
   directives: { waves },
   filters: {
     parseTime: parseTime
   },
   data() {
     return {
-      total: 0,
-      listQuery: {
-        page: 1,
-        limit: 10,
-        ip: undefined,
-        hostname: undefined,
-        system: undefined
-      },
-      list: null,
-      listLoading: false,
+      tabMapOptions: [
+        { label: '客户端', key: 'client' },
+        { label: '服务端', key: 'server' },
+        { label: '威胁情报', key: 'intelligence' },
+        { label: '告警', key: 'notice' },
+        { label: '白名单', key: 'whitelist' },
+        { label: '黑名单', key: 'blacklist' },
+        { label: '过滤', key: 'filter' },
+        { label: '更新', key: 'update' }
+      ],
+      activeName: 'client',
+      createdTimes: 0,
 
-      downloadLoading: false,
-      temp: {
-        id: undefined,
+      client: {
+        cycle: undefined,
+        udp: undefined,
+        lan: undefined,
+        monitorPath: undefined
+      },
+      server: {
+        learn: undefined,
+        offlinecheck: undefined,
+        publickey: undefined,
+        privatekey: undefined,
+        cert: undefined
+      },
+      intelligence: {
+        switch: undefined,
+        ipapi: undefined,
+        fileapi: undefined,
+        regex: undefined
+      },
+      notice: {
+        switch: undefined,
+        onlyhigh: undefined,
+        api: undefined
+      },
+      whiteList: {
+        file: undefined,
         ip: undefined,
-        hostname: undefined,
-        system: undefined
+        process: undefined,
+        other: undefined
+      },
+      blackList: {
+        file: undefined,
+        ip: undefined,
+        process: undefined,
+        other: undefined
+      },
+      filter: {
+        file: undefined,
+        ip: undefined,
+        process: undefined
       }
+    }
+  },
+  watch: {
+    activeName(val) {
+      this.$router.push(`${this.$route.path}?tab=${val}`)
     }
   },
   created() {
     this.getList()
+    const tab = this.$route.query.tab
+    if (tab) {
+      this.activeName = tab
+    }
   },
   inject: ['reload'],
   methods: {
+    showCreatedTimes() {
+      this.createdTimes = this.createdTimes + 1
+    },
     fresh() {
       this.reload()
     },
+    handleChange(value) {
+      console.log(value)
+    },
     getList() {
-      this.listLoading = false
-
-      getClientList(this.listQuery.page, this.listQuery.limit).then(response => {
-        this.total = response.data.count
-        this.list = response.data.docs
-        setTimeout(() => {
-          this.listLoading = false
-        }, 1.5 * 1000)
+      getClientConfig().then(res => {
+        console.log(res.data[0].dic[0].cycle)
+        this.client.cycle = res.data[0].dic[0].cycle
+        this.client.udp = res.data[0].dic[0].udp
+        this.client.monitorPath = res.data[0].dic[0].monitorPath
+        this.client.lan = res.data[0].dic[0].lan
+      })
+      getBlackListConfig().then(res => {
+        this.blackList.ip = res.data[0].dic[0].ip
+        this.blackList.file = res.data[0].dic[0].file
+        this.blackList.process = res.data[0].dic[0].process
+        this.blackList.other = res.data[0].dic[0].other
+      })
+      getFilterConfig().then(res => {
+        this.filter.ip = res.data[0].dic[0].ip
+        this.filter.file = res.data[0].dic[0].file
+        this.filter.process = res.data[0].dic[0].process
+      })
+      getServerConfig().then(res => {
+        this.server.learn = res.data[0].dic[0].learn
+        this.server.offlinecheck = res.data[0].dic[0].offlinecheck
+        this.server.cert = res.data[0].dic[0].cert
+        this.server.privatekey = res.data[0].dic[0].privatekey
+        this.server.publickey = res.data[0].dic[0].publickey
+      })
+      getWhiteListConfig().then(res => {
+        this.whiteList.ip = res.data[0].dic[0].ip
+        this.whiteList.file = res.data[0].dic[0].file
+        this.whiteList.process = res.data[0].dic[0].process
+        this.whiteList.other = res.data[0].dic[0].other
+      })
+      getIntelligenceConfig().then(res => {
+        this.intelligence.switch = res.data[0].dic[0].switch
+        this.intelligence.fileapi = res.data[0].dic[0].fileapi
+        this.intelligence.ipapi = res.data[0].dic[0].ipapi
+        this.intelligence.regex = res.data[0].dic[0].regex
+      })
+      getNoticeConfig().then(res => {
+        this.notice.switch = res.data[0].dic[0].switch
+        this.notice.onlyhigh = res.data[0].dic[0].onlyhigh
+        this.notice.api = res.data[0].dic[0].api
       })
     },
-    resetTemp() {
-      this.temp = {
-        id: undefined,
-        owner: '',
-        domain: ''
-      }
-    },
-    handleDeploy() {
+
+    removeMonitorPath(row) {
 
     },
-    handleFilter() {
-      this.listQuery.page = 1
-      this.getList()
-    },
-    handleDownload() {
-      this.downloadLoading = true
-      import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['uptime', 'hostname', 'ip', 'system']
-        const filterVal = ['uptime', 'hostname', 'ip', 'system']
-        const data = this.formatJson(filterVal)
-        excel.export_json_to_excel({
-          header: tHeader,
-          data,
-          filename: 'HIDS数据分析结果'
-        })
-        this.downloadLoading = false
-      })
-    },
-    formatJson(filterVal) {
-      return this.list.map(v => filterVal.map(j => {
-        if (j === 'uptime') {
-          return parseTime(v[j])
-        } else {
-          return v[j]
-        }
-      }))
+    addMonitorPath() {
+
     }
+
   }
 }
 </script>
 
 <style scoped>
+
 </style>
