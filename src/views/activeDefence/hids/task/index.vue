@@ -2,25 +2,29 @@
 
   <div class="app-container">
     <div class="filter-container">
-
-      <el-button
+      <el-input
+        v-model="listQuery.hostname"
+        placeholder="主机名"
+        style="width: 200px;"
         class="filter-item"
-        style="margin-left: 10px;"
-        type="primary"
-        icon="el-icon-edit"
-        @click="handleAdd"
-      >
-        新增规则
-      </el-button>
-      <el-button
-        v-waves
-        :loading="downloadLoading"
+        @keyup.enter.native="handleFilter"
+      />
+      <el-input
+        v-model="listQuery.ip"
+        placeholder="IP"
+        style="width: 200px;"
         class="filter-item"
-        type="primary"
-        icon="el-icon-download"
-        @click="handleDownload"
-      >
-        导出EXCEL
+        @keyup.enter.native="handleFilter"
+      />
+      <el-input
+        v-model="listQuery.system"
+        placeholder="系统"
+        style="width: 200px;"
+        class="filter-item"
+        @keyup.enter.native="handleFilter"
+      />
+      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
+        搜索
       </el-button>
     </div>
 
@@ -33,62 +37,50 @@
       highlight-current-row
     >
 
-      <el-table-column type="expand">
-        <template slot-scope="scope">
-          <span class="link-type">
-            <json-editor ref="jsonEditor" v-model="scope.row" />
-          </span>
-        </template>
-      </el-table-column>
-
       <el-table-column align="center" label="ID" width="95">
         <template slot-scope="scope">
           {{ scope.$index }}
         </template>
       </el-table-column>
-      <el-table-column label="名称" align="center">
+      <el-table-column label="任务名" align="center">
         <template slot-scope="scope">
-          <span class="link-type"> {{ scope.row.meta.name }}</span>
+          <span class="link-type"> {{ scope.row.name }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="级别" align="center">
+      <el-table-column label="类型" align="center">
         <template slot-scope="scope">
-          <span class="link-type">{{ scope.row.meta.level }}</span>
+          <span class="link-type">{{ scope.row.type }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="描述" align="center">
+      <el-table-column label="命令" align="center">
         <template slot-scope="scope">
-          <span class="link-type">{{ scope.row.meta.description }}</span>
+          <span class="link-type">{{ scope.row.command }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="系统" align="center">
+      <el-table-column label="主机" align="center">
         <template slot-scope="scope">
-          <span class="link-type">{{ scope.row.system }}</span>
+          <span class="link-type">{{ scope.row.host_list }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="检测源" align="center">
+
+      <el-table-column align="center" prop="time" label="time">
         <template slot-scope="scope">
-          <span class="link-type">{{ scope.row.source }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="启用" align="center">
-        <template slot-scope="scope">
-          <span class="link-type">{{ scope.row.enabled }}</span>
+          <i class="el-icon-time" />
+          <span>{{ scope.row.time | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
         </template>
       </el-table-column>
 
       <el-table-column label="操作" align="center" width="250" class-name="small-padding fixed-width">
         <template slot-scope="{row,$index}">
-
-          <el-button type="primary" size="mini" @click="handleSave(row)">
-            保存
+          <el-button type="primary" size="mini" @click="handleInfo(row)">
+            查看结果
           </el-button>
-          <el-button size="mini" type="danger" @click="handleDelete(row,$index)">
+          <el-button size="mini" type="danger" @click="handleSendTask(row,$index)">
             删除
           </el-button>
-
         </template>
       </el-table-column>
+
     </el-table>
 
     <pagination
@@ -104,15 +96,13 @@
 
 <script>
 // eslint-disable-next-line no-unused-vars
-import { getRules } from '@/api/hids'
+import { getTaskList } from '@/api/hids'
 import { parseTime } from '@/utils'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination/index' // secondary package based on el-pagination
-import JsonEditor from '@/components/JsonEditor'
-
 export default {
-  name: 'RuleList',
-  components: { Pagination, JsonEditor },
+  name: 'TaskList',
+  components: { Pagination },
   directives: { waves },
   filters: {
     parseTime: parseTime
@@ -144,7 +134,7 @@ export default {
     getList() {
       this.listLoading = false
 
-      getRules(this.listQuery.page, this.listQuery.limit).then(response => {
+      getTaskList(this.listQuery.page, this.listQuery.limit).then(response => {
         this.total = response.data.count
         this.list = response.data.docs
         setTimeout(() => {
@@ -157,33 +147,12 @@ export default {
         id: undefined
       }
     },
-    handleAdd() {
 
-    },
-    handleDelete() {
-
-    },
-    handleSave() {
-
-    },
     handleFilter() {
       this.listQuery.page = 1
       this.getList()
     },
-    handleDownload() {
-      this.downloadLoading = true
-      import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['name', 'level', 'description', 'system', 'source', 'rules']
-        const filterVal = ['name', 'level', 'description', 'system', 'source', 'rules']
-        const data = this.formatJson(filterVal)
-        excel.export_json_to_excel({
-          header: tHeader,
-          data,
-          filename: 'HIDS检测规则'
-        })
-        this.downloadLoading = false
-      })
-    },
+
     formatJson(filterVal) {
       return this.list.map(v => filterVal.map(j => {
         if (j === 'uptime') {
