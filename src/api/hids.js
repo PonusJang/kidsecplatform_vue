@@ -29,10 +29,26 @@ export function getClientList(page, limit) {
   })
 }
 
+export function setClientList(data) {
+  return request({
+    url: '/hids/setClientList',
+    method: 'post',
+    data
+  })
+}
+
 export function getBlackListConfig() {
   return request({
     url: '/hids/getBlackListConfig',
     method: 'get'
+  })
+}
+
+export function setBlackListConfig(data) {
+  return request({
+    url: '/hids/setBlackListConfig',
+    method: 'post',
+    data
   })
 }
 
@@ -43,10 +59,26 @@ export function getClientConfig() {
   })
 }
 
+export function setClientConfig(data) {
+  return request({
+    url: '/hids/setClientConfig',
+    method: 'post',
+    data
+  })
+}
+
 export function getFilterConfig() {
   return request({
     url: '/hids/getFilterConfig',
     method: 'get'
+  })
+}
+
+export function setFilterConfig(data) {
+  return request({
+    url: '/hids/setFilterConfig',
+    method: 'post',
+    data
   })
 }
 
@@ -66,6 +98,14 @@ export function getIntelligenceConfig() {
   })
 }
 
+export function setIntelligenceConfig(data) {
+  return request({
+    url: '/hids/setIntelligenceConfig',
+    method: 'post',
+    data
+  })
+}
+
 export function getNoticeList(page, limit) {
   return request({
     url: '/hids/getNoticeList',
@@ -79,6 +119,14 @@ export function getServerConfig(page, limit) {
     url: '/hids/getServerConfig',
     method: 'get',
     params: { page, limit }
+  })
+}
+
+export function setServerConfig(data) {
+  return request({
+    url: '/hids/setServerConfig',
+    method: 'post',
+    data
   })
 }
 
@@ -96,10 +144,27 @@ export function getWhiteListConfig() {
     method: 'get'
   })
 }
+
+export function setWhiteListConfig(data) {
+  return request({
+    url: '/hids/setWhiteListConfig',
+    method: 'post',
+    data
+  })
+}
+
 export function getNoticeConfig() {
   return request({
     url: '/hids/getNoticeConfig',
     method: 'get'
+  })
+}
+
+export function setNoticeConfig(data) {
+  return request({
+    url: '/hids/setNoticeConfig',
+    method: 'post',
+    data
   })
 }
 

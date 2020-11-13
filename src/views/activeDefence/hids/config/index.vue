@@ -23,7 +23,7 @@
                     :min="1"
                     :max="10"
                     label="描述文字"
-                    @change="handleChange"
+                    @change="handleClientCycleChange"
                   />
                 </el-form-item>
               </el-form>
@@ -37,6 +37,7 @@
                     style="display: inline-block;position: relative;left:90px"
                     active-color="#13ce66"
                     inactive-color="#ff4949"
+                    @change="handleClientLanChange"
                   />
                 </el-form-item>
               </el-form>
@@ -59,7 +60,12 @@
 
                     <el-table-column label="操作" align="center" width="150" class-name="small-padding fixed-width">
                       <template slot-scope="{row,$index}">
-                        <el-button icon="el-icon-delete" size="mini" type="danger" @click="handleDelete(row,$index)">
+                        <el-button
+                          icon="el-icon-delete"
+                          size="mini"
+                          type="danger"
+                          @click="handleDeleteMonitorPath(row,$index)"
+                        >
                           删除
                         </el-button>
                       </template>
@@ -70,12 +76,16 @@
                     :page-size="client.pageSize"
                     layout="total,prev,pager,next,jumper"
                     :total="client.monitorPath.length"
-                    @current-change="handleCurrentChange"
                   />
                 </el-form-item>
 
                 <el-form-item>
-                  <el-button type="primary" style="position: relative;left: 120px" icon="el-icon-circle-plus-outline">
+                  <el-button
+                    type="primary"
+                    style="position: relative;left: 120px"
+                    icon="el-icon-circle-plus-outline"
+                    @click="handleAddMonitorPath"
+                  >
                     添加
                   </el-button>
                 </el-form-item>
@@ -90,6 +100,7 @@
                     style="display: inline-block;position: relative;left:90px"
                     active-color="#13ce66"
                     inactive-color="#ff4949"
+                    @change="handleClientUdpChange"
                   />
                 </el-form-item>
               </el-form>
@@ -109,6 +120,7 @@
                     style="display: inline-block;position: relative;left:30px"
                     active-color="#13ce66"
                     inactive-color="#ff4949"
+                    @change="handleServerLearnChange"
                   />
                 </el-form-item>
               </el-form>
@@ -122,6 +134,7 @@
                     style="display: inline-block;position: relative;left:30px"
                     active-color="#13ce66"
                     inactive-color="#ff4949"
+                    @change="handleServerOfflinecheckChange"
                   />
                 </el-form-item>
               </el-form>
@@ -181,11 +194,24 @@
                     v-model="intelligence.fileapi"
                     style="width: 300px;position: relative;left: 25px"
                     placeholder="请输入内容"
-                    :disabled="true"
+                    :disabled="!intelligence.isDisabled"
                   />
                 </el-form-item>
                 <el-form-item>
-                  <el-button style="position: relative;left: 25px" type="primary" icon="el-icon-edit" />
+                  <el-button
+                    v-show="!intelligence.FileApiShow"
+                    style="position: relative;left: 25px"
+                    type="primary"
+                    icon="el-icon-edit"
+                    @click="handleIntelligenceFileApiChange"
+                  />
+                  <el-button
+                    v-show="intelligence.FileApiShow"
+                    style="position: relative;left: 25px"
+                    type="success"
+                    icon="el-icon-check"
+                    @click.native="handleIntelligenceFileApiSave"
+                  />
                 </el-form-item>
               </el-form>
               <el-form :inline="true">
@@ -201,7 +227,12 @@
                   />
                 </el-form-item>
                 <el-form-item>
-                  <el-button style="position: relative;left: 40px" type="primary" icon="el-icon-edit" />
+                  <el-button
+                    style="position: relative;left: 40px"
+                    type="primary"
+                    icon="el-icon-edit"
+                    @click="handleIntelligenceIpApiChange"
+                  />
                 </el-form-item>
               </el-form>
 
@@ -218,7 +249,12 @@
                   />
                 </el-form-item>
                 <el-form-item>
-                  <el-button style="position: relative;left: 55px" type="primary" icon="el-icon-edit" />
+                  <el-button
+                    style="position: relative;left: 55px"
+                    type="primary"
+                    icon="el-icon-edit"
+                    @click="handleIntelligenceRegexChange"
+                  />
                 </el-form-item>
               </el-form>
 
@@ -232,6 +268,7 @@
                     style="display: inline-block;position: relative;left:80px"
                     active-color="#13ce66"
                     inactive-color="#ff4949"
+                    @change="handleIntelligenceSwitchChange"
                   />
                 </el-form-item>
               </el-form>
@@ -254,6 +291,14 @@
                     :disabled="true"
                   />
                 </el-form-item>
+                <el-form-item>
+                  <el-button
+                    style="position: relative;left: 55px"
+                    type="primary"
+                    icon="el-icon-edit"
+                    @click="handleNoticeApiChange"
+                  />
+                </el-form-item>
               </el-form>
               <el-form :inline="true">
                 <el-form-item>
@@ -265,6 +310,7 @@
                     style="display: inline-block;position: relative;left:100px"
                     active-color="#13ce66"
                     inactive-color="#ff4949"
+                    @change="handleNoticeOnlyhighChange"
                   />
                 </el-form-item>
               </el-form>
@@ -278,6 +324,7 @@
                     style="display: inline-block;position: relative;left:140px"
                     active-color="#13ce66"
                     inactive-color="#ff4949"
+                    @change="handleNoticeSwitchChange"
                   />
                 </el-form-item>
               </el-form>
@@ -311,7 +358,7 @@
                           icon="el-icon-delete"
                           size="mini"
                           type="danger"
-                          @click="handleDelete(row,$index)"
+                          @click="handleDeleteWhiteListFile(row,$index)"
                         >
                           删除
                         </el-button>
@@ -323,7 +370,6 @@
                     :page-size="whiteList.filePageSize"
                     layout="total,prev,pager,next,jumper"
                     :total="whiteList.file.length"
-                    @current-change="handleCurrentChange"
                   />
                 </el-form-item>
                 <el-form-item>
@@ -331,6 +377,7 @@
                     type="primary"
                     style="position: relative;left: 100px"
                     icon="el-icon-circle-plus-outline"
+                    @click="handleAddWhiteListFile"
                   >添加
                   </el-button>
                 </el-form-item>
@@ -359,7 +406,7 @@
                           icon="el-icon-delete"
                           size="mini"
                           type="danger"
-                          @click="handleDelete(row,$index)"
+                          @click="handleDeleteWhiteListIP(row,$index)"
                         >
                           删除
                         </el-button>
@@ -371,7 +418,6 @@
                     :page-size="whiteList.ipPageSize"
                     layout="total,prev,pager,next,jumper"
                     :total="whiteList.ip.length"
-                    @current-change="handleCurrentChange"
                   />
                 </el-form-item>
                 <el-form-item>
@@ -379,6 +425,7 @@
                     type="primary"
                     style="position: relative;left: 110px"
                     icon="el-icon-circle-plus-outline"
+                    @click="handleAddWhiteListIP"
                   >添加
                   </el-button>
                 </el-form-item>
@@ -403,7 +450,12 @@
 
                     <el-table-column label="操作" align="center" width="150" class-name="small-padding fixed-width">
                       <template slot-scope="{row,$index}">
-                        <el-button icon="el-icon-delete" size="mini" type="danger" @click="handleDelete(row,$index)">
+                        <el-button
+                          icon="el-icon-delete"
+                          size="mini"
+                          type="danger"
+                          @click="handleDeleteWhiteListProcess(row,$index)"
+                        >
                           删除
                         </el-button>
                       </template>
@@ -414,11 +466,15 @@
                     :page-size="whiteList.processPageSize"
                     layout="total,prev,pager,next,jumper"
                     :total="whiteList.process.length"
-                    @current-change="handleCurrentChange"
                   />
                 </el-form-item>
                 <el-form-item>
-                  <el-button type="primary" style="position: relative;left: 100px" icon="el-icon-circle-plus-outline">
+                  <el-button
+                    type="primary"
+                    style="position: relative;left: 100px"
+                    icon="el-icon-circle-plus-outline"
+                    @click="handleAddWhiteListProcess"
+                  >
                     添加
                   </el-button>
                 </el-form-item>
@@ -441,7 +497,12 @@
                     </el-table-column>
                     <el-table-column label="操作" align="center" width="150" class-name="small-padding fixed-width">
                       <template slot-scope="{row,$index}">
-                        <el-button icon="el-icon-delete" size="mini" type="danger" @click="handleDelete(row,$index)">
+                        <el-button
+                          icon="el-icon-delete"
+                          size="mini"
+                          type="danger"
+                          @click="handleDeleteWhiteListOther(row,$index)"
+                        >
                           删除
                         </el-button>
                       </template>
@@ -452,11 +513,15 @@
                     :page-size="whiteList.otherPageSize"
                     layout="total,prev,pager,next,jumper"
                     :total="whiteList.other.length"
-                    @current-change="handleCurrentChange"
                   />
                 </el-form-item>
                 <el-form-item>
-                  <el-button type="primary" style="position: relative;left: 100px" icon="el-icon-circle-plus-outline">
+                  <el-button
+                    type="primary"
+                    style="position: relative;left: 100px"
+                    icon="el-icon-circle-plus-outline"
+                    @click="handleAddWhiteListOther"
+                  >
                     添加
                   </el-button>
                 </el-form-item>
@@ -486,7 +551,12 @@
 
                     <el-table-column label="操作" align="center" width="150" class-name="small-padding fixed-width">
                       <template slot-scope="{row,$index}">
-                        <el-button icon="el-icon-delete" size="mini" type="danger" @click="handleDelete(row,$index)">
+                        <el-button
+                          icon="el-icon-delete"
+                          size="mini"
+                          type="danger"
+                          @click="handleDeleteBlackListFile(row,$index)"
+                        >
                           删除
                         </el-button>
                       </template>
@@ -497,11 +567,15 @@
                     :page-size="blackList.pageSize"
                     layout="total,prev,pager,next,jumper"
                     :total="blackList.file.length"
-                    @current-change="handleCurrentChange"
                   />
                 </el-form-item>
                 <el-form-item>
-                  <el-button type="primary" style="position: relative;left: 110px" icon="el-icon-circle-plus-outline">
+                  <el-button
+                    type="primary"
+                    style="position: relative;left: 110px"
+                    icon="el-icon-circle-plus-outline"
+                    @click="handleAddBlackListFile"
+                  >
                     添加
                   </el-button>
                 </el-form-item>
@@ -525,7 +599,12 @@
 
                     <el-table-column label="操作" align="center" width="150" class-name="small-padding fixed-width">
                       <template slot-scope="{row,$index}">
-                        <el-button icon="el-icon-delete" size="mini" type="danger" @click="handleDelete(row,$index)">
+                        <el-button
+                          icon="el-icon-delete"
+                          size="mini"
+                          type="danger"
+                          @click="handleDeleteBlackListIP(row,$index)"
+                        >
                           删除
                         </el-button>
                       </template>
@@ -536,11 +615,15 @@
                     :page-size="blackList.ipPageSize"
                     layout="total,prev,pager,next,jumper"
                     :total="blackList.ip.length"
-                    @current-change="handleCurrentChange"
                   />
                 </el-form-item>
                 <el-form-item>
-                  <el-button type="primary" style="position: relative;left: 120px" icon="el-icon-circle-plus-outline">
+                  <el-button
+                    type="primary"
+                    style="position: relative;left: 120px"
+                    icon="el-icon-circle-plus-outline"
+                    @click="handleAddBlackListIP"
+                  >
                     添加
                   </el-button>
                 </el-form-item>
@@ -564,7 +647,12 @@
 
                     <el-table-column label="操作" align="center" width="150" class-name="small-padding fixed-width">
                       <template slot-scope="{row,$index}">
-                        <el-button icon="el-icon-delete" size="mini" type="danger" @click="handleDelete(row,$index)">
+                        <el-button
+                          icon="el-icon-delete"
+                          size="mini"
+                          type="danger"
+                          @click="handleDeleteBlackListProcess(row,$index)"
+                        >
                           删除
                         </el-button>
                       </template>
@@ -575,11 +663,15 @@
                     :page-size="blackList.processPageSize"
                     layout="total,prev,pager,next,jumper"
                     :total="blackList.process.length"
-                    @current-change="handleCurrentChange"
                   />
                 </el-form-item>
                 <el-form-item>
-                  <el-button type="primary" style="position: relative;left: 120px" icon="el-icon-circle-plus-outline">
+                  <el-button
+                    type="primary"
+                    style="position: relative;left: 120px"
+                    icon="el-icon-circle-plus-outline"
+                    @click="handleAddBlackListProcess"
+                  >
                     添加
                   </el-button>
                 </el-form-item>
@@ -602,7 +694,12 @@
                     </el-table-column>
                     <el-table-column label="操作" align="center" width="150" class-name="small-padding fixed-width">
                       <template slot-scope="{row,$index}">
-                        <el-button icon="el-icon-delete" size="mini" type="danger" @click="handleDelete(row,$index)">
+                        <el-button
+                          icon="el-icon-delete"
+                          size="mini"
+                          type="danger"
+                          @click="handleDeleteBlackListOther(row,$index)"
+                        >
                           删除
                         </el-button>
                       </template>
@@ -613,11 +710,15 @@
                     :page-size="blackList.otherPageSize"
                     layout="total,prev,pager,next,jumper"
                     :total="blackList.other.length"
-                    @current-change="handleCurrentChange"
                   />
                 </el-form-item>
                 <el-form-item>
-                  <el-button type="primary" style="position: relative;left: 120px" icon="el-icon-circle-plus-outline">
+                  <el-button
+                    type="primary"
+                    style="position: relative;left: 120px"
+                    icon="el-icon-circle-plus-outline"
+                    @click="handleAddBlackListOther"
+                  >
                     添加
                   </el-button>
                 </el-form-item>
@@ -647,7 +748,12 @@
 
                     <el-table-column label="操作" align="center" width="150" class-name="small-padding fixed-width">
                       <template slot-scope="{row,$index}">
-                        <el-button icon="el-icon-delete" size="mini" type="danger" @click="handleDelete(row,$index)">
+                        <el-button
+                          icon="el-icon-delete"
+                          size="mini"
+                          type="danger"
+                          @click="handleDeleteFilterFile(row,$index)"
+                        >
                           删除
                         </el-button>
                       </template>
@@ -658,11 +764,15 @@
                     :page-size="blackList.pageSize"
                     layout="total,prev,pager,next,jumper"
                     :total="blackList.file.length"
-                    @current-change="handleCurrentChange"
                   />
                 </el-form-item>
                 <el-form-item>
-                  <el-button type="primary" style="position: relative;left: 100px" icon="el-icon-circle-plus-outline">
+                  <el-button
+                    type="primary"
+                    style="position: relative;left: 100px"
+                    icon="el-icon-circle-plus-outline"
+                    @click="handleAddFilterFile"
+                  >
                     添加
                   </el-button>
                 </el-form-item>
@@ -686,7 +796,12 @@
 
                     <el-table-column label="操作" align="center" width="150" class-name="small-padding fixed-width">
                       <template slot-scope="{row,$index}">
-                        <el-button icon="el-icon-delete" size="mini" type="danger" @click="handleDelete(row,$index)">
+                        <el-button
+                          icon="el-icon-delete"
+                          size="mini"
+                          type="danger"
+                          @click="handleDeleteFilterIP(row,$index)"
+                        >
                           删除
                         </el-button>
                       </template>
@@ -697,11 +812,15 @@
                     :page-size="filter.ipPageSize"
                     layout="total,prev,pager,next,jumper"
                     :total="filter.ip.length"
-                    @current-change="handleCurrentChange"
                   />
                 </el-form-item>
                 <el-form-item>
-                  <el-button type="primary" style="position: relative;left: 110px" icon="el-icon-circle-plus-outline">
+                  <el-button
+                    type="primary"
+                    style="position: relative;left: 110px"
+                    icon="el-icon-circle-plus-outline"
+                    @click="handleAddFilterIP"
+                  >
                     添加
                   </el-button>
                 </el-form-item>
@@ -725,7 +844,12 @@
 
                     <el-table-column label="操作" align="center" width="150" class-name="small-padding fixed-width">
                       <template slot-scope="{row,$index}">
-                        <el-button icon="el-icon-delete" size="mini" type="danger" @click="handleDelete(row,$index)">
+                        <el-button
+                          icon="el-icon-delete"
+                          size="mini"
+                          type="danger"
+                          @click="handleDeleteFilterProcess(row,$index)"
+                        >
                           删除
                         </el-button>
                       </template>
@@ -736,11 +860,15 @@
                     :page-size="filter.processPageSize"
                     layout="total,prev,pager,next,jumper"
                     :total="filter.process.length"
-                    @current-change="handleCurrentChange"
                   />
                 </el-form-item>
                 <el-form-item>
-                  <el-button type="primary" style="position: relative;left: 90px" icon="el-icon-circle-plus-outline">
+                  <el-button
+                    type="primary"
+                    style="position: relative;left: 90px"
+                    icon="el-icon-circle-plus-outline"
+                    @click="handleAddFilterProcee"
+                  >
                     添加
                   </el-button>
                 </el-form-item>
@@ -768,7 +896,15 @@ import {
   getIntelligenceConfig,
   getNoticeConfig,
   getServerConfig,
-  getWhiteListConfig
+  getWhiteListConfig,
+
+  setBlackListConfig,
+  setClientConfig,
+  setFilterConfig,
+  setIntelligenceConfig,
+  setNoticeConfig,
+  setServerConfig,
+  setWhiteListConfig
 } from '@/api/hids'
 import { parseTime } from '@/utils'
 import waves from '@/directive/waves' // waves directive
@@ -811,6 +947,12 @@ export default {
         cert: undefined
       },
       intelligence: {
+        fileApiisDisabled: true,
+        fileApiShow: false,
+        ipApiisDisabled: true,
+        ipApiShow: false,
+        regexisDisabled: true,
+        regexShow: false,
         switch: undefined,
         ipapi: undefined,
         fileapi: undefined,
@@ -887,56 +1029,226 @@ export default {
     },
     getList() {
       getClientConfig().then(res => {
-        console.log(res.data[0].dic[0].cycle)
-        this.client.cycle = res.data[0].dic[0].cycle
-        this.client.udp = res.data[0].dic[0].udp
-        this.client.monitorPath = res.data[0].dic[0].monitorPath
-        this.client.lan = res.data[0].dic[0].lan
+        console.log(res.data[0].dic.cycle)
+        this.client.cycle = res.data[0].dic.cycle
+        this.client.udp = res.data[0].dic.udp
+        this.client.monitorPath = res.data[0].dic.monitorPath
+        this.client.lan = res.data[0].dic.lan
       })
       getBlackListConfig().then(res => {
-        this.blackList.ip = res.data[0].dic[0].ip
-        this.blackList.file = res.data[0].dic[0].file
-        this.blackList.process = res.data[0].dic[0].process
-        this.blackList.other = res.data[0].dic[0].other
+        this.blackList.ip = res.data[0].dic.ip
+        this.blackList.file = res.data[0].dic.file
+        this.blackList.process = res.data[0].dic.process
+        this.blackList.other = res.data[0].dic.other
       })
       getFilterConfig().then(res => {
-        this.filter.ip = res.data[0].dic[0].ip
-        this.filter.file = res.data[0].dic[0].file
-        this.filter.process = res.data[0].dic[0].process
+        this.filter.ip = res.data[0].dic.ip
+        this.filter.file = res.data[0].dic.file
+        this.filter.process = res.data[0].dic.process
       })
       getServerConfig().then(res => {
-        this.server.learn = res.data[0].dic[0].learn
-        this.server.offlinecheck = res.data[0].dic[0].offlinecheck
-        this.server.cert = res.data[0].dic[0].cert
-        this.server.privatekey = res.data[0].dic[0].privatekey
-        this.server.publickey = res.data[0].dic[0].publickey
+        this.server.learn = res.data[0].dic.learn
+        this.server.offlinecheck = res.data[0].dic.offlinecheck
+        this.server.cert = res.data[0].dic.cert
+        this.server.privatekey = res.data[0].dic.privatekey
+        this.server.publickey = res.data[0].dic.publickey
       })
       getWhiteListConfig().then(res => {
-        this.whiteList.ip = res.data[0].dic[0].ip
-        this.whiteList.file = res.data[0].dic[0].file
-        this.whiteList.process = res.data[0].dic[0].process
-        this.whiteList.other = res.data[0].dic[0].other
+        this.whiteList.ip = res.data[0].dic.ip
+        this.whiteList.file = res.data[0].dic.file
+        this.whiteList.process = res.data[0].dic.process
+        this.whiteList.other = res.data[0].dic.other
       })
       getIntelligenceConfig().then(res => {
-        this.intelligence.switch = res.data[0].dic[0].switch
-        this.intelligence.fileapi = res.data[0].dic[0].fileapi
-        this.intelligence.ipapi = res.data[0].dic[0].ipapi
-        this.intelligence.regex = res.data[0].dic[0].regex
+        this.intelligence.switch = res.data[0].dic.switch
+        this.intelligence.fileapi = res.data[0].dic.fileapi
+        this.intelligence.ipapi = res.data[0].dic.ipapi
+        this.intelligence.regex = res.data[0].dic.regex
       })
       getNoticeConfig().then(res => {
-        this.notice.switch = res.data[0].dic[0].switch
-        this.notice.onlyhigh = res.data[0].dic[0].onlyhigh
-        this.notice.api = res.data[0].dic[0].api
+        this.notice.switch = res.data[0].dic.switch
+        this.notice.onlyhigh = res.data[0].dic.onlyhigh
+        this.notice.api = res.data[0].dic.api
       })
     },
 
-    removeMonitorPath(row) {
-
+    // client
+    handleClientCycleChange(value) {
+      setClientConfig({ key: 'cycle', value: value }).then(res => {
+        if (res.code === 200 & res.data === true) {
+          this.$notify({
+            title: 'Success',
+            message: 'Update Successfully',
+            type: 'success',
+            duration: 2000
+          })
+        } else {
+          this.$notify({
+            title: 'Failure',
+            message: 'Update Failed',
+            type: 'success',
+            duration: 2000
+          })
+        }
+      })
     },
-    addMonitorPath() {
-
+    handleClientUdpChange(value) {
+      setClientConfig({ key: 'udp', value: value }).then(res => {
+        if (res.code === 200 & res.data === true) {
+          this.$notify({
+            title: 'Success',
+            message: 'Update Successfully',
+            type: 'success',
+            duration: 2000
+          })
+        } else {
+          this.$notify({
+            title: 'Failure',
+            message: 'Update Failed',
+            type: 'success',
+            duration: 2000
+          })
+        }
+      })
+    },
+    handleClientLanChange(value) {
+      setClientConfig({ key: 'lan', value: value }).then(res => {
+        if (res.code === 200 & res.data === true) {
+          this.$notify({
+            title: 'Success',
+            message: 'Update Successfully',
+            type: 'success',
+            duration: 2000
+          })
+        } else {
+          this.$notify({
+            title: 'Failure',
+            message: 'Update Failed',
+            type: 'success',
+            duration: 2000
+          })
+        }
+      })
+    },
+    handleDeleteMonitorPath(row, index) {
+    },
+    handleAddMonitorPath() {
+    },
+    // server
+    handleServerLearnChange(value) {
+      setServerConfig({ key: 'learn', value: value }).then(res => {
+        if (res.code === 200 & res.data === true) {
+          this.$notify({
+            title: 'Success',
+            message: 'Update Successfully',
+            type: 'success',
+            duration: 2000
+          })
+        } else {
+          this.$notify({
+            title: 'Failure',
+            message: 'Update Failed',
+            type: 'success',
+            duration: 2000
+          })
+        }
+      })
+    },
+    handleServerOfflinecheckChange(value) {
+      setServerConfig({ key: 'offlinecheck', value: value }).then(res => {
+        if (res.code === 200 & res.data === true) {
+          this.$notify({
+            title: 'Success',
+            message: 'Update Successfully',
+            type: 'success',
+            duration: 2000
+          })
+        } else {
+          this.$notify({
+            title: 'Failure',
+            message: 'Update Failed',
+            type: 'success',
+            duration: 2000
+          })
+        }
+      })
+    },
+    // whiteList
+    handleDeleteWhiteListFile(row) {
+    },
+    handleDeleteWhiteListIP(row) {
+    },
+    handleDeleteWhiteListProcess(row) {
+    },
+    handleDeleteWhiteListOther(row) {
+    },
+    // backList
+    handleDeleteBlackListFile(row) {
+    },
+    handleDeleteBlackListIP(row) {
+    },
+    handleDeleteBlackeListProcess(row) {
+    },
+    handleDeleteBlackListOther(row) {
+    },
+    // filter
+    handleDeleteFilterFile(row) {
+    },
+    handleDeleteFilterIP(row) {
+    },
+    handleDeleteFilterProcess(row) {
+    },
+    handleDeleteFilterOther(row) {
+    },
+    // notice
+    handleNoticeApiChange() {},
+    handleNoticeOnlyhighChange() {},
+    handleNoticeSwitchChange(value) {
+      setNoticeConfig({ key: 'switch', value: value }).then(res => {
+        if (res.code === 200 & res.data === true) {
+          this.$notify({
+            title: 'Success',
+            message: 'Update Successfully',
+            type: 'success',
+            duration: 2000
+          })
+        } else {
+          this.$notify({
+            title: 'Failure',
+            message: 'Update Failed',
+            type: 'success',
+            duration: 2000
+          })
+        }
+      })
+    },
+    // intelligence
+    handleIntelligenceSwitchChange(value) {
+      setIntelligenceConfig({ key: 'switch', value: value }).then(res => {
+        if (res.code === 200 & res.data === true) {
+          this.$notify({
+            title: 'Success',
+            message: 'Update Successfully',
+            type: 'success',
+            duration: 2000
+          })
+        } else {
+          this.$notify({
+            title: 'Failure',
+            message: 'Update Failed',
+            type: 'success',
+            duration: 2000
+          })
+        }
+      })
     }
-
+  },
+  handleIntelligenceRegexChange() {},
+  handleIntelligenceIpApiChange() {},
+  handleIntelligenceFileApiChange() {
+    console.log(1231213)
+    this.intelligence.fileApiisDisabled = false
+    this.intelligence.fileApiShow = true
   }
 }
 </script>
