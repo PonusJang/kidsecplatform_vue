@@ -110,6 +110,12 @@ export const asyncRoutes = [
             component: () => import('@/views/assets/internet/task/taskList'),
             name: '任务管理',
             meta: { title: '任务管理', icon: 'menu', roles: ['admin'] }
+          },
+          {
+            path: 'pluginList',
+            name: 'pluginList',
+            component: () => import('@/views/plugin/pluginList'),
+            meta: { title: '专项插件', icon: 'list', roles: ['admin'] }
           }
         ]
       },
@@ -270,9 +276,9 @@ export const asyncRoutes = [
     path: '/scanManager',
     component: Layout,
     redirect: '/scanner/acunetix/index',
-    name: '漏扫管理',
+    name: '安全检测',
     meta: {
-      title: '漏扫管理',
+      title: '安全检测',
       icon: 'tree'
     },
     children: [
@@ -310,20 +316,20 @@ export const asyncRoutes = [
       }
     ]
   },
-  {
-    path: '/plugin',
-    component: Layout,
-    name: '插件管理',
-    redirect: '/plugin/pluginList',
-    children: [
-      {
-        path: 'pluginList',
-        name: 'pluginList',
-        component: () => import('@/views/plugin/pluginList'),
-        meta: { title: '插件管理', icon: 'list', roles: ['admin'] }
-      }
-    ]
-  },
+  // {
+  //   path: '/plugin',
+  //   component: Layout,
+  //   name: '专项插件',
+  //   redirect: '/plugin/pluginList',
+  //   children: [
+  //     {
+  //       path: 'pluginList',
+  //       name: 'pluginList',
+  //       component: () => import('@/views/plugin/pluginList'),
+  //       meta: { title: '专项插件', icon: 'list', roles: ['admin'] }
+  //     }
+  //   ]
+  // },
 
   // {
   //   path: '/tool',
