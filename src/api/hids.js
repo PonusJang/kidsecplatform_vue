@@ -191,11 +191,11 @@ export function download() {
   })
 }
 
-export function analysis(page, limit, param) {
+export function analysis(data) {
   return request({
     url: '/hids/analysis',
-    method: 'get',
-    params: { page, limit, param }
+    method: 'post',
+    data
   })
 }
 
