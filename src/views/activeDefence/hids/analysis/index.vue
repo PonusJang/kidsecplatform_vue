@@ -2,8 +2,16 @@
 
   <div class="app-container">
     <div class="filter-container">
+      <el-select v-model="listQuery.type" style="width: 120px;" placeholder="请选择类型">
+        <el-option label="置空" value="" />
+        <el-option label="进程" value="process" />
+        <el-option label="连接" value="connection" />
+        <el-option label="文件" value="file" />
+        <el-option label="登录日志" value="loginlog" />
+      </el-select>
+
       <el-input
-        v-model="listQuery.param"
+        v-model="listQuery.searchString"
         placeholder="Search"
         style="width: 500px;"
         class="filter-item"
@@ -90,7 +98,7 @@ import { analysis } from '@/api/hids'
 import { parseTime } from '@/utils'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination/index'
-import { flterByDate } from '@/api/result' // secondary package based on el-pagination
+
 export default {
   name: 'DomainList',
   components: { Pagination },
@@ -104,14 +112,55 @@ export default {
       listQuery: {
         page: 1,
         limit: 10,
-        param: undefined
+        type: undefined,
+        searchString: undefined
       },
       list: null,
       listLoading: false,
       dateValue: null,
       downloadLoading: false,
       temp: {
-        param: undefined
+        type: undefined,
+        searchString: undefined
+      },
+      minDate: '',
+      maxDate: '',
+      pickerOptions: {
+        shortcuts: [{
+          text: '最近一周',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近一个月',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近三个月',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
+            picker.$emit('pick', [start, end])
+          }
+        }],
+        onPick: ({ maxDate, minDate }) => {
+          this.minDate = minDate
+          this.maxDate = maxDate
+        },
+        disabledDate: time => {
+          if (this.minDate) {
+            return time.getTime() < Date.now() - 30 * 24 * 60 * 60 * 1000 || time > new Date(this.minDate.getTime() + 90 * 24 * 60 * 60 * 1000)
+          }
+          return time.getTime() < Date.now() - 30 * 24 * 60 * 60 * 1000
+        }
       }
     }
   },
@@ -123,49 +172,18 @@ export default {
     fresh() {
       this.reload()
     },
-    minDate: '',
-    maxDate: '',
-    pickerOptions: {
-      shortcuts: [{
-        text: '最近一周',
-        onClick(picker) {
-          const end = new Date()
-          const start = new Date()
-          start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
-          picker.$emit('pick', [start, end])
-        }
-      }, {
-        text: '最近一个月',
-        onClick(picker) {
-          const end = new Date()
-          const start = new Date()
-          start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
-          picker.$emit('pick', [start, end])
-        }
-      }, {
-        text: '最近三个月',
-        onClick(picker) {
-          const end = new Date()
-          const start = new Date()
-          start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
-          picker.$emit('pick', [start, end])
-        }
-      }],
-      onPick: ({ maxDate, minDate }) => {
-        this.minDate = minDate
-        this.maxDate = maxDate
-      },
-      disabledDate: time => {
-        if (this.minDate) {
-          return time.getTime() < Date.now() - 30 * 24 * 60 * 60 * 1000 || time > new Date(this.minDate.getTime() + 90 * 24 * 60 * 60 * 1000)
-        }
-        return time.getTime() < Date.now() - 30 * 24 * 60 * 60 * 1000
-      }
-    },
+
     getList() {
       this.listLoading = false
 
-      analysis(this.listQuery.page, this.listQuery.limit, this.param).then(response => {
+      analysis({
+        type: this.listQuery.type,
+        searchString: this.listQuery.searchString,
+        page: this.listQuery.page,
+        limit: this.listQuery.limit,
+        minDate: this.minDate,
+        maxDate: this.maxDate
+      }).then(response => {
         this.total = response.data.count
         this.list = response.data.docs
         setTimeout(() => {
@@ -174,9 +192,12 @@ export default {
       })
     },
     resetTemp() {
-      this.temp = {
-        param: undefined
+      this.listQuery = {
+        type: undefined,
+        searchString: undefined
       }
+      this.minDate = undefined
+      this.maxDate = undefined
     },
     handleFilterByDate(e) {
       if (e === null) {
@@ -191,7 +212,14 @@ export default {
           }
         }
       } else {
-        flterByDate(this.listQuery.page, this.listQuery.limit, this.minDate, this.maxDate).then(response => {
+        analysis({
+          type: this.listQuery.type,
+          searchString: this.listQuery.searchString,
+          page: this.listQuery.page,
+          limit: this.listQuery.limit,
+          minDate: this.minDate,
+          maxDate: this.maxDate
+        }).then(response => {
           this.total = response.data.count
           this.list = response.data.docs
           setTimeout(() => {
