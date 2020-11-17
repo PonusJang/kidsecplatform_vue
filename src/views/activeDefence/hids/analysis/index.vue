@@ -2,7 +2,7 @@
 
   <div class="app-container">
     <div class="filter-container">
-      <el-select v-model="listQuery.type" style="width: 120px;" placeholder="请选择类型">
+      <el-select v-model="listQuery.type" style="width: 80px;" placeholder="请选择类型">
         <el-option label="置空" value="" />
         <el-option label="进程" value="process" />
         <el-option label="连接" value="connection" />
@@ -13,7 +13,7 @@
       <el-input
         v-model="listQuery.searchString"
         placeholder="Search"
-        style="width: 500px;"
+        style="width: 400px;"
         class="filter-item"
         @keyup.enter.native="handleFilter"
       />
@@ -57,25 +57,142 @@
           {{ scope.$index }}
         </template>
       </el-table-column>
-      <el-table-column label="IP" align="center">
+      <el-table-column label="IP" align="center" width="180">
         <template slot-scope="scope">
-          <span class="link-type"> {{ scope.row.ip }}</span>
+          <span class="link-type"> {{ scope.row._source.ip }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="系统" align="center">
-        <template slot-scope="scope">
-          <span class="link-type">{{ scope.row.system }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" prop="uptime" label="uptime">
+
+      <el-table-column align="center" prop="uptime" label="Time" width="180">
         <template slot-scope="scope">
           <i class="el-icon-time" />
-          <span>{{ scope.row.uptime | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+          <span>{{ scope.row._source.time | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
         </template>
       </el-table-column>
       <el-table-column label="Data" align="center">
         <template slot-scope="scope">
-          <span class="link-type">{{ scope.row.data }}</span>
+          <div v-for="(value, name, index) in scope.row._source.data " style="display: inline-table">
+            <el-tag
+              v-if="index === 0"
+              :key="name"
+              type=""
+              effect="dark"
+            >
+              {{ name }}:
+            </el-tag>
+            <el-tag
+              v-if="index === 0"
+              :key="value"
+              type="info"
+              effect="dark"
+              color="#6b8acd"
+            >
+              {{ value }}
+            </el-tag>
+
+            <el-tag
+              v-if="index === 1"
+              :key="name"
+              type="info"
+              effect="dark"
+            >
+              {{ name }}:
+            </el-tag>
+            <el-tag
+              v-if="index === 1"
+              :key="value"
+              type=""
+              color="#7c8b69"
+              effect="dark"
+            >
+              {{ value }}
+            </el-tag>
+            <el-tag
+              v-if="index === 2"
+              :key="name"
+              type="success"
+              effect="dark"
+            >
+              {{ name }}:
+            </el-tag>
+            <el-tag
+              v-if="index === 2"
+              :key="value"
+              type="success"
+              color="#5fac54"
+              effect="dark"
+            >
+              {{ value }}
+            </el-tag>
+            <el-tag
+              v-if="index === 3"
+              :key="name"
+              type="info"
+              effect="dark"
+            >
+              {{ name }}:
+            </el-tag>
+            <el-tag
+              v-if="index === 3"
+              :key="value"
+              type="info"
+              color="#7c8b69"
+              effect="dark"
+            >
+              {{ value }}
+            </el-tag>
+            <el-tag
+              v-if="index === 4"
+              :key="name"
+              type="warning"
+              effect="dark"
+            >
+              {{ name }}:
+            </el-tag>
+            <el-tag
+              v-if="index === 4"
+              :key="value"
+              type="warning"
+              color="#e3cb49"
+              effect="dark"
+            >
+              {{ value }}
+            </el-tag>
+            <el-tag
+              v-if="index === 5"
+              :key="name"
+              type="danger"
+              effect="dark"
+            >
+              {{ name }}:
+            </el-tag>
+            <el-tag
+              v-if="index === 5"
+              :key="value"
+              type="danger"
+              color="#ee5353"
+              effect="dark"
+            >
+              {{ value }}
+            </el-tag>
+            <el-tag
+              v-if="index === 6"
+              :key="name"
+              type=""
+              effect="dark"
+            >
+              {{ name }}:
+            </el-tag>
+            <el-tag
+              v-if="index === 6"
+              :key="value"
+              type=""
+              color="#FFFF"
+              effect="dark"
+            >
+              {{ value }}
+            </el-tag>
+          </div>
         </template>
       </el-table-column>
 
@@ -184,8 +301,8 @@ export default {
         minDate: this.minDate,
         maxDate: this.maxDate
       }).then(response => {
-        this.total = response.data.count
-        this.list = response.data.docs
+        this.total = response.data.total
+        this.list = response.data.hits
         setTimeout(() => {
           this.listLoading = false
         }, 1.5 * 1000)
@@ -254,6 +371,10 @@ export default {
           return v[j]
         }
       }))
+    },
+    formatData(row) {
+      const arr = new Array(row.data)
+      return arr.join('<br>')
     }
   }
 }

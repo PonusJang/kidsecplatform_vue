@@ -199,3 +199,11 @@ export function analysis(data) {
   })
 }
 
+export function monitor(data) {
+  return request({
+    url: '/hids/monitor',
+    method: 'post',
+    data
+  })
+}
+
