@@ -97,13 +97,16 @@
       <el-table-column label="操作" align="center" width="250" class-name="small-padding fixed-width">
         <template slot-scope="{row,$index}">
 
-          <el-button type="primary" size="mini" @click="handleInfo(row)">
-            信息
+          <el-button type="primary" size="mini">
+            <router-link :to="{path :'hostInfo/'+ row.ip , query:{ip:row.ip}}">
+              信息
+            </router-link>
           </el-button>
+
           <el-button size="mini" type="danger" @click="handleDrawer(row)">
             监控
           </el-button>
-          <el-button size="mini" type="danger" @click="handleSendTask(row,$index)">
+          <el-button size="mini" type="danger" @click="handleSendTask(row)">
             推送
           </el-button>
         </template>
@@ -160,12 +163,51 @@
       :limit.sync="listQuery.limit"
       @pagination="getList"
     />
+
+    <el-dialog title="推送任务" :visible.sync="dialogFormVisible">
+      <el-form
+        ref="dataForm"
+        :model="temp"
+        label-position="left"
+        label-width="70px"
+        style="width: 400px; margin-left:50px;"
+      >
+        <el-form-item label="任务名" prop="title">
+          <el-input v-model="temp.name" />
+        </el-form-item>
+        <el-form-item label="Host" prop="title">
+          <el-input v-model="temp.host_list" />
+        </el-form-item>
+        <el-form-item label="操作" prop="title">
+          <el-select v-model="temp.type" placeholder="请选择">
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="命令" prop="title">
+          <el-input v-model="temp.command" :disabled="temp.exec !=='exec'" />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">
+          取消
+        </el-button>
+        <el-button type="primary" @click="addTask">
+          确认
+        </el-button>
+      </div>
+    </el-dialog>
+
   </div>
 </template>
 
 <script>
 
-import { monitor, getClientList, findClientByHostname, findClientByIp, findClientBySystem } from '@/api/hids'
+import { findClientByHostname, findClientByIp, findClientBySystem, getClientList, monitor, addTask } from '@/api/hids'
 import { parseTime } from '@/utils'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination/index' // secondary package based on el-pagination
@@ -178,6 +220,7 @@ export default {
   },
   data() {
     return {
+      dialogFormVisible: false,
       monitor: {
         list: undefined
       },
@@ -196,11 +239,31 @@ export default {
 
       downloadLoading: false,
       temp: {
-        id: undefined,
-        ip: undefined,
-        hostname: undefined,
-        system: undefined
-      }
+        name: undefined,
+        host_list: undefined,
+        type: undefined,
+        command: undefined
+      },
+      options: [{
+        value: 'kill',
+        label: 'kill'
+      }, {
+        value: 'update',
+        label: 'update'
+      }, {
+        value: 'exec',
+        label: 'exec'
+      }, {
+        value: 'uninstall',
+        label: 'uninstall'
+      }, {
+        value: 'delete',
+        label: 'delete'
+      }, {
+        value: 'reload',
+        label: 'reload'
+      }],
+      value: ''
     }
   },
   created() {
@@ -230,6 +293,10 @@ export default {
       } else {
         return 'unknown'
       }
+    },
+    handleSendTask(row) {
+      this.dialogFormVisible = true
+      this.temp.host_list = row.ip
     },
     getList() {
       this.listLoading = false
@@ -269,10 +336,26 @@ export default {
     },
     resetTemp() {
       this.temp = {
-        id: undefined,
-        owner: '',
-        domain: ''
+        name: '',
+        host_list: '',
+        type: '',
+        command: ''
       }
+    },
+    addTask() {
+      addTask({
+        name: this.temp.name,
+        host_list: this.temp.host_list,
+        type: this.temp.type,
+        command: this.temp.command
+      }).then(res => {
+        this.$notify({
+          title: 'Success',
+          message: 'Created Successfully',
+          type: 'success',
+          duration: 2000
+        })
+      })
     },
     handleDeploy() {
     },

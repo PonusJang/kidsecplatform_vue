@@ -199,6 +199,13 @@ export const asyncRoutes = [
             meta: { title: '部署管理', icon: 'menu', roles: ['admin'] }
           },
           {
+            path: 'hostInfo/:ip',
+            name: '主机详情',
+            component: () => import('@/views/activeDefence/hids/deploy/info'),
+            meta: { title: '主机详情', noCache: true, icon: 'menu', roles: ['admin'] },
+            hidden: true
+          },
+          {
             path: 'task',
             name: '任务管理',
             component: () => import('@/views/activeDefence/hids/task/index'),

@@ -203,7 +203,7 @@ export function getTaskList(page, limit) {
 export function addTask(data) {
   return request({
     url: '/hids/addTask',
-    method: 'get',
+    method: 'post',
     data
   })
 }
