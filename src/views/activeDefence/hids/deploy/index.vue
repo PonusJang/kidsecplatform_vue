@@ -165,7 +165,7 @@
 
 <script>
 
-import { monitor, getClientList } from '@/api/hids'
+import { monitor, getClientList, findClientByHostname, findClientByIp, findClientBySystem } from '@/api/hids'
 import { parseTime } from '@/utils'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination/index' // secondary package based on el-pagination
@@ -233,14 +233,39 @@ export default {
     },
     getList() {
       this.listLoading = false
-
-      getClientList(this.listQuery.page, this.listQuery.limit).then(response => {
-        this.total = response.data.count
-        this.list = response.data.docs
-        setTimeout(() => {
-          this.listLoading = false
-        }, 1.5 * 1000)
-      })
+      if (this.listQuery.ip !== undefined) {
+        findClientByIp(this.listQuery.page, this.listQuery.limit, this.listQuery.ip).then(response => {
+          this.total = response.data.count
+          this.list = response.data.docs
+          setTimeout(() => {
+            this.listLoading = false
+          }, 1.5 * 1000)
+        })
+      } else if (this.listQuery.system !== undefined) {
+        findClientBySystem(this.listQuery.page, this.listQuery.limit, this.listQuery.system).then(response => {
+          this.total = response.data.count
+          this.list = response.data.docs
+          setTimeout(() => {
+            this.listLoading = false
+          }, 1.5 * 1000)
+        })
+      } else if (this.listQuery.hostname !== undefined) {
+        findClientByHostname(this.listQuery.page, this.listQuery.limit, this.listQuery.hostname).then(response => {
+          this.total = response.data.count
+          this.list = response.data.docs
+          setTimeout(() => {
+            this.listLoading = false
+          }, 1.5 * 1000)
+        })
+      } else {
+        getClientList(this.listQuery.page, this.listQuery.limit).then(response => {
+          this.total = response.data.count
+          this.list = response.data.docs
+          setTimeout(() => {
+            this.listLoading = false
+          }, 1.5 * 1000)
+        })
+      }
     },
     resetTemp() {
       this.temp = {
@@ -286,27 +311,31 @@ export default {
   .el-drawer > header > span:focus {
     outline-color: white;
   }
+
   .el-drawer > header > button:focus {
     outline-color: white;
   }
+
   .el-drawer > header > button:hover {
     color: rgb(64, 158, 255);
   }
 
-  .m_title{
-    font-family:Verdana,"华文仿宋";
+  .m_title {
+    font-family: Verdana, "华文仿宋";
     font-size: 20px;
     font-weight: bold;
     color: #c9615b;
   }
-  .m_tag{
-    font-family:Verdana,"等线";
+
+  .m_tag {
+    font-family: Verdana, "等线";
     font-size: 16px;
     font-weight: normal;
     color: #060947;
   }
-  .m_data{
-    font-family:Verdana,"等线";
+
+  .m_data {
+    font-family: Verdana, "等线";
     font-size: 16px;
     font-weight: normal;
     color: #8b8888;

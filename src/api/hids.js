@@ -29,6 +29,30 @@ export function getClientList(page, limit) {
   })
 }
 
+export function findClientByIp(page, limit, ip) {
+  return request({
+    url: '/hids/findClientByIp',
+    method: 'get',
+    params: { page, limit, ip }
+  })
+}
+
+export function findClientByHostname(page, limit, hostname) {
+  return request({
+    url: '/hids/findClientByHostname',
+    method: 'get',
+    params: { page, limit, hostname }
+  })
+}
+
+export function findClientBySystem(page, limit, system) {
+  return request({
+    url: '/hids/findClientBySystem',
+    method: 'get',
+    params: { page, limit, system }
+  })
+}
+
 export function setClientList(data) {
   return request({
     url: '/hids/setClientList',
