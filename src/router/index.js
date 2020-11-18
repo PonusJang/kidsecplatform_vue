@@ -323,20 +323,20 @@ export const asyncRoutes = [
       }
     ]
   },
-  // {
-  //   path: '/plugin',
-  //   component: Layout,
-  //   name: '专项插件',
-  //   redirect: '/plugin/pluginList',
-  //   children: [
-  //     {
-  //       path: 'pluginList',
-  //       name: 'pluginList',
-  //       component: () => import('@/views/plugin/pluginList'),
-  //       meta: { title: '专项插件', icon: 'list', roles: ['admin'] }
-  //     }
-  //   ]
-  // },
+  {
+    path: '/osint',
+    component: Layout,
+    name: '开源情报',
+    redirect: '/osint/index',
+    children: [
+      {
+        path: 'osint',
+        name: 'osint',
+        component: () => import('@/views/osint/index'),
+        meta: { title: '开源情报', icon: 'list', roles: ['admin'] }
+      }
+    ]
+  },
 
   // {
   //   path: '/tool',
