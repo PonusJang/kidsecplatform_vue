@@ -51,7 +51,7 @@ export const constantRoutes = [
     redirect: '/dashboard',
     children: [{
       path: 'dashboard',
-      name: 'Dashboard',
+      name: 'dashboard',
       component: () => import('@/views/dashboard/index'),
       meta: { title: 'Dashboard', icon: 'dashboard' }
     }]
@@ -138,8 +138,8 @@ export const asyncRoutes = [
           {
             path: 'assest',
             component: () => import('@/views/assets/intranet/assest/index'),
-            name: '资产管理',
-            meta: { title: '资产管理', icon: 'menu', roles: ['admin'] }
+            name: '内部资产',
+            meta: { title: '内部资产', icon: 'menu', roles: ['admin'] }
           },
           {
             path: 'aliveMonitor',
@@ -207,9 +207,9 @@ export const asyncRoutes = [
           },
           {
             path: 'task',
-            name: '任务管理',
+            name: '任务推送',
             component: () => import('@/views/activeDefence/hids/task/index'),
-            meta: { title: '任务管理', icon: 'menu', roles: ['admin'] }
+            meta: { title: '任务推送', icon: 'menu', roles: ['admin'] }
           },
           {
             path: 'engine',
@@ -259,7 +259,7 @@ export const asyncRoutes = [
     children: [
       {
         path: 'index',
-        name: 'index',
+        name: 'GetProvidence',
         component: () => import('@/views/trace/index'),
         meta: { title: '溯源取证', icon: 'list', roles: ['admin'] }
       }
@@ -330,8 +330,8 @@ export const asyncRoutes = [
     redirect: '/osint/index',
     children: [
       {
-        path: 'osint',
-        name: 'osint',
+        path: 'dashboard',
+        name: 'OSINT',
         component: () => import('@/views/osint/index'),
         meta: { title: '开源情报', icon: 'list', roles: ['admin'] }
       }
