@@ -39,7 +39,8 @@
     "vuex": "3.1.0",
     "xlsx": "^0.16.6",
     "codemirror": "5.45.0",
-    "script-loader": "0.7.2"
+    "script-loader": "0.7.2",
+    "el-table-infinite-scroll": "^1.0.10"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "4.4.4",

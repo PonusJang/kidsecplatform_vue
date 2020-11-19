@@ -14,42 +14,249 @@
     </div>
     <br>
     <!--Data Show-->
-    <div v-if="show" v-model="generalData">
+    <div v-if="show">
 
       <el-tabs tab-position="left" style="height: 90%;">
         <!-- general -->
-        <el-tab-pane    label="基本信息">
-          <div v-if="generalData.base_indicator.type == 'IPv4'">
+        <el-tab-pane label="基本信息" v-model="generalData">
+          <div v-if="generalData.type == 'IPv4'">
             经度:{{generalData.longitude}}
             纬度:{{generalData.latitude}}
             whois:{{generalData.whois}}
             国家:{{generalData.country_name}}
             地区：{{generalData.city}},{{generalData.region}}
-            国旗地址:{{generalData.flag_url}}
+            国旗地址:https://otx.alienvault.com{{generalData.flag_url}}
             ASN:{{generalData.asn}}
             信誉值:{{generalData.reputation}}
+            <div v-if="reputation" v-model="reputationData"> {{reputationData}}</div>
+          </div>
+
+          <div v-if="generalData.type == 'domain'">
+            Alexa:{{generalData.alexa}}
+            whois:{{generalData.whois}}
           </div>
         </el-tab-pane>
         <!-- general -->
-        <!-- general -->
-        <el-tab-pane label="事件情报">事件情报</el-tab-pane>
-        <el-tab-pane label="威胁发现">威胁发现</el-tab-pane>
-        <!-- passive_dns -->
-        <el-tab-pane  label="反向解析">
-          <el-table>
 
+        <!-- pulse_info -->
+        <el-tab-pane v-if="pulse_info" label="事件情报">
+          <div>
+            <el-table
+              :data="pulse_info_data.list"
+              element-loading-text="Loading"
+              border
+              fit
+              highlight-current-row
+            >
+              <el-table-column label="ID" align="center">
+                <template slot-scope="scope">
+                  <span class="link-type"> {{ scope.row.id }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="TLP" align="center">
+                <template slot-scope="scope">
+                  <span class="link-type"> {{ scope.row.TLP }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="标题" align="name">
+                <template slot-scope="scope">
+                  <span class="link-type">{{ scope.row.name }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="时间" align="created">
+                <template slot-scope="scope">
+                  <span class="link-type">{{ scope.row.created | parseTime('{y}-{m}-{d} {h}:{i}')  }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="操作" align="center" width="250" class-name="small-padding fixed-width">
+                <template slot-scope="{row,$index}">
+                  <el-button type="primary" size="mini" @click="handleRead(row, $index)">
+                    查看
+                  </el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </div>
+        </el-tab-pane>
+        <!-- pulse_info -->
+
+        <!--  -->
+        <el-tab-pane v-if="false" label="威胁发现">威胁发现</el-tab-pane>
+        <!--  -->
+
+        <!-- passive_dns -->
+        <el-tab-pane v-if="passive_dns" label="反向解析">
+          <el-table
+            v-el-table-infinite-scroll="load"
+            :data="passiveDnsData.list"
+            element-loading-text="Loading"
+            border
+            fit
+            highlight-current-row
+          >
+            <el-table-column align="center" label="ID" width="70">
+              <template slot-scope="scope">
+                {{ scope.$index }}
+              </template>
+            </el-table-column>
+            <el-table-column label="address" align="center">
+              <template slot-scope="scope">
+                <span class="link-type"> {{ scope.row.address }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="hostname" align="center">
+              <template slot-scope="scope">
+                <span class="link-type"> {{ scope.row.hostname }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="asset_type" align="center">
+              <template slot-scope="scope">
+                <span class="link-type"> {{ scope.row.asset_type }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="record_type" align="name">
+              <template slot-scope="scope">
+                <span class="link-type">{{ scope.row.record_type }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="first" align="created">
+              <template slot-scope="scope">
+                <span class="link-type">{{ scope.row.first | parseTime('{y}-{m}-{d} {h}:{i}')  }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="last" align="created">
+              <template slot-scope="scope">
+                <span class="link-type">{{ scope.row.last | parseTime('{y}-{m}-{d} {h}:{i}')  }}</span>
+              </template>
+            </el-table-column>
           </el-table>
         </el-tab-pane>
         <!-- passive_dns -->
+
         <!-- url_list -->
-        <el-tab-pane label="相关URL">相关URL</el-tab-pane>
+        <el-tab-pane v-if="related_urls" label="相关URL">
+          <el-table
+            :data="reladtedUrlData.list"
+            element-loading-text="Loading"
+            border
+            fit
+            highlight-current-row
+          >
+            <el-table-column align="center" label="ID" width="70">
+              <template slot-scope="scope">
+                {{ scope.$index }}
+              </template>
+            </el-table-column>
+            <el-table-column label="domain" align="center">
+              <template slot-scope="scope">
+                <span class="link-type"> {{ scope.row.domain }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="hostname" align="center">
+              <template slot-scope="scope">
+                <span class="link-type"> {{ scope.row.hostname }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="httpcode" align="center">
+              <template slot-scope="scope">
+                <span class="link-type"> {{ scope.row.httpcode }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="url" align="name">
+              <template slot-scope="scope">
+                <span class="link-type">{{ scope.row.url }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="时间" align="created">
+              <template slot-scope="scope">
+                <span class="link-type">{{ scope.row.date | parseTime('{y}-{m}-{d} {h}:{i}')  }}</span>
+              </template>
+            </el-table-column>
+          </el-table>
+
+        </el-tab-pane>
         <!-- url_list -->
+
         <!-- malware -->
-        <el-tab-pane label="恶意软件">malware</el-tab-pane>
+        <el-tab-pane v-if="malware" label="恶意软件">
+          <div>
+            <el-table
+              :data="malwareData.list"
+              element-loading-text="Loading"
+              border
+              fit
+              highlight-current-row
+            >
+              <el-table-column align="center" label="ID" width="70">
+                <template slot-scope="scope">
+                  {{ scope.$index }}
+                </template>
+              </el-table-column>
+              <el-table-column label="avast" align="center">
+                <template slot-scope="scope">
+                  <span class="link-type"> {{ scope.row.detections.avast }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="TLP" align="center">
+                <template slot-scope="scope">
+                  <span class="link-type"> {{ scope.row.detections.avg }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="clamav" align="center">
+                <template slot-scope="scope">
+                  <span class="link-type"> {{ scope.row.detections.clamav }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="msdefender" align="center">
+                <template slot-scope="scope">
+                  <span class="link-type"> {{ scope.row.detections.msdefender }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="hash" align="name">
+                <template slot-scope="scope">
+                  <span class="link-type">{{ scope.row.hash }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="时间" align="created">
+                <template slot-scope="scope">
+                  <span class="link-type">{{ scope.row.datetime_int | parseTime('{y}-{m}-{d} {h}:{i}')  }}</span>
+                </template>
+              </el-table-column>
+            </el-table>
+          </div>
+        </el-tab-pane>
         <!-- malware -->
-        <el-tab-pane label="相关文件">相关文件</el-tab-pane>
+
+        <!-- file -->
+        <el-tab-pane v-if="related_files" label="相关文件">相关文件</el-tab-pane>
+        <!-- file -->
+
         <!-- http_scans -->
-        <el-tab-pane label="HTTP扫描">HTTP扫描</el-tab-pane>
+        <el-tab-pane v-if="http_scans" label="HTTP扫描">
+          <el-table
+            :data="httpScansData.list"
+            element-loading-text="Loading"
+            border
+            fit
+            highlight-current-row
+          >
+            <el-table-column align="center" label="ID" width="70">
+              <template slot-scope="scope">
+                {{ scope.$index }}
+              </template>
+            </el-table-column>
+            <el-table-column label="RECODE" align="name">
+              <template slot-scope="scope">
+                <span class="link-type">{{ scope.row.name }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="VALUE" align="name">
+              <template slot-scope="scope">
+                <span class="link-type">{{ scope.row.value }}</span>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-tab-pane>
         <!-- http_scans -->
       </el-tabs>
 
@@ -59,111 +266,138 @@
 </template>
 
 <script>
-import { getIndicators } from '@/api/ioc'
-import waves from '@/directive/waves' // waves directive
+  import {getIndicators} from '@/api/ioc'
+  import {parseTime} from '@/utils'
+  import waves from '@/directive/waves' // waves directive
+  import elTableInfiniteScroll from 'el-table-infinite-scroll';
 
-export default {
-  name: 'OsintIndex',
-  directives: { waves },
-  data() {
-    return {
-      show: false,
-      passive_dns: false,
-      related_urls:false,
-      http_scans:false,
-      related_files:false,
-      malware:false,
-      query: '',
-      generalData: undefined,
-      malwareData :undefined,
-      reladtedUrlData : undefined
-    }
-  },
-  methods: {
-    handleQuery() {
-      getIndicators(this.query,undefined).then(res => {
-        this.show = true
-        this.generalData = res.data
+  export default {
+    name: 'OsintIndex',
+    directives: {waves, 'el-table-infinite-scroll': elTableInfiniteScroll},
+    data() {
+      return {
+        show: false,
+        passive_dns: false,
+        pulse_info: false,
+        related_urls: false,
+        http_scans: false,
+        related_files: false,
+        malware: false,
+        reputation: false,
 
-        if(res.data.sections.indexOf('malware') !== -1){
-          getIndicators(this.query,'malware').then(res=>{
-            this.malwareData = res.data
-          })
+        query: '',
+        generalData: undefined,
+        malwareData: {
+          list: undefined,
+          count: undefined
+        },
+        reladtedUrlData: {
+          list: undefined,
+          count: undefined
+        },
+        reputationData: undefined,
+        passiveDnsData: {
+          list: undefined,
+          count: undefined
+        },
+        httpScansData: {
+          list: undefined,
+          count: undefined
+        },
+        nidsListData: undefined,
+        whoisData: undefined,
+        screenshotData: undefined,
+        pulse_info_data: {
+          list: undefined,
+          count: undefined
         }
-        if(res.data.sections.indexOf('malware') !== -1){
-          getIndicators(this.query,'malware').then(res=>{
-            this.malwareData = res.data
-          })
-        }
-        if(res.data.sections.indexOf('malware') !== -1){
-          getIndicators(this.query,'malware').then(res=>{
-            this.malwareData = res.data
-          })
-        }
-        if(res.data.sections.indexOf('malware') !== -1){
-          getIndicators(this.query,'malware').then(res=>{
-            this.malwareData = res.data
-          })
-        }
-        if(res.data.sections.indexOf('malware') !== -1){
-          getIndicators(this.query,'malware').then(res=>{
-            this.malwareData = res.data
-          })
-        }
-        if(res.data.sections.indexOf('malware') !== -1){
-          getIndicators(this.query,'malware').then(res=>{
-            this.malwareData = res.data
-          })
-        }
-        if(res.data.sections.indexOf('malware') !== -1){
-          getIndicators(this.query,'malware').then(res=>{
-            this.malwareData = res.data
-          })
-        }
-        if(res.data.sections.indexOf('malware') !== -1){
-          getIndicators(this.query,'malware').then(res=>{
-            this.malwareData = res.data
-          })
-        }
-        if(res.data.sections.indexOf('malware') !== -1){
-          getIndicators(this.query,'malware').then(res=>{
-            this.malwareData = res.data
-          })
-        }
-        if(res.data.sections.indexOf('malware') !== -1){
-          getIndicators(this.query,'malware').then(res=>{
-            this.malwareData = res.data
-          })
-        }
-        if(res.data.sections.indexOf('malware') !== -1){
-          getIndicators(this.query,'malware').then(res=>{
-            this.malwareData = res.data
-          })
-        }
-        if(res.data.sections.indexOf('malware') !== -1){
-          getIndicators(this.query,'malware').then(res=>{
-            this.malwareData = res.data
-          })
-        }
-        if(res.data.sections.indexOf('malware') !== -1){
-          getIndicators(this.query,'malware').then(res=>{
-            this.malwareData = res.data
-          })
-        }
-        if(res.data.sections.indexOf('malware') !== -1){
-          getIndicators(this.query,'malware').then(res=>{
-            this.malwareData = res.data
-          })
-        }
-        if(res.data.sections.indexOf('malware') !== -1){
-          getIndicators(this.query,'malware').then(res=>{
-            this.malwareData = res.data
-          })
-        }
-      })
+
+      }
+    },
+    methods: {
+      formatJson(filterVal) {
+        return this.list.map(v => filterVal.map(j => {
+          if (j === 'add_time') {
+            return parseTime(v[j])
+          } else {
+            return v[j]
+          }
+        }))
+      },
+      handleQuery() {
+        getIndicators(this.query, undefined).then(res => {
+          this.show = true
+          this.generalData = res.data
+
+          if (res.data.pulse_info !== undefined) {
+            if (res.data.count) {
+              this.pulse_info = true
+              this.pulse_info_data.list = res.data.pulse_info.pulses
+              this.pulse_info_data.count = res.data.count
+            }
+          }
+
+          if (res.data.sections.indexOf('malware') !== -1) {
+            getIndicators(this.query, 'malware').then(res => {
+              if (res.data.count) {
+                this.malware = true
+                this.malwareData.count = res.data.count
+                this.malwareData.list = res.data.data
+              }
+            })
+          }
+          if (res.data.sections.indexOf('reputation') !== -1) {
+            getIndicators(this.query, 'reputation').then(res => {
+              this.reputationData = res.data
+            })
+          }
+          if (res.data.sections.indexOf('url_list') !== -1) {
+            getIndicators(this.query, 'url_list').then(res => {
+              if (res.data.actual_size) {
+                this.related_urls = true
+                this.reladtedUrlData.count = res.data.actual_size
+                this.reladtedUrlData.list = res.data.url_list
+              }
+            })
+          }
+          if (res.data.sections.indexOf('passive_dns') !== -1) {
+            getIndicators(this.query, 'passive_dns').then(res => {
+              if (res.data.count) {
+                this.passive_dns = true
+                this.passiveDnsData.count = res.data.count
+                this.passiveDnsData.list = res.data.passive_dns
+              }
+            })
+          }
+          if (res.data.sections.indexOf('http_scans') !== -1) {
+            getIndicators(this.query, 'http_scans').then(res => {
+              this.http_scans = res.data
+              if (res.data.count) {
+                this.http_scans = true
+                this.httpScansData.count = res.data.count
+                this.httpScansData.list = res.data.data
+              }
+            })
+          }
+          if (res.data.sections.indexOf('nids_list') !== -1) {
+            getIndicators(this.query, 'nids_list').then(res => {
+              this.nidsListData = res.data
+            })
+          }
+          if (res.data.sections.indexOf('whois') !== -1) {
+            getIndicators(this.query, 'whois').then(res => {
+              this.whoisData = res.data
+            })
+          }
+          if (res.data.sections.indexOf('screenshot') !== -1) {
+            getIndicators(this.query, 'screenshot').then(res => {
+              this.screenshotData = res.data
+            })
+          }
+        })
+      }
     }
   }
-}
 </script>
 
 <style scoped>
