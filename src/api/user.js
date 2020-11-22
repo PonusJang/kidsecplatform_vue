@@ -63,3 +63,10 @@ export function findByUsername(page, limit, username) {
   })
 }
 
+export function getAuthMenu(token) {
+  return request({
+    url: '/user/getAuthMenu',
+    method: 'get',
+    params: { token }
+  })
+}
