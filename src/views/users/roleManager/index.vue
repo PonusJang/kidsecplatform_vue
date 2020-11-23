@@ -87,7 +87,7 @@
         :model="temp"
         label-position="left"
         label-width="70px"
-        style="width: 400px; margin-left:50px;"
+        style="width: 500px; margin-left:50px;"
       >
         <el-form-item label="角色名" prop="title">
           <el-input v-model="temp.roleName"/>
@@ -95,7 +95,8 @@
         <el-form-item label="描述" prop="title">
           <el-input v-model="temp.description"/>
         </el-form-item>
-        <el-form-item label="权限" prop="title">
+        <el-row><el-col :span="12">
+        <el-form-item label="菜单权限" prop="title">
           <el-tree
             :data="menu"
             show-checkbox
@@ -106,6 +107,19 @@
             :props="defaultProps">
           </el-tree>
         </el-form-item>
+        </el-col><el-col :span="12" >
+        <el-form-item label="API权限" prop="title">
+          <el-tree
+            :data="api"
+            show-checkbox
+            default-expand-all
+            node-key="id"
+            ref="tree2"
+            highlight-current
+            :props="defaultProps2">
+          </el-tree>
+        </el-form-item>
+      </el-col></el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">
@@ -122,8 +136,9 @@
 
 <script>
   // eslint-disable-next-line no-unused-vars
-  import {getList, update, add, del, findByRole} from '@/api/role'
+  import {add, del, findByRole, getList, update} from '@/api/role'
   import {getMenu} from '@/api/menu'
+  import {getApiMenu} from '@/api/user'
 
   import {parseTime} from '@/utils'
   import waves from '@/directive/waves' // waves directive
@@ -141,13 +156,17 @@
           children: 'children',
           label: 'name'
         },
+        defaultProps2: {
+          children: 'apis',
+          label: 'name'
+        },
         menu: undefined,
+        api:undefined,
         total: 0,
         listQuery: {
           page: 1,
           limit: 10,
           roleName: undefined
-
         },
         list: null,
         listLoading: false,
@@ -166,7 +185,8 @@
           id: undefined,
           roleName: '',
           description: '',
-          privilege: []
+          privilege: [],
+          api_privilege:[]
         }
       }
     },
@@ -178,6 +198,10 @@
         getMenu().then(res => {
           console.log(res.data)
           this.menu = res.data
+        })
+        getApiMenu().then(res => {
+          console.log(res.data)
+          this.api = res.data
         })
         this.listLoading = false
         if (this.listQuery.roleName !== undefined && this.listQuery.roleName !== '') {
@@ -251,10 +275,12 @@
         this.$nextTick(() => {
           this.$refs['dataForm'].clearValidate()
           this.$refs.tree.setCheckedKeys(row.privilege);
+          this.$refs.tree2.setCheckedKeys(row.api_privilege);
         })
       },
       updateData() {
         this.temp.privilege = this.$refs.tree.getCheckedKeys()
+        this.temp.api_privilege = this.$refs.tree2.getCheckedKeys()
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             const tempData = Object.assign({}, this.temp)

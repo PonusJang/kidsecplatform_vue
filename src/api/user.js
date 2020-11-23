@@ -47,11 +47,11 @@ export function add(data) {
   })
 }
 
-export function del(domain) {
+export function del(username) {
   return request({
     url: '/user/delete',
     method: 'get',
-    params: { domain }
+    params: { username }
   })
 }
 
@@ -63,10 +63,19 @@ export function findByUsername(page, limit, username) {
   })
 }
 
-export function getAuthMenu(token) {
+export function getAuthMenu() {
   return request({
     url: '/user/getAuthMenu',
     method: 'get',
-    params: { token }
+
+  })
+}
+
+
+export function getApiMenu() {
+  return request({
+    url: '/user/getApiMenu',
+    method: 'get',
+
   })
 }

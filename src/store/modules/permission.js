@@ -92,7 +92,7 @@ const actions = {
     return new Promise(resolve => {
       const loadMenuData = []
       // 先查询后台并返回左侧菜单数据并把数据添加到路由
-      getAuthMenu(state.token).then(response => {
+      getAuthMenu().then(response => {
         let data = response
         if (response.code !== 200) {
           alert(JSON.stringify('菜单数据加载异常'))
