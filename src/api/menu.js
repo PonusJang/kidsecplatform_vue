@@ -25,6 +25,14 @@ export function add(data) {
   })
 }
 
+export function update(data) {
+  return request({
+    url: '/menu/update',
+    method: 'post',
+    data
+  })
+}
+
 
 export function del(id) {
   return request({
