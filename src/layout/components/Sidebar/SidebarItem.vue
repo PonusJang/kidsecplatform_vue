@@ -2,7 +2,7 @@
   <div v-if="!item.hidden">
     <template v-if="hasOneShowingChild(item.children,item) && (!onlyOneChild.children||onlyOneChild.noShowingChildren)&&!item.alwaysShow">
       <app-link v-if="onlyOneChild.meta" :to="resolvePath(onlyOneChild.path)">
-        <el-menu-item :index="resolvePath(onlyOneChild.path)" :class="{'submenu-title-noDropdown':!isNest}">
+        <el-menu-item  @click="reload(item)"  :index="resolvePath(onlyOneChild.path)" :class="{'submenu-title-noDropdown':!isNest}">
           <item :icon="onlyOneChild.meta.icon||(item.meta&&item.meta.icon)" :title="onlyOneChild.meta.title" />
         </el-menu-item>
       </app-link>
@@ -57,6 +57,17 @@ export default {
     return {}
   },
   methods: {
+    reload(item) {
+      // 如果发现当前路由与点击的路由一致就携带路由路径跳转到redirect页面
+      if (this.$route.name === item.name) {
+        this.$nextTick(() => {
+          // params 默认会解析成为path字段,如果使用参数的形式 / 会来解析成为%
+          this.$router.replace({
+            path: '/redirect' + this.$route.fullPath,
+          })
+        })
+      }
+    },
     hasOneShowingChild(children = [], parent) {
       const showingChildren = children.filter(item => {
         if (item.hidden) {

@@ -66,6 +66,7 @@ import { getList, read } from '@/api/notification'
 import { parseTime } from '@/utils'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination/index' // secondary package based on el-pagination
+
 export default {
   name: 'Index',
   components: { Pagination },

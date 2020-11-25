@@ -38,7 +38,17 @@ export const constantRoutes = [
     path: '/login',
     component: Login
   },
-
+  {
+    path: '/redirect',
+    component: Layout,
+    hidden: true,
+    children: [
+      {
+        path: '/redirect/:path(.*)',
+        component: () => import('@/views/redirect/index')
+      }
+    ]
+  },
   // {
   //   path: '/404',
   //   component: () => import('@/views/404'),
@@ -53,7 +63,7 @@ export const constantRoutes = [
       path: 'dashboard',
       name: 'dashboard',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: 'Dashboard', icon: 'dashboard' }
+      meta: {title: 'Dashboard', icon: 'dashboard'}
     }]
   }
 ]
@@ -61,7 +71,7 @@ export const constantRoutes = [
 export const asyncRoutes = [
 
   // 404 page must be placed at the end !!!
-  { path: '*', redirect: '/404', hidden: true },
+  {path: '*', redirect: '/404', hidden: true},
   // {
   //   path: '/notification',
   //   component: Layout,
@@ -424,7 +434,7 @@ export const asyncRoutes = [
 
 const createRouter = () => new Router({
   // mode: 'history', // require service support
-  scrollBehavior: () => ({ y: 0 }),
+  scrollBehavior: () => ({y: 0}),
   routes: constantRoutes
 })
 
