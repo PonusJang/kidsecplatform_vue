@@ -1,95 +1,62 @@
 <template>
-  <div id="data-view">
-    <!--    <dv-full-screen-container>-->
+  <div class="dashboard-container">
+    <componentspanel @handleSetLineChartData="handleSetLineChartData" />
 
-    <top-header />
+    <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
+      <componentsLine :chart-data="lineChartData" />
+    </el-row>
 
-    <div class="main-content">
-      <digital-flop />
-
-      <div class="block-left-right-content">
-        <rankingBoard_IP />
-
-        <div class="block-top-bottom-content">
-          <div class="block-top-content">
-
-            <scroll-board />
-          </div>
-
-        </div>
-        <rankingBoard_LOC />
-      </div>
-    </div>
-    <!--    </dv-full-screen-container>-->
   </div>
 </template>
 
 <script>
-import topHeader from './topHeader'
-import digitalFlop from './digitalFlop'
-import rankingBoard_IP from './rankingBoard_IP'
-import rankingBoard_LOC from './rankingBoard_LOC'
+import { mapGetters } from 'vuex'
+import componentspanel from './components/panel'
+import componentsLine from './components/line'
 
-import scrollBoard from './scrollBoard'
+const lineChartData = {
+  intranet_IP: {
+    expectedData: [100, 120, 161, 134, 105, 160, 165],
+    actualData: [120, 82, 91, 154, 162, 140, 145]
+  },
+  intranet_port: {
+    expectedData: [200, 192, 120, 144, 160, 130, 140],
+    actualData: [180, 160, 151, 106, 145, 150, 130]
+  },
+  internet_site: {
+    expectedData: [80, 100, 121, 104, 105, 90, 100],
+    actualData: [120, 90, 100, 138, 142, 130, 130]
+  },
+  internet_IP: {
+    expectedData: [130, 140, 141, 142, 145, 150, 160],
+    actualData: [120, 82, 91, 154, 162, 140, 130]
+  }
+}
 
 export default {
-  name: 'DataView',
-  components: {
-    topHeader,
-    digitalFlop,
-    rankingBoard_IP,
-    rankingBoard_LOC,
-
-    scrollBoard
+  name: 'Dashboard',
+  components:{componentspanel,componentsLine},
+  computed: {
+    ...mapGetters([
+      'name'
+    ])
   },
-  data() {
-    return {}
-  },
-  methods: {}
+  methods: {
+    handleSetLineChartData(type) {
+      this.lineChartData = lineChartData[type]
+    }
+  }
 }
 </script>
 
-<style lang="less">
-#data-view {
-  width: 100%;
-  height: 100%;
-  background-color: #030409;
-  color: #fff;
-
-  #dv-full-screen-container {
-    background-image: url('./img/bg.png');
-    background-size: 100% 100%;
-    box-shadow: 0 0 3px blue;
-    display: flex;
-    flex-direction: column;
+<style lang="scss" scoped>
+.dashboard {
+  &-container {
+    margin: 30px;
   }
-
-  .main-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .block-left-right-content {
-    flex: 1;
-    display: flex;
-    margin-top: 20px;
-  }
-
-  .block-top-bottom-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    box-sizing: border-box;
-    padding-left: 20px;
-  }
-
-  .block-top-content {
-    height: 55%;
-    display: flex;
-    flex-grow: 0;
-    box-sizing: border-box;
-    padding-bottom: 30px;
+  &-text {
+    font-size: 30px;
+    line-height: 46px;
   }
 }
 </style>
