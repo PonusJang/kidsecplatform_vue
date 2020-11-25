@@ -111,6 +111,7 @@
         })
       },
       handleLogin() {
+        this.loginForm.password = this.password
         this.$refs.loginForm.validate(valid => {
           if (valid) {
             this.loading = true
