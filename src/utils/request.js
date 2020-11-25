@@ -65,10 +65,9 @@ service.interceptors.response.use(
           message: res.msg || res.data || 'Error',
           type: 'warning',
           duration: 5 * 1000
-        }).then(() => {
-          store.dispatch('user/resetToken').then(() => {
-            location.reload()
-          })
+        })
+        store.dispatch('user/resetToken').then(() => {
+          location.reload()
         })
       } else {
         if (res.code === 400) {
