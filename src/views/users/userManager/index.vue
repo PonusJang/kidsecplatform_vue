@@ -84,7 +84,7 @@
       </el-table-column>
       <el-table-column label="上次登录" align="center">
         <template slot-scope="scope">
-          <span class="link-type" @click="handleUpdate(row)">{{ scope.row.lastLogonIn }}</span>
+          <span class="link-type" @click="handleUpdate(row)">{{ scope.row.lastLogonIn | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" width="250" class-name="small-padding fixed-width">
