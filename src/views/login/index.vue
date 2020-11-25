@@ -77,10 +77,10 @@
         }
       }
       return {
-        password: '',
+        password: 'admin@2020',
         loginForm: {
           username: 'admin',
-          password: 'admin@2020'
+          password: ''
         },
         loginRules: {
           username: [{required: true, trigger: 'blur', validator: validateUsername}],
