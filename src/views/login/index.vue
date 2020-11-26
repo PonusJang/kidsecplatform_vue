@@ -1,10 +1,16 @@
 <template>
+
   <div class="login-container">
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on"
              label-position="left">
 
-      <div class="title-container">
-        <h3 class="title">KidSecPlatform</h3>
+
+      <div class="title-container" style="display: inline-flex">
+<!--        <div>-->
+<!--        <span class="svg-container" style="padding-right:50px;padding-left: 50px">-->
+<!--          <svg-icon width="20px" height="20px" viewBox="0 0 400 400" icon-class="ylz"/>-->
+<!--       </span></div>-->
+        <h3 class="title" style="padding-left: 100px">易联众安全管理平台</h3>
       </div>
 
       <el-form-item prop="username">
@@ -14,7 +20,7 @@
         <el-input
           ref="username"
           v-model="loginForm.username"
-          placeholder="Username"
+          placeholder="用户名"
           name="username"
           type="text"
           tabindex="1"
@@ -31,7 +37,7 @@
           ref="password"
           v-model="password"
           :type="passwordType"
-          placeholder="Password"
+          placeholder="密码"
           name="password"
           tabindex="2"
           auto-complete="on"
@@ -52,6 +58,8 @@
       <!--      </div>-->
 
     </el-form>
+
+    <div class="copyright">Copyright @ 2020-2021 云服务&数据中心</div>
   </div>
 </template>
 
@@ -64,14 +72,14 @@
     data() {
       const validateUsername = (rule, value, callback) => {
         if (!validUsername(value)) {
-          callback(new Error('Please enter the correct user name'))
+          callback(new Error('请输入正确用户名！'))
         } else {
           callback()
         }
       }
       const validatePassword = (rule, value, callback) => {
         if (value.length < 6) {
-          callback(new Error('The password can not be less than 6 digits'))
+          callback(new Error('密码需不少于6位数！'))
         } else {
           callback()
         }
@@ -147,7 +155,12 @@
       color: $cursor;
     }
   }
-
+.copyright{
+  margin-top: 6%;
+  margin-left: 40%;
+  color: white;
+  font-size: 14px;
+}
   /* reset element-ui css */
   .login-container {
     .el-input {
@@ -187,10 +200,11 @@
   $light_gray: #eee;
 
   .login-container {
-    min-height: 100%;
-    width: 100%;
-    background-color: $bg;
-    overflow: hidden;
+    height: 100%;
+    background-repeat: revert;
+    background-image: url("../../assets/login_images/pink_dust.png");
+
+
 
     .login-form {
       position: relative;

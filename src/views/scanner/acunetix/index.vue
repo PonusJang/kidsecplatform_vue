@@ -3,7 +3,16 @@
 
     <el-tabs :tab-position="tabPosition" style="height: 900px;">
 
-      <el-tab-pane label="Dashboard" name="Dashboard" />
+      <el-tab-pane label="Dashboard" name="Dashboard">
+        <div class="dashboard-container">
+          <componentsPanel @handleSetLineChartData="handleSetLineChartData"/>
+
+          <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:2px;">
+            <componentsLine :chart-data="lineChartData"/>
+          </el-row>
+
+        </div>
+      </el-tab-pane>
 
       <el-tab-pane label="目标管理" name="tagetsManger">
 
@@ -95,13 +104,13 @@
             style="width: 400px; margin-left:50px;"
           >
             <el-form-item label="网址URL" prop="title">
-              <el-input v-model="temp.url" />
+              <el-input v-model="temp.url"/>
             </el-form-item>
             <el-form-item label="描述" prop="title">
-              <el-input v-model="temp.desc" />
+              <el-input v-model="temp.desc"/>
             </el-form-item>
             <el-form-item label="危险程度" prop="title">
-              <el-input v-model="temp.criticality" />
+              <el-input v-model="temp.criticality"/>
             </el-form-item>
           </el-form>
           <div slot="footer" class="dialog-footer">
@@ -203,206 +212,253 @@
 </template>
 
 <script>
-import echarts from 'echarts'
-import VCharts from 'v-charts-v2'
-import {
-  getStatics,
-  getTargetList,
-  deleteTarget,
-  getScanList,
-  addTarget,
-  stopScan,
-  deleteScan,
-  getReports,
-  filterScan,
-  filterTarget, startScan
-} from '@/api/acunetix'
-import { parseTime } from '@/utils'
-import waves from '@/directive/waves' // waves directive
-import Pagination from '@/components/Pagination'
 
-export default {
-  name: 'Index',
-  components: {
-    Pagination,
-    echarts,
-    VCharts
-  },
-  directives: { waves },
-  filters: {
-    parseTime: parseTime
-  },
-  data() {
-    return {
-      staticsData: undefined,
-      activePane: 'Dashboard',
-      targetTotal: 0,
-      scanTotal: 0,
-      targetListQuery: {
-        page: 1,
-        limit: 10,
-        param: undefined
-      },
-      scanListQuery: {
-        page: 1,
-        limit: 10,
-        param: undefined
-      },
-      targetList: null,
-      scanList: null,
-      listLoading: false,
-      dialogFormVisible: false,
-      dialogStatus: '',
-      textMap: {
-        create: '新增',
-        update: '更新'
-      },
-      dialogPvVisible: false,
-      downloadLoading: false,
-      temp: {
-        id: undefined,
-        url: '',
-        desc: '',
-        param: '',
-        criticality: ''
-      },
-      tabPosition: 'left'
+  const lineChartData = {
+    intranet_IP: {
+      expectedData: [100, 120, 161, 134, 105, 160, 165],
+      actualData: [120, 82, 91, 154, 162, 140, 145]
+    },
+    intranet_port: {
+      expectedData: [200, 192, 120, 144, 160, 130, 140],
+      actualData: [180, 160, 151, 106, 145, 150, 130]
+    },
+    internet_site: {
+      expectedData: [80, 100, 121, 104, 105, 90, 100],
+      actualData: [120, 90, 100, 138, 142, 130, 130]
+    },
+    internet_IP: {
+      expectedData: [130, 140, 141, 142, 145, 150, 160],
+      actualData: [120, 82, 91, 154, 162, 140, 130]
     }
-  },
-  created() {
-    this.getStatics()
-    this.getTargetList()
-    this.getScanList()
-    // this.handlePane()
-  },
-  methods: {
-    getStatics() {
-      getStatics().then(res => {
-        this.staticsData = res.data
-        console.log(this.staticsData)
-      })
+  }
+  import componentsPanel from './components/panel'
+  import componentsLine from './components/line'
+  import {mapGetters} from 'vuex'
+
+  import echarts from 'echarts'
+  import VCharts from 'v-charts-v2'
+
+  import {
+    getStatics,
+    getTargetList,
+    deleteTarget,
+    getScanList,
+    addTarget,
+    stopScan,
+    deleteScan,
+    getReports,
+    filterScan,
+    filterTarget, startScan
+  } from '@/api/acunetix'
+  import {parseTime} from '@/utils'
+  import waves from '@/directive/waves' // waves directive
+  import Pagination from '@/components/Pagination'
+
+  export default {
+    name: 'Index',
+    components: {
+      Pagination,
+      echarts,
+      VCharts,
+      componentsPanel, componentsLine
     },
-    getTargetList() {
-      this.listLoading = true
-      if (this.targetListQuery.param !== undefined && this.targetListQuery.param !== '') {
-        filterTarget(this.targetListQuery.page, this.targetListQuery.limit, this.targetListQuery.param).then(response => {
-          this.targetTotal = response.data.count
-          this.targetList = response.data.docs
-          setTimeout(() => {
-            this.listLoading = false
-          }, 1.5 * 1000)
-        })
-      } else {
-        getTargetList(this.targetListQuery.page, this.targetListQuery.limit).then(response => {
-          this.targetTotal = response.data.count
-          this.targetList = response.data.docs
-          setTimeout(() => {
-            this.listLoading = false
-          }, 1.5 * 1000)
-        })
+    directives: {waves},
+    filters: {
+      parseTime: parseTime
+    },
+    computed: {
+      ...mapGetters([
+        'name'
+      ])
+    },
+    data() {
+      return {
+        staticsData: undefined,
+        activePane: 'Dashboard',
+        targetTotal: 0,
+        scanTotal: 0,
+        targetListQuery: {
+          page: 1,
+          limit: 10,
+          param: undefined
+        },
+        scanListQuery: {
+          page: 1,
+          limit: 10,
+          param: undefined
+        },
+        targetList: null,
+        scanList: null,
+        listLoading: false,
+        dialogFormVisible: false,
+        dialogStatus: '',
+        textMap: {
+          create: '新增',
+          update: '更新'
+        },
+        dialogPvVisible: false,
+        downloadLoading: false,
+        temp: {
+          id: undefined,
+          url: '',
+          desc: '',
+          param: '',
+          criticality: ''
+        },
+        tabPosition: 'left'
       }
     },
-    getScanList() {
-      this.listLoading = true
-      if (this.scanListQuery.param !== undefined && this.scanListQuery.param !== '') {
-        filterScan(this.scanListQuery.page, this.scanListQuery.limit, this.scanListQuery.param).then(response => {
-          this.scanTotal = response.data.count
-          this.scanList = response.data.data
-          setTimeout(() => {
-            this.listLoading = false
-          }, 1.5 * 1000)
-        })
-      } else {
-        getScanList(this.scanListQuery.page, this.scanListQuery.limit).then(response => {
-          this.scanTotal = response.data.count
-          this.scanList = response.data.data
-          setTimeout(() => {
-            this.listLoading = false
-          }, 1.5 * 1000)
-        })
-      }
-    },
-    handleTargetFilter() {
-      this.targetList.page = 1
+    created() {
+      this.getStatics()
       this.getTargetList()
+      this.getScanList()
+      // this.handlePane()
     },
-    handleTargetDownload() {
-    },
-    handleTargetDelete() {
-    },
-    resetTemp() {
-      this.temp = {
-        id: undefined,
-        url: '',
-        desc: '',
-        criticality: ''
-      }
-    },
-    handleTargetCreate() {
-      this.resetTemp()
-      this.dialogStatus = 'create'
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
-    },
-    handleTargetUpdate() {
-    },
-    handleTargetScan(row) {
-      startScan(row.result).then(res => {
-        if (res.data === true) {
-          this.$notify({
-            title: 'Success',
-            message: '扫描任务启动',
-            type: 'success',
-            duration: 2000
+    methods: {
+      handleSetLineChartData(type) {
+        this.lineChartData = lineChartData[type]
+      },
+      getStatics() {
+        getStatics().then(res => {
+          this.staticsData = res.data
+          console.log(this.staticsData)
+        })
+      },
+      getTargetList() {
+        this.listLoading = true
+        if (this.targetListQuery.param !== undefined && this.targetListQuery.param !== '') {
+          filterTarget(this.targetListQuery.page, this.targetListQuery.limit, this.targetListQuery.param).then(response => {
+            this.targetTotal = response.data.count
+            this.targetList = response.data.docs
+            setTimeout(() => {
+              this.listLoading = false
+            }, 1.5 * 1000)
           })
         } else {
-          this.$notify({
-            title: 'Failure',
-            message: '扫描任务失败',
-            type: 'failure',
-            duration: 2000
+          getTargetList(this.targetListQuery.page, this.targetListQuery.limit).then(response => {
+            this.targetTotal = response.data.count
+            this.targetList = response.data.docs
+            setTimeout(() => {
+              this.listLoading = false
+            }, 1.5 * 1000)
           })
         }
-      })
-    },
-    createData() {
-      this.$refs['dataForm'].validate((valid) => {
-        if (valid) {
-          addTarget(this.temp).then(() => {
-            this.getTargetList()
-            this.dialogFormVisible = false
+      },
+      getScanList() {
+        this.listLoading = true
+        if (this.scanListQuery.param !== undefined && this.scanListQuery.param !== '') {
+          filterScan(this.scanListQuery.page, this.scanListQuery.limit, this.scanListQuery.param).then(response => {
+            this.scanTotal = response.data.count
+            this.scanList = response.data.data
+            setTimeout(() => {
+              this.listLoading = false
+            }, 1.5 * 1000)
+          })
+        } else {
+          getScanList(this.scanListQuery.page, this.scanListQuery.limit).then(response => {
+            this.scanTotal = response.data.count
+            this.scanList = response.data.data
+            setTimeout(() => {
+              this.listLoading = false
+            }, 1.5 * 1000)
+          })
+        }
+      },
+      handleTargetFilter() {
+        this.targetList.page = 1
+        this.getTargetList()
+      },
+      handleTargetDownload() {
+      },
+      handleTargetDelete() {
+      },
+      resetTemp() {
+        this.temp = {
+          id: undefined,
+          url: '',
+          desc: '',
+          criticality: ''
+        }
+      },
+      handleTargetCreate() {
+        this.resetTemp()
+        this.dialogStatus = 'create'
+        this.dialogFormVisible = true
+        this.$nextTick(() => {
+          this.$refs['dataForm'].clearValidate()
+        })
+      },
+      handleTargetUpdate() {
+      },
+      handleTargetScan(row) {
+        startScan(row.result).then(res => {
+          if (res.data === true) {
             this.$notify({
               title: 'Success',
-              message: 'Created Successfully',
+              message: '扫描任务启动',
               type: 'success',
               duration: 2000
             })
-          })
-        }
-      })
-    },
-
-    handleScanFilter() {
-      this.scanListQuery.page = 1
-      this.getScanList()
-    },
-    handleScanDown(row, index) {
-      getReports(row.scan_id).then(res => {
-      })
-    },
-    handleScanDelete(row, index) {
-      deleteScan(row.scan_id).then(() => {
-        this.$notify({
-          title: 'Success',
-          message: 'Delete Successfully',
-          type: 'success',
-          duration: 2000
+          } else {
+            this.$notify({
+              title: 'Failure',
+              message: '扫描任务失败',
+              type: 'failure',
+              duration: 2000
+            })
+          }
         })
-        this.list.splice(index, 1)
-      })
+      },
+      createData() {
+        this.$refs['dataForm'].validate((valid) => {
+          if (valid) {
+            addTarget(this.temp).then(() => {
+              this.getTargetList()
+              this.dialogFormVisible = false
+              this.$notify({
+                title: 'Success',
+                message: 'Created Successfully',
+                type: 'success',
+                duration: 2000
+              })
+            })
+          }
+        })
+      },
+
+      handleScanFilter() {
+        this.scanListQuery.page = 1
+        this.getScanList()
+      },
+      handleScanDown(row, index) {
+        getReports(row.scan_id).then(res => {
+        })
+      },
+      handleScanDelete(row, index) {
+        deleteScan(row.scan_id).then(() => {
+          this.$notify({
+            title: 'Success',
+            message: 'Delete Successfully',
+            type: 'success',
+            duration: 2000
+          })
+          this.list.splice(index, 1)
+        })
+      }
     }
   }
-}
 </script>
+
+
+<style lang="scss" scoped>
+  .dashboard {
+    &-container {
+      margin: 30px;
+    }
+
+    &-text {
+      font-size: 30px;
+      line-height: 46px;
+    }
+  }
+</style>
