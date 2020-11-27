@@ -8,9 +8,9 @@
       <div class="title-container" style="display: inline-flex">
 <!--        <div>-->
 <!--        <span class="svg-container" style="padding-right:50px;padding-left: 50px">-->
-<!--          <svg-icon width="20px" height="20px" viewBox="0 0 400 400" icon-class="ylz"/>-->
+<!--          <svg-icon width="20px" height="20px" viewBox="0 0 400 400" icon-class=""/>-->
 <!--       </span></div>-->
-        <h3 class="title" style="padding-left: 100px">易联众安全管理平台</h3>
+        <h3 class="title" style="padding-left: 100px">KidSecPlatform</h3>
       </div>
 
       <el-form-item prop="username">
@@ -59,7 +59,7 @@
 
     </el-form>
 
-    <div class="copyright">Copyright @ 2020-2021 云服务&数据中心</div>
+    <div class="copyright">Copyright @ 2020-2021 </div>
   </div>
 </template>
 
