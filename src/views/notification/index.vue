@@ -34,7 +34,7 @@
       </el-table-column>
       <el-table-column align="center" prop="created_at" label="通告时间">
         <template slot-scope="scope">
-          <i class="el-icon-time" />
+          <i class="el-icon-time"/>
           <span>{{ scope.row.add_time | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
         </template>
       </el-table-column>
@@ -57,61 +57,108 @@
       @pagination="getList"
     />
 
+    <el-dialog :title="temp.module" :visible.sync="dialogFormVisible" width="400px">
+      <p v-model="temp">{{temp.info}}</p>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">
+          取消
+        </el-button>
+        <el-button type="primary" @click="gotoDetail()">
+          查看
+        </el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-// eslint-disable-next-line no-unused-vars
-import { getList, read } from '@/api/notification'
-import { parseTime } from '@/utils'
-import waves from '@/directive/waves' // waves directive
-import Pagination from '@/components/Pagination/index' // secondary package based on el-pagination
+  // eslint-disable-next-line no-unused-vars
+  import {getList, read} from '@/api/notification'
+  import {parseTime} from '@/utils'
+  import waves from '@/directive/waves' // waves directive
+  import Pagination from '@/components/Pagination/index' // secondary package based on el-pagination
 
-export default {
-  name: 'Index',
-  components: { Pagination },
-  directives: { waves },
-  filters: {
-    parseTime: parseTime
-  },
-  data() {
-    return {
-      total: 0,
-      list: null,
-      listQuery: {
-        page: 1,
-        limit: 10
-      },
-      listLoading: false
-    }
-  },
-  created() {
-    this.getList()
-  },
-  methods: {
-    getList() {
-      this.listLoading = true
-      getList(this.listQuery.page, this.listQuery.limit).then(res => {
-        this.list = res.data.docs
-        this.total = res.data.count
-        this.listLoading = false
-      })
+  export default {
+    name: 'Index',
+    components: {Pagination},
+    directives: {waves},
+    filters: {
+      parseTime: parseTime
     },
-
-    handleRead(row, index) {
-      read(row._id)
-    },
-    formatJson(filterVal) {
-      return this.list.map(v => filterVal.map(j => {
-        if (j === 'add_time') {
-          return parseTime(v[j])
-        } else {
-          return v[j]
+    data() {
+      return {
+        total: 0,
+        list: null,
+        listQuery: {
+          page: 1,
+          limit: 10
+        },
+        dialogFormVisible: false,
+        listLoading: false,
+        temp: {
+          host:undefined,
+          module: undefined,
+          info: undefined
         }
-      }))
+      }
+    },
+    created() {
+      this.getList()
+    },
+    methods: {
+      getList() {
+        this.listLoading = true
+        getList(this.listQuery.page, this.listQuery.limit).then(res => {
+          this.list = res.data.docs
+          this.total = res.data.count
+          this.listLoading = false
+        })
+      },
+      gotoDetail() {
+        if (temp.module === 'PortScan') {
+          this.$router.push({
+            name: 'Describe',
+            params: {
+              type: id,
+              host : this.temp.host
+            }
+          })
+        } else if (temp.module === 'GetWebInfo') {
+          this.$router.push({
+            name: 'Describe',
+            params: {
+              type: id,
+              host : this.temp.host
+            }
+          })
+        } else if (temp.module === 'HostScan') {
+          this.$router.push({
+            name: 'Describe',
+            params: {
+              type: id,
+              host : this.temp.host
+            }
+          })
+        }
+      },
+      handleRead(row, index) {
+        read(row._id)
+        this.dialogFormVisible = true
+        this.temp.host = row.title
+        this.temp.module = row.module
+        this.temp.info = row.info
+      },
+      formatJson(filterVal) {
+        return this.list.map(v => filterVal.map(j => {
+          if (j === 'add_time') {
+            return parseTime(v[j])
+          } else {
+            return v[j]
+          }
+        }))
+      }
     }
   }
-}
 </script>
 
 <style scoped>

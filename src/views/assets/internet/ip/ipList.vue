@@ -234,8 +234,11 @@ export default {
   },
   methods: {
     getList() {
+      if(this.$route.params.type && this.$route.params.ip){
+        this.listQuery.ip =  this.$route.params.ip
+      }
       this.listLoading = false
-      console.log(this.listQuery.ip)
+
       if (this.listQuery.ip !== undefined && this.listQuery.ip !== '') {
         findByIP(this.listQuery.page, this.listQuery.limit, this.listQuery.ip).then(response => {
           // console.log(response.data.docs)

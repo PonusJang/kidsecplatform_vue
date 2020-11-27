@@ -234,6 +234,9 @@ export default {
       this.reload()
     },
     getList() {
+      if(this.$route.params.type && this.$route.params.domain){
+        this.listQuery.domain =  this.$route.params.domain
+      }
       this.listLoading = false
       if (this.listQuery.owner !== undefined && this.listQuery.owner !== '') {
         findByOwner(this.listQuery.page, this.listQuery.limit, this.listQuery.owner).then(response => {
