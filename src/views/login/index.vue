@@ -8,7 +8,7 @@
       <div class="title-container" style="display: inline-flex">
 <!--        <div>-->
 <!--        <span class="svg-container" style="padding-right:50px;padding-left: 50px">-->
-<!--          <svg-icon width="20px" height="20px" viewBox="0 0 400 400" icon-class="ylz"/>-->
+<!--          <svg-icon width="20px" height="20px" viewBox="0 0 400 400" icon-class=""/>-->
 <!--       </span></div>-->
         <h3 class="title" style="padding-left: 100px">KidSecPlatform</h3>
       </div>
