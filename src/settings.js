@@ -1,6 +1,6 @@
 module.exports = {
 
-  title: '易联众安全管理平台',
+  title: 'Kid SecManager Platform',
 
   /**
    * @type {boolean} true | false
