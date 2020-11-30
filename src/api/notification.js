@@ -15,3 +15,19 @@ export function read(id) {
     params: { id }
   })
 }
+
+
+export function getReceive() {
+  return request({
+    url: '/notification/getReceive',
+    method: 'get',
+  })
+}
+
+export function sendNotice(data) {
+  return request({
+    url: '/notification/sendNotice',
+    method: 'post',
+    data
+  })
+}

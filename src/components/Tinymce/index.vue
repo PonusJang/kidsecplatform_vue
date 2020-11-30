@@ -41,6 +41,22 @@ export default {
         return []
       }
     },
+    accept: {
+      default: 'image/jpeg, image/png',
+      type: String
+    },
+    url: {
+      default: '',
+      type: String
+    },
+    maxSize: {
+      default: 2097152,
+      type: Number
+    },
+    withCredentials: {
+      default: false,
+      type: Boolean
+    },
     menubar: {
       type: String,
       default: 'file edit insert view format table'
@@ -58,6 +74,8 @@ export default {
   },
   data() {
     return {
+      Url: '',
+      upLoadBaseURL: 'process.env.VUE_APP_BASE_API',
       hasChange: false,
       hasInit: false,
       tinymceId: this.id,
@@ -132,7 +150,31 @@ export default {
         imagetools_cors_hosts: ['www.tinymce.com', 'codepen.io'],
         default_link_target: '_blank',
         link_title: false,
-        nonbreaking_force_tab: true, // inserting nonbreaking space &nbsp; need Nonbreaking Space Plugin
+        // nonbreaking_force_tab: true, // inserting nonbreaking space &nbsp; need Nonbreaking Space Plugin
+
+        paste_word_valid_elements: '*[*]',        // word需要它
+        paste_data_images: true,                  // 粘贴的同时能把内容里的图片自动上传，非常强力的功能
+        paste_convert_word_fake_lists: false,     // 插入word文档需要该属性
+        paste_webkit_styles: 'all',
+        paste_merge_formats: true,
+        nonbreaking_force_tab: false,
+        paste_auto_cleanup_on_paste: false,
+        insert_button_items: 'image link | inserttable',
+
+        imagetools_toolbar: 'rotateleft rotateright | flipv fliph | editimage imageoptions',
+        images_upload_handler: (blobInfo, success, failure) => {
+          let reader = new FileReader();
+          reader.readAsDataURL(blobInfo.blob());
+          reader.onload = function () {
+            raceApi.postImgUrl({ image: this.result }).then(res => {  //这里就是要上传base64  格式的图片的请求了
+              if (res.code == 200) {
+                let url = res.data.domain + res.data.path
+                success(url)
+                console.log(url);
+              }
+            })
+          }
+        },
         init_instance_callback: editor => {
           if (_this.value) {
             editor.setContent(_this.value)
