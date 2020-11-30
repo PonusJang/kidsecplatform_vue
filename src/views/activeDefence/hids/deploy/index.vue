@@ -305,6 +305,7 @@ export default {
           this.total = response.data.count
           this.list = response.data.docs
           setTimeout(() => {
+            this.resetTemp()
             this.listLoading = false
           }, 1.5 * 1000)
         })
@@ -313,6 +314,7 @@ export default {
           this.total = response.data.count
           this.list = response.data.docs
           setTimeout(() => {
+            this.resetTemp()
             this.listLoading = false
           }, 1.5 * 1000)
         })
@@ -321,6 +323,7 @@ export default {
           this.total = response.data.count
           this.list = response.data.docs
           setTimeout(() => {
+            this.resetTemp()
             this.listLoading = false
           }, 1.5 * 1000)
         })

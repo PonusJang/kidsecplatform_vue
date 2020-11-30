@@ -57,8 +57,8 @@
       @pagination="getList"
     />
 
-    <el-dialog :title="temp.module" :visible.sync="dialogFormVisible" width="400px">
-      <p v-model="temp">{{temp.info}}</p>
+    <el-dialog center :title="temp.module" :visible.sync="dialogFormVisible" width="800px">
+      <div class="editor-content" v-html="temp.info" />
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">
           取消
