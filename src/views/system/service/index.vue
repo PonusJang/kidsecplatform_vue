@@ -113,15 +113,22 @@
 </template>
 
 <script>
-
-import { info, start, stop, restart } from '@/api/service'
+import  socket from '@/utils/socket'
+import { getList, info, start, stop, restart } from '@/api/service'
 import { parseTime } from '@/utils'
 import waves from '@/directive/waves' // waves directive
+
+socket.on('connect', () => {
+  console.log('连接成功')
+})
+socket.on('disconnect', () => {
+  console.log('连接断开')
+})
 
 export default {
 
   name: 'ServiceIndex',
-  components: { },
+  components: { socket },
   directives: { waves },
   filters: {
     parseTime: parseTime
@@ -134,136 +141,54 @@ export default {
         metrics: ['CPU', 'MEM'],
         dimension: ['Time']
       },
-      list: [],
+      list: undefined,
       app: null,
       listLoading: true,
       intervalid: undefined
     }
   },
   created() {
-    this.getInfo()
-    this.intervalid = setInterval(() => {
-      setTimeout(this.getInfo(), 0)
-    }, 10000)
+    this.getList()
+    this.getInfo2()
   },
+
   methods: {
+    getInfo2(){
+
+    },
+    getList(){
+      getList().then(res=>{          console.log(res)
+        if(res.code === 200)
+        this.list = res.data
+        this.listLoading = false
+      })
+    },
     getInfo() {
-      var list = [
-        {
-          app: 'Backend',
-          status: null,
-          pid: null,
-          cpu: 0,
-          memory: 0,
-          UptTime: null,
-          StartTime: null,
-          RestartTimes: null,
-          history: []
-        },
-        {
-          app: 'CronGetSubdomain',
-          status: null,
-          pid: null,
-          cpu: 0,
-          memory: 0,
-          UptTime: null,
-          StartTime: null,
-          RestartTimes: null,
-          history: []
-        },
-        {
-          app: 'CronGetIntranetPorts',
-          status: null,
-          pid: null,
-          cpu: 0,
-          memory: 0,
-          UptTime: null,
-          StartTime: null,
-          RestartTimes: null,
-          history: []
-        },
-        {
-          app: 'CronGetInternetPorts',
-          status: null,
-          pid: null,
-          cpu: 0,
-          memory: 0,
-          UptTime: null,
-          StartTime: null,
-          RestartTimes: null,
-          history: []
-        },
-        {
-          app: 'CronGetWebInfo',
-          status: null,
-          pid: null,
-          cpu: 0,
-          memory: 0,
-          UptTime: null,
-          StartTime: null,
-          RestartTimes: null,
-          history: []
-        },
-        {
-          app: 'CronCheck',
-          status: null,
-          pid: null,
-          cpu: 0,
-          memory: 0,
-          UptTime: null,
-          StartTime: null,
-          RestartTimes: null,
-          history: []
-        },
-        {
-          app: 'CronCheck2',
-          status: null,
-          pid: null,
-          cpu: 0,
-          memory: 0,
-          UptTime: null,
-          StartTime: null,
-          RestartTimes: null,
-          history: []
-        },
-        {
-          app: 'CronPerformance',
-          status: null,
-          pid: null,
-          cpu: 0,
-          memory: 0,
-          UptTime: null,
-          StartTime: null,
-          RestartTimes: null,
-          history: []
-        }
-      ]
       info().then(res => {
         if (res.code === 200) {
           const data = res.data
           if (data.length > 0) {
             data.forEach(function(item) {
-              for (let i = 0; i < list.length; i++) {
-                var name = list[i].app
+              for (let i = 0; i < this.list.length; i++) {
+                let name = this.list[i].app
                 if (name === item.name) {
-                  list[i].pid = item.pid
-                  list[i].cpu = item.monit.cpu
-                  list[i].memory = Math.ceil(item.monit.memory / 1024 / 1024)
-                  list[i].UptTime = item.pm2_env.pm_uptime
-                  list[i].status = item.pm2_env.status
-                  list[i].StartTime = item.pm2_env.created_at
-                  list[i].RestartTimes = item.pm2_env.restart_time
-                  list[i].history = item.history
+                  this.list[i].pid = item.pid
+                  this.list[i].cpu = item.monit.cpu
+                  this.list[i].memory = Math.ceil(item.monit.memory / 1024 / 1024)
+                  this.list[i].UptTime = item.pm2_env.pm_uptime
+                  this.list[i].status = item.pm2_env.status
+                  this.list[i].StartTime = item.pm2_env.created_at
+                  this.list[i].RestartTimes = item.pm2_env.restart_time
+                  this.list[i].history = item.history
                 }
               }
             })
           }
-          this.list = list
         } else {
           this.$notify({
             title: '服务状态',
             message: '信息获取失败',
-            type: 'fail',
+            type: 'failure',
             duration: 2000
           })
         }

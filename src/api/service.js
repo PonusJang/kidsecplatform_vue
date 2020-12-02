@@ -1,5 +1,13 @@
 import request from '@/utils/request'
 
+export function getList() {
+  return request({
+    url: '/service/getList',
+    method: 'get'
+  })
+}
+
+
 export function start(app) {
   return request({
     url: '/service/start',
