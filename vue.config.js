@@ -40,7 +40,19 @@ module.exports = {
         // target: 'http://127.0.0.1:3000',
         pathReWrite: { '^/api': '/api' },
         changeOrigin: true
-      }
+      },
+     '/socket.io': {
+        target: 'http://10.10.8.6:3000/',
+        ws: true,
+        changeOrigin: true,
+       debug:true
+      },
+       'sockjs-node': {
+         target: 'http://10.10.8.6:3000/',
+         ws: false,
+         changeOrigin: true,
+         debug:true
+       },
     },
     overlay: {
       warnings: false,
