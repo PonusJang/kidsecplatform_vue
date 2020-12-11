@@ -29,6 +29,7 @@
       >
         重启全部
       </el-button>
+
     </div>
     <br>
     <el-table
@@ -114,7 +115,7 @@
 
 <script>
   import socket from '@/utils/socket'
-  import {getList, info, start, stop, restart} from '@/api/service'
+  import {getList,  start, stop, restart} from '@/api/service'
   import {parseTime} from '@/utils'
   import waves from '@/directive/waves' // waves directive
 
@@ -126,7 +127,6 @@
     filters: {
       parseTime: parseTime
     },
-
     data() {
       return {
         total: 0,
@@ -137,70 +137,45 @@
         list: undefined,
         app: null,
         listLoading: true,
-        intervalid: undefined
+        temp:undefined
       }
     },
     created() {
       this.getList()
-      this.getInfo2()
+      this.socketListen()
       setInterval(function () {
-        socket.on('connect', () => {
-          socket.emit('serviceInfo', (msg) => {
-            console.log('范松看')
-            console.log(msg)
-          })
-          socket.on('serviceInfo', function (data) {
-            console.log(data);
-          })
-          socket.on('disconnect', () => {
-            console.log('连接断开')
-          })
-        })
-      }, 3000);
+        socket.emit('serviceInfo','Get')
+      }, 5000)
     },
-
     methods: {
-      getInfo2() {
-
-      },
       getList() {
         getList().then(res => {
-          console.log(res)
-          if (res.code === 200)
+          if (res.code === 200 && res.data !== undefined && res.data.length >0) {
             this.list = res.data
+          }
           this.listLoading = false
         })
       },
-      getInfo() {
-        info().then(res => {
-          if (res.code === 200) {
-            const data = res.data
-            if (data.length > 0) {
-              data.forEach(function (item) {
-                for (let i = 0; i < this.list.length; i++) {
-                  let name = this.list[i].app
-                  if (name === item.name) {
-                    this.list[i].pid = item.pid
-                    this.list[i].cpu = item.monit.cpu
-                    this.list[i].memory = Math.ceil(item.monit.memory / 1024 / 1024)
-                    this.list[i].UptTime = item.pm2_env.pm_uptime
-                    this.list[i].status = item.pm2_env.status
-                    this.list[i].StartTime = item.pm2_env.created_at
-                    this.list[i].RestartTimes = item.pm2_env.restart_time
-                    this.list[i].history = item.history
-                  }
+      socketListen(){
+        socket.on('serviceInfo',(data)=> {
+          let temp = JSON.parse(JSON.stringify(data))
+          if (temp.length > 0) {
+            temp.forEach( (item) => {
+              for (let i = 0; i < this.list.length; i++) {
+                let name = this.list[i].app
+                if (name === item.name) {
+                  this.list[i].pid = item.pid
+                  this.list[i].cpu = item.monit.cpu
+                  this.list[i].memory = Math.ceil(item.monit.memory / 1024 / 1024)
+                  this.list[i].UptTime = item.pm2_env.pm_uptime
+                  this.list[i].status = item.pm2_env.status
+                  this.list[i].StartTime = item.pm2_env.created_at
+                  this.list[i].RestartTimes = item.pm2_env.restart_time
+                  this.list[i].history = item.history
                 }
-              })
-            }
-          } else {
-            this.$notify({
-              title: '服务状态',
-              message: '信息获取失败',
-              type: 'failure',
-              duration: 2000
+              }
             })
           }
-          this.listLoading = false
         })
       },
       handleStart(row) {
@@ -219,7 +194,7 @@
               type: 'success',
               duration: 2000
             })
-            this.getInfo()
+
           }
         })
       },
@@ -239,7 +214,7 @@
               type: 'success',
               duration: 2000
             })
-            this.getInfo()
+
           }
         })
       },
@@ -259,7 +234,7 @@
               type: 'success',
               duration: 2000
             })
-            this.getInfo()
+
           }
         })
       },
@@ -273,7 +248,7 @@
                 type: 'fail',
                 duration: 2000
               })
-              this.getInfo()
+
             }
           })
         }
@@ -288,7 +263,7 @@
                 type: 'fail',
                 duration: 2000
               })
-              this.getInfo()
+
             }
           })
         }
@@ -303,14 +278,10 @@
                 type: 'fail',
                 duration: 2000
               })
-              this.getInfo()
+
             }
           })
         }
-      },
-      end() {
-        console.log('clear')
-        clearInterval(this.intervalid)
       }
     }
   }
