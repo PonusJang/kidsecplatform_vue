@@ -85,9 +85,9 @@
         }
       }
       return {
-        password: 'admin@2020',
+        password: '',
         loginForm: {
-          username: 'admin',
+          username: '',
           password: ''
         },
         loginRules: {
