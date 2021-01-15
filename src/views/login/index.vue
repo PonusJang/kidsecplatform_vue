@@ -125,7 +125,7 @@
             this.loading = true
 
             this.loginForm.password = CryptoJS.encrypt(this.password)
-            console.log(this.loginForm)
+
             this.$store.dispatch('user/login', this.loginForm).then(() => {
               this.$router.push({path: this.redirect || '/'})
               this.loading = false
