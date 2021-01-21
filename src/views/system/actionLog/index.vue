@@ -28,12 +28,12 @@
           <span class="link-type"> {{ scope.row.status }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="参数" align="center">
+      <el-table-column :show-overflow-tooltip="true" label="参数" align="center">
         <template slot-scope="scope">
           <span class="link-type"> {{ scope.row.param }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="错误信息" align="center">
+      <el-table-column :show-overflow-tooltip="true" label="错误信息" align="center">
         <template slot-scope="scope">
           <span class="link-type"> {{ scope.row.error }}</span>
         </template>

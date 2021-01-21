@@ -104,6 +104,11 @@
           <span class="link-type" @click="handleUpdate(row)">{{ scope.row.domain }}</span>
         </template>
       </el-table-column>
+      <el-table-column label="状态" align="center">
+        <template slot-scope="scope">
+          <span class="link-type" @click="handleUpdate(row)">{{ scope.row.status }}</span>
+        </template>
+      </el-table-column>
       <el-table-column
         align="center"
         prop="created_at"

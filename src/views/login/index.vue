@@ -1,16 +1,12 @@
 <template>
 
-  <div class="login-container">
+  <div class="login-container" id="particles-js">
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on"
              label-position="left">
 
 
       <div class="title-container" style="display: inline-flex">
-<!--        <div>-->
-<!--        <span class="svg-container" style="padding-right:50px;padding-left: 50px">-->
-<!--          <svg-icon width="20px" height="20px" viewBox="0 0 400 400" icon-class=""/>-->
-<!--       </span></div>-->
-        <h3 class="title" style="padding-left: 100px">KidSecPlatform</h3>
+        <h3 class="title" style="padding-left: 100px">易联众安全管理平台</h3>
       </div>
 
       <el-form-item prop="username">
@@ -52,11 +48,6 @@
                  @click.native.prevent="handleLogin">登录
       </el-button>
 
-      <!--      <div class="tips">-->
-      <!--        <span style="margin-right:20px;">用户名: admin</span>-->
-      <!--        <span> 密码: any</span>-->
-      <!--      </div>-->
-
     </el-form>
 
     <div class="copyright">Copyright @ 2020-2021 </div>
@@ -66,9 +57,12 @@
 <script>
   import {validUsername} from '@/utils/validate'
   import CryptoJS from '@/utils/CryptoJS'
+  import particlesJs from "particles.js";
+  import particlesConfig from "./particles.json";
 
   export default {
     name: 'Login',
+    components : { particlesJs },
     data() {
       const validateUsername = (rule, value, callback) => {
         if (!validUsername(value)) {
@@ -107,6 +101,9 @@
         immediate: true
       }
     },
+    mounted() {
+      particlesJs("particles-js", particlesConfig);
+    },
     methods: {
       showPwd() {
         if (this.passwordType === 'password') {
@@ -125,7 +122,7 @@
             this.loading = true
 
             this.loginForm.password = CryptoJS.encrypt(this.password)
-
+            console.log(this.loginForm)
             this.$store.dispatch('user/login', this.loginForm).then(() => {
               this.$router.push({path: this.redirect || '/'})
               this.loading = false

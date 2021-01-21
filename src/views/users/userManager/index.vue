@@ -77,11 +77,11 @@
           <span class="link-type" @click="handleUpdate(row)">{{ scope.row.email }}</span>
         </template>
       </el-table-column>
-<!--      <el-table-column label="邮箱" align="center">-->
-<!--        <template slot-scope="scope">-->
-<!--          <span class="link-type" @click="handleUpdate(row)">{{ scope.row.email }}</span>-->
-<!--        </template>-->
-<!--      </el-table-column>-->
+      <el-table-column label="邮箱" align="center">
+        <template slot-scope="scope">
+          <span class="link-type" @click="handleUpdate(row)">{{ scope.row.email }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="上次登录" align="center">
         <template slot-scope="scope">
           <span class="link-type" @click="handleUpdate(row)">{{ scope.row.lastLogonIn | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
@@ -120,9 +120,9 @@
         <el-form-item label="用户名" prop="title">
           <el-input v-model="temp.username" />
         </el-form-item>
-<!--        <el-form-item label="密码" prop="title" :disabled="passwdDisabled">-->
-<!--          <el-input v-model="temp.password" />-->
-<!--        </el-form-item>-->
+        <el-form-item label="密码" prop="title" :disabled="passwdDisabled">
+          <el-input v-model="temp.password" />
+        </el-form-item>
         <el-form-item label="中文名" prop="title">
           <el-input v-model="temp.realname" />
         </el-form-item>

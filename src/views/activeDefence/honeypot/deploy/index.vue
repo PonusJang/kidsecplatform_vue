@@ -1,7 +1,7 @@
 <template>
 
   <div class="app-container">
-    <div class="filter-container">
+    <div class="filter-container" style="display: flex;margin-bottom: 10px">
       <el-button
         class="filter-item"
         style="margin-left: 10px;"

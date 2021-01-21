@@ -10,7 +10,7 @@
         <el-form-item label="接收者">
           <el-select multiple
                      v-model="temp.to"
-                     placeholder="Type"
+                     placeholder="Receiver"
                      clearable
                      class="filter-item"
                      style="width: 100%"
