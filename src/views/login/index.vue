@@ -6,7 +6,7 @@
 
 
       <div class="title-container" style="display: inline-flex">
-        <h3 class="title" style="padding-left: 100px">易联众安全管理平台</h3>
+        <h3 class="title" style="padding-left: 100px">KidSecManagerPlatform</h3>
       </div>
 
       <el-form-item prop="username">
