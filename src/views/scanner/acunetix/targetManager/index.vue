@@ -111,7 +111,7 @@
 
 <script>
 
-  import {getTargetList, addTarget, filterTarget, startScan} from '@/api/acunetix'
+  import {getTargetList, addTarget, filterTarget, startScan,deleteTarget} from '@/api/acunetix'
   import {parseTime} from '@/utils'
   import waves from '@/directive/waves' // waves directive
   import Pagination from '@/components/Pagination'
@@ -160,9 +160,6 @@
     methods: {
       getTargetList() {
 
-
-
-
         this.listLoading = true
         if (this.targetListQuery.param !== undefined && this.targetListQuery.param !== '') {
           filterTarget(this.targetListQuery.page, this.targetListQuery.limit, this.targetListQuery.param).then(response => {
@@ -189,7 +186,15 @@
       },
       handleTargetDownload() {
       },
-      handleTargetDelete() {
+      handleTargetDelete(row,index) {
+        deleteTarget(row.result).then(res=>{
+          this.$notify({
+            title: 'Success',
+            message: 'Deleted Successfully',
+            type: 'success',
+            duration: 2000
+          })
+        })
       },
       resetTemp() {
         this.temp = {

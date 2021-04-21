@@ -7,6 +7,22 @@ export function getAgentList() {
   })
 }
 
+export function runServer() {
+  return request({
+    url: '/honeypot/runServer',
+    method: 'get'
+  })
+}
+
+
+export function getServerStatus() {
+  return request({
+    url: '/honeypot/getServerStatus',
+    method: 'get'
+  })
+}
+
+
 export function deployAgent(data) {
   return request({
     url: '/honeypot/deployAgent',

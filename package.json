@@ -1,7 +1,7 @@
 {
-  "name": "kidsecplatform",
+  "name": "secplatform",
   "version": "1.0.0",
-  "description": "KidSecPaltform",
+  "description": "secplatform",
   "author": "Ponus <ponujang@gmail.com>",
   "scripts": {
     "dev": "vue-cli-service serve",
@@ -17,6 +17,8 @@
     "@jiaminghi/data-view": "^2.10.0",
     "ant-design-vue": "^1.6.4",
     "axios": "0.18.1",
+    "bpmn-js": "^8.3.0",
+    "bpmn-js-properties-panel": "^0.42.0",
     "clipboard": "2.0.4",
     "codemirror": "5.45.0",
     "core-js": "3.6.5",

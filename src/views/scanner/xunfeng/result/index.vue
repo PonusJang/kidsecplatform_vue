@@ -184,7 +184,7 @@
       },
       handleCheck(row) {
         check({ip: row.ip, port: row.port, plugin: row.plugin}).then(res => {
-
+            //TODO
         })
       },
       handleDownload() {

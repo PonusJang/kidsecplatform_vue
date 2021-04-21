@@ -75,7 +75,7 @@
           <el-button v-show="row.status === 'running'" type="primary" size="mini" @click="handleStopScan(row)">
             停止
           </el-button>
-          <router-link :to="{path :'hostVulnsInfo/'+ row.result , query:{sid :row.result}}">
+          <router-link :to="{path :'hostVulnsInfo' , query:{sid :row.result}}">
             <el-button v-show="row.status === 'completed'" type="primary" size="mini">
               查看结果
             </el-button>
