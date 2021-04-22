@@ -109,7 +109,7 @@
       getList() {
         this.listLoading = true
         getList(this.listQuery.page, this.listQuery.limit).then(res => {
-          this.list = res.data.docs
+          this.list = res.data.data
           this.total = res.data.count
           this.listLoading = false
         })

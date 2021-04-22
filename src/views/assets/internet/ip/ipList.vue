@@ -243,7 +243,7 @@ export default {
         findByIP(this.listQuery.page, this.listQuery.limit, this.listQuery.ip).then(response => {
           // console.log(response.data.docs)
           this.total = response.data.count
-          this.list = response.data.docs
+          this.list = response.data.data
           setTimeout(() => {
             this.listLoading = false
           }, 1.5 * 1000)
@@ -252,7 +252,7 @@ export default {
         findByOwner(this.listQuery.page, this.listQuery.limit, this.listQuery.owner).then(response => {
           // console.log(response.data.docs)
           this.total = response.data.count
-          this.list = response.data.docs
+          this.list = response.data.data
           setTimeout(() => {
             this.listLoading = false
           }, 1.5 * 1000)
@@ -261,7 +261,7 @@ export default {
         findByPort(this.listQuery.page, this.listQuery.limit, this.listQuery.port).then(response => {
           // console.log(response.data.docs)
           this.total = response.data.count
-          this.list = response.data.docs
+          this.list = response.data.data
           setTimeout(() => {
             this.listLoading = false
           }, 1.5 * 1000)
@@ -270,7 +270,7 @@ export default {
         findByService(this.listQuery.page, this.listQuery.limit, this.listQuery.service).then(response => {
           // console.log(response.data.docs)
           this.total = response.data.count
-          this.list = response.data.docs
+          this.list = response.data.data
           setTimeout(() => {
             this.listLoading = false
           }, 1.5 * 1000)
@@ -279,7 +279,7 @@ export default {
         getList(this.listQuery.page, this.listQuery.limit).then(response => {
           // console.log(response.data.docs)
           this.total = response.data.count
-          this.list = response.data.docs
+          this.list = response.data.data
           setTimeout(() => {
             this.listLoading = false
           }, 1.5 * 1000)
@@ -322,7 +322,7 @@ export default {
       })
     },
     handleFilter() {
-      // this.listQuery.page = 1
+      this.listQuery.page = 1
       this.getList()
     },
     handleCreate() {
@@ -375,7 +375,7 @@ export default {
     },
     handleHostScan(row) {
       hostScan(row.ip).then(res => {
-        if (res.code === 200 && res.data === true) {
+        if (res.code === 200) {
           this.$notify({
             title: 'Success',
             message: 'Successfully',
@@ -394,7 +394,7 @@ export default {
     },
     handlePortScan(row) {
       portScan(row.ip).then(res => {
-        if (res.code === 200 && res.data === true) {
+        if (res.code === 200 ) {
           this.$notify({
             title: 'Success',
             message: 'Successfully',

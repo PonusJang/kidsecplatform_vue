@@ -16,9 +16,9 @@ export function findByParam(page, limit, param) {
   })
 }
 
-export function flterByDate(page, limit, minDate, maxDate) {
+export function filterByDate(page, limit, minDate, maxDate) {
   return request({
-    url: '/result/flterByDate',
+    url: '/result/filterByDate',
     method: 'get',
     params: { page, limit, minDate, maxDate }
   })

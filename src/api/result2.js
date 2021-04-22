@@ -23,9 +23,17 @@ export function findByAssets(page, limit, assets) {
   })
 }
 
+export function findByIp(page, limit, ip) {
+  return request({
+    url: '/result2/findByIp',
+    method: 'get',
+    params: { page, limit, ip }
+  })
+}
+
 export function findByMonth(page, limit, month) {
   return request({
-    url: '/result2/flterByDate',
+    url: '/result2/filterByMonth',
     method: 'get',
     params: { page, limit, month }
   })

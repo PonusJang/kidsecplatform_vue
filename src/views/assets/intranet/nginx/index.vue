@@ -81,22 +81,22 @@
       </el-table-column>
       <el-table-column label="服务器" align="center">
         <template slot-scope="scope">
-          <span class="link-type" @click="handleUpdate(row)"> {{ scope.row.local_ip }}</span>
+          <span class="link-type" @click="handleUpdate(row)"> {{ scope.row.localIp }}</span>
         </template>
       </el-table-column>
       <el-table-column label="本地端口" align="center">
         <template slot-scope="scope">
-          <span class="link-type" @click="handleUpdate(row)">{{ scope.row.local_port }}</span>
+          <span class="link-type" @click="handleUpdate(row)">{{ scope.row.localPort }}</span>
         </template>
       </el-table-column>
       <el-table-column label="转发IP" align="center">
         <template slot-scope="scope">
-          <span class="link-type" @click="handleUpdate(row)">{{ scope.row.proxy_ip }}</span>
+          <span class="link-type" @click="handleUpdate(row)">{{ scope.row.proxyIp }}</span>
         </template>
       </el-table-column>
       <el-table-column label="转发端口" align="center">
         <template slot-scope="scope">
-          <span class="link-type" @click="handleUpdate(row)">{{ scope.row.proxy_port }}</span>
+          <span class="link-type" @click="handleUpdate(row)">{{ scope.row.proxyPort }}</span>
         </template>
       </el-table-column>
       <el-table-column label="域名" align="center">
@@ -151,19 +151,19 @@
         style="width: 400px; margin-left:50px;"
       >
         <el-form-item label="服务器" prop="title">
-          <el-input v-model="temp.local_ip" />
+          <el-input v-model="temp.localIp" />
         </el-form-item>
         <el-form-item label="域名" prop="title">
           <el-input v-model="temp.domain" />
         </el-form-item>
         <el-form-item label="本地端口" prop="title">
-          <el-input v-model="temp.local_port" />
+          <el-input v-model="temp.localPort" />
         </el-form-item>
         <el-form-item label="转发IP" prop="title">
-          <el-input v-model="temp.proxy_ip" />
+          <el-input v-model="temp.proxyIp" />
         </el-form-item>
         <el-form-item label="转发端口" prop="title">
-          <el-input v-model="temp.proxy_port" />
+          <el-input v-model="temp.proxyPort" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -256,7 +256,7 @@ export default {
       if (this.listQuery.owner !== undefined && this.listQuery.owner !== '') {
         findByOwner(this.listQuery.page, this.listQuery.limit, this.listQuery.owner).then(response => {
           this.total = response.data.count
-          this.list = response.data.docs
+          this.list = response.data.data
           setTimeout(() => {
             this.listLoading = false
           }, 1.5 * 1000)
@@ -264,7 +264,7 @@ export default {
       } else if (this.listQuery.domain !== undefined && this.listQuery.domain !== '') {
         findByDomain(this.listQuery.page, this.listQuery.limit, this.listQuery.domain).then(response => {
           this.total = response.data.count
-          this.list = response.data.docs
+          this.list = response.data.data
           setTimeout(() => {
             this.listLoading = false
           }, 1.5 * 1000)
@@ -272,7 +272,7 @@ export default {
       } else {
         getList(this.listQuery.page, this.listQuery.limit).then(response => {
           this.total = response.data.count
-          this.list = response.data.docs
+          this.list = response.data.data
           setTimeout(() => {
             this.listLoading = false
           }, 1.5 * 1000)
@@ -303,7 +303,7 @@ export default {
       })
     },
     handleDelete(row, index) {
-      del(row._id).then(() => {
+      del(row.id).then(() => {
         this.$notify({
           title: 'Success',
           message: 'Delete Successfully',

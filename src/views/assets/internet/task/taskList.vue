@@ -310,7 +310,7 @@ export default {
       if (this.listQuery.name !== undefined && this.listQuery.name !== '') {
         findByName(this.listQuery.page, this.listQuery.limit, this.listQuery.name).then(response => {
           this.total = response.data.count
-          this.list = response.data.docs
+          this.list = response.data.data
           setTimeout(() => {
             this.listLoading = false
           }, 1.5 * 1000)
@@ -318,7 +318,7 @@ export default {
       } else if (this.listQuery.service !== undefined && this.listQuery.service !== '') {
         findByService(this.listQuery.page, this.listQuery.limit, this.listQuery.domain).then(response => {
           this.total = response.data.count
-          this.list = response.data.docs
+          this.list = response.data.data
           setTimeout(() => {
             this.listLoading = false
           }, 1.5 * 1000)
@@ -326,7 +326,7 @@ export default {
       } else {
         getList(this.listQuery.page, this.listQuery.limit).then(response => {
           this.total = response.data.count
-          this.list = response.data.docs
+          this.list = response.data.data
           setTimeout(() => {
             this.listLoading = false
           }, 1.5 * 1000)
@@ -404,7 +404,7 @@ export default {
     asyncFindPlugin(query) {
       this.isLoadingPlugin = true
       searchPlugin({ searchkey: query }).then(response => {
-        this.plugin_options = response.data.docs
+        this.plugin_options = response.data.data
         this.isLoadingPlugin = false
       })
     },
@@ -417,7 +417,7 @@ export default {
     asyncFindHost(query) {
       this.isLoadingHost = true
       searchIP({ searchkey: query }).then(response => {
-        this.host_options = response.data.docs
+        this.host_options = response.data.data
         this.isLoadingHost = false
       })
     },

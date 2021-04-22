@@ -241,7 +241,7 @@ export default {
       if (this.listQuery.owner !== undefined && this.listQuery.owner !== '') {
         findByOwner(this.listQuery.page, this.listQuery.limit, this.listQuery.owner).then(response => {
           this.total = response.data.count
-          this.list = response.data.docs
+          this.list = response.data.data
           setTimeout(() => {
             this.listLoading = false
           }, 1.5 * 1000)
@@ -249,7 +249,7 @@ export default {
       } else if (this.listQuery.domain !== undefined && this.listQuery.domain !== '') {
         findByDomain(this.listQuery.page, this.listQuery.limit, this.listQuery.domain).then(response => {
           this.total = response.data.count
-          this.list = response.data.docs
+          this.list = response.data.data
           setTimeout(() => {
             this.listLoading = false
           }, 1.5 * 1000)
@@ -257,7 +257,7 @@ export default {
       } else {
         getList(this.listQuery.page, this.listQuery.limit).then(response => {
           this.total = response.data.count
-          this.list = response.data.docs
+          this.list = response.data.data
           setTimeout(() => {
             this.listLoading = false
           }, 1.5 * 1000)
@@ -389,7 +389,7 @@ export default {
     },
     handleGetWebInfo(row) {
       getWebInfo(row.subdomain).then(res => {
-        if (res.code === 200 && res.data === true) {
+        if (res.code === 200 ) {
           this.$notify({
             title: 'Success',
             message: 'Successfully',
@@ -408,7 +408,7 @@ export default {
     },
     handleWebScan(row) {
       webScan(row.subdomain).then(res => {
-        if (res.code === 200 && res.data === true) {
+        if (res.code === 200 ) {
           this.$notify({
             title: 'Success',
             message: 'Successfully',

@@ -96,7 +96,7 @@
       },
       getReceive() {
         getReceive().then(res => {
-          this.receive = res.data.data
+          this.receive = res.data
         })
       },
       selectAll() {

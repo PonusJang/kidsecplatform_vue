@@ -91,7 +91,7 @@
 
 <script>
 // eslint-disable-next-line no-unused-vars
-import { findByParam, flterByDate, getList, findByStatus } from '@/api/result'
+import { findByParam, filterByDate, getList, findByStatus } from '@/api/result'
 import { parseTime } from '@/utils'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
@@ -171,7 +171,7 @@ export default {
       if (this.listQuery.param !== undefined && this.listQuery.param !== '') {
         findByParam(this.listQuery.page, this.listQuery.limit, this.listQuery.param).then(response => {
           this.total = response.data.count
-          this.list = response.data.docs
+          this.list = response.data.data
           setTimeout(() => {
             this.listLoading = false
           }, 1.5 * 1000)
@@ -179,7 +179,7 @@ export default {
       } else if (this.listQuery.type !== undefined && this.listQuery.type !== '') {
         findByStatus(this.listQuery.page, this.listQuery.limit, this.listQuery.type).then(response => {
           this.total = response.data.count
-          this.list = response.data.docs
+          this.list = response.data.data
           setTimeout(() => {
             this.listLoading = false
           }, 1.5 * 1000)
@@ -187,7 +187,7 @@ export default {
       } else {
         getList(this.listQuery.page, this.listQuery.limit).then(response => {
           this.total = response.data.count
-          this.list = response.data.docs
+          this.list = response.data.data
           setTimeout(() => {
             this.listLoading = false
           }, 1.5 * 1000)
@@ -235,9 +235,9 @@ export default {
           }
         }
       } else {
-        flterByDate(this.listQuery.page, this.listQuery.limit, this.minDate, this.maxDate).then(response => {
+        filterByDate(this.listQuery.page, this.listQuery.limit, this.minDate, this.maxDate).then(response => {
           this.total = response.data.count
-          this.list = response.data.docs
+          this.list = response.data.data
           setTimeout(() => {
             this.listLoading = false
           }, 1.5 * 1000)

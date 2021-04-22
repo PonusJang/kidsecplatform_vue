@@ -307,7 +307,7 @@ export default {
       if (this.listQuery.owner !== undefined && this.listQuery.owner !== '') {
         findByOwner(this.listQuery.page, this.listQuery.limit, this.listQuery.owner).then(response => {
           this.total = response.data.count
-          this.list = response.data.docs
+          this.list = response.data.data
           setTimeout(() => {
             this.listLoading = false
           }, 1.5 * 1000)
@@ -315,7 +315,7 @@ export default {
       } else if (this.listQuery.type !== undefined && this.listQuery.type !== '') {
         findByType(this.listQuery.page, this.listQuery.limit, this.listQuery.type).then(response => {
           this.total = response.data.count
-          this.list = response.data.docs
+          this.list = response.data.data
           setTimeout(() => {
             this.listLoading = false
           }, 1.5 * 1000)
@@ -323,7 +323,7 @@ export default {
       } else if (this.listQuery.ip !== undefined && this.listQuery.ip !== '') {
         findByIP(this.listQuery.page, this.listQuery.limit, this.listQuery.ip).then(response => {
           this.total = response.data.count
-          this.list = response.data.docs
+          this.list = response.data.data
           setTimeout(() => {
             this.listLoading = false
           }, 1.5 * 1000)
@@ -331,7 +331,7 @@ export default {
       } else if (this.listQuery.name !== undefined && this.listQuery.name !== '') {
         findByName(this.listQuery.page, this.listQuery.limit, this.listQuery.name).then(response => {
           this.total = response.data.count
-          this.list = response.data.docs
+          this.list = response.data.data
           setTimeout(() => {
             this.listLoading = false
           }, 1.5 * 1000)
@@ -339,7 +339,7 @@ export default {
       } else {
         getList(this.listQuery.page, this.listQuery.limit).then(response => {
           this.total = response.data.count
-          this.list = response.data.docs
+          this.list = response.data.data
           setTimeout(() => {
             this.listLoading = false
           }, 1.5 * 1000)
@@ -372,7 +372,7 @@ export default {
       })
     },
     handleDelete(row, index) {
-      del(row._id).then(() => {
+      del(row.id).then(() => {
         this.$notify({
           title: 'Success',
           message: 'Delete Successfully',
