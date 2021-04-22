@@ -303,7 +303,7 @@ export default {
       if (this.listQuery.ip !== undefined) {
         findClientByIp(this.listQuery.page, this.listQuery.limit, this.listQuery.ip).then(response => {
           this.total = response.data.count
-          this.list = response.data.docs
+          this.list = response.data.data
           setTimeout(() => {
             this.resetTemp()
             this.listLoading = false
@@ -312,7 +312,7 @@ export default {
       } else if (this.listQuery.system !== undefined) {
         findClientBySystem(this.listQuery.page, this.listQuery.limit, this.listQuery.system).then(response => {
           this.total = response.data.count
-          this.list = response.data.docs
+          this.list = response.data.data
           setTimeout(() => {
             this.resetTemp()
             this.listLoading = false
@@ -321,7 +321,7 @@ export default {
       } else if (this.listQuery.hostname !== undefined) {
         findClientByHostname(this.listQuery.page, this.listQuery.limit, this.listQuery.hostname).then(response => {
           this.total = response.data.count
-          this.list = response.data.docs
+          this.list = response.data.data
           setTimeout(() => {
             this.resetTemp()
             this.listLoading = false
@@ -330,7 +330,7 @@ export default {
       } else {
         getClientList(this.listQuery.page, this.listQuery.limit).then(response => {
           this.total = response.data.count
-          this.list = response.data.docs
+          this.list = response.data.data
           setTimeout(() => {
             this.listLoading = false
           }, 1.5 * 1000)
