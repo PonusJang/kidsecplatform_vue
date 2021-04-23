@@ -903,7 +903,7 @@
         <keep-alive>
           <tab-pane v-if="activeName=='update'" :type="item.key" @create="showCreatedTimes">
             <div>
-              <el-form />
+              <el-form/>
             </div>
           </tab-pane>
         </keep-alive>
@@ -921,7 +921,7 @@
         style="width: 400px; margin-left:50px;"
       >
         <el-form-item label="目录" prop="title">
-          <el-input v-model="temp.monitorPath" />
+          <el-input v-model="temp.monitorPath"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -944,7 +944,7 @@
         style="width: 400px; margin-left:50px;"
       >
         <el-form-item label="文件" prop="title">
-          <el-input v-model="temp.whiteList.file" />
+          <el-input v-model="temp.whiteList.file"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -966,7 +966,7 @@
         style="width: 400px; margin-left:50px;"
       >
         <el-form-item label="IP" prop="title">
-          <el-input v-model="temp.whiteList.ip" />
+          <el-input v-model="temp.whiteList.ip"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -988,7 +988,7 @@
         style="width: 400px; margin-left:50px;"
       >
         <el-form-item label="进程" prop="title">
-          <el-input v-model="temp.whiteList.process" />
+          <el-input v-model="temp.whiteList.process"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -1010,7 +1010,7 @@
         style="width: 400px; margin-left:50px;"
       >
         <el-form-item label="其他" prop="title">
-          <el-input v-model="temp.whiteList.other" />
+          <el-input v-model="temp.whiteList.other"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -1033,7 +1033,7 @@
         style="width: 400px; margin-left:50px;"
       >
         <el-form-item label="文件" prop="title">
-          <el-input v-model="temp.blackList.file" />
+          <el-input v-model="temp.blackList.file"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -1055,7 +1055,7 @@
         style="width: 400px; margin-left:50px;"
       >
         <el-form-item label="IP" prop="title">
-          <el-input v-model="temp.blackList.ip" />
+          <el-input v-model="temp.blackList.ip"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -1077,7 +1077,7 @@
         style="width: 400px; margin-left:50px;"
       >
         <el-form-item label="进程" prop="title">
-          <el-input v-model="temp.blackList.process" />
+          <el-input v-model="temp.blackList.process"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -1099,7 +1099,7 @@
         style="width: 400px; margin-left:50px;"
       >
         <el-form-item label="其他" prop="title">
-          <el-input v-model="temp.blackList.other" />
+          <el-input v-model="temp.blackList.other"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -1122,7 +1122,7 @@
         style="width: 400px; margin-left:50px;"
       >
         <el-form-item label="文件" prop="title">
-          <el-input v-model="temp.filter.file" />
+          <el-input v-model="temp.filter.file"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -1144,7 +1144,7 @@
         style="width: 400px; margin-left:50px;"
       >
         <el-form-item label="IP" prop="title">
-          <el-input v-model="temp.filter.ip" />
+          <el-input v-model="temp.filter.ip"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -1166,7 +1166,7 @@
         style="width: 400px; margin-left:50px;"
       >
         <el-form-item label="进程" prop="title">
-          <el-input v-model="temp.filter.process" />
+          <el-input v-model="temp.filter.process"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -1185,1006 +1185,1007 @@
 </template>
 
 <script>
-import {
-  getBlackListConfig,
-  getClientConfig,
-  getFilterConfig,
-  getIntelligenceConfig,
-  getNoticeConfig,
-  getServerConfig,
-  getWhiteListConfig, setBlackListConfig,
-  setClientConfig, setFilterConfig,
-  setIntelligenceConfig,
-  setNoticeConfig,
-  setServerConfig, setWhiteListConfig
-} from '@/api/hids'
-import { parseTime } from '@/utils'
-import waves from '@/directive/waves' // waves directive
+  import {
+    getBlackListConfig,
+    getClientConfig,
+    getFilterConfig,
+    getIntelligenceConfig,
+    getNoticeConfig,
+    getServerConfig,
+    getWhiteListConfig, setBlackListConfig,
+    setClientConfig, setFilterConfig,
+    setIntelligenceConfig,
+    setNoticeConfig,
+    setServerConfig, setWhiteListConfig
+  } from '@/api/hids'
+  import {parseTime} from '@/utils'
+  import waves from '@/directive/waves' // waves directive
 
-export default {
-  name: 'ConfigList',
-  components: {},
-  directives: { waves },
-  filters: {
-    parseTime: parseTime
-  },
-  data() {
-    return {
-      tabMapOptions: [
-        { label: '客户端', key: 'client' },
-        { label: '服务端', key: 'server' },
-        { label: '威胁情报', key: 'intelligence' },
-        { label: '告警', key: 'notice' },
-        { label: '白名单', key: 'whitelist' },
-        { label: '黑名单', key: 'blacklist' },
-        { label: '过滤', key: 'filter' },
-        { label: '更新', key: 'update' }
-      ],
-      activeName: 'client',
-      createdTimes: 0,
-      temp: {
-        monitorPath: '',
+  export default {
+    name: 'ConfigList',
+    components: {},
+    directives: {waves},
+    filters: {
+      parseTime: parseTime
+    },
+    data() {
+      return {
+        tabMapOptions: [
+          {label: '客户端', key: 'client'},
+          {label: '服务端', key: 'server'},
+          {label: '威胁情报', key: 'intelligence'},
+          {label: '告警', key: 'notice'},
+          {label: '白名单', key: 'whitelist'},
+          {label: '黑名单', key: 'blacklist'},
+          {label: '过滤', key: 'filter'},
+          {label: '更新', key: 'update'}
+        ],
+        activeName: 'client',
+        createdTimes: 0,
+        temp: {
+          monitorPath: '',
+          whiteList: {
+            file: '',
+            ip: '',
+            process: '',
+            other: ''
+          },
+          blackList: {
+            file: '',
+            ip: '',
+            process: '',
+            other: ''
+          },
+          filter: {
+            file: '',
+            ip: '',
+            process: '',
+            other: ''
+          }
+        },
+
+        client: {
+          dialog: false,
+          curPage: 1,
+          pageSize: 10,
+          cycle: undefined,
+          udp: undefined,
+          lan: undefined,
+          monitorPath: undefined
+        },
+        server: {
+          learn: undefined,
+          offlinecheck: undefined,
+          publickey: undefined,
+          privatekey: undefined,
+          cert: undefined
+        },
+        intelligence: {
+          fileApiisDisabled: true,
+          ipApiisDisabled: true,
+          regexisDisabled: true,
+          switch: undefined,
+          ipapi: undefined,
+          fileapi: undefined,
+          regex: undefined
+        },
+        notice: {
+          apiisDisabled: true,
+          switch: undefined,
+          onlyhigh: undefined,
+          api: undefined
+        },
         whiteList: {
-          file: '',
-          ip: '',
-          process: '',
-          other: ''
+          fileDialog: false,
+          ipDialog: false,
+          processDialog: false,
+          otherDialog: false,
+          fileCurPage: 1,
+          filePageSize: 10,
+          ipCurPage: 1,
+          ipPageSize: 10,
+          processCurPage: 1,
+          processPageSize: 10,
+          otherCurPage: 1,
+          otherPageSize: 10,
+          file: undefined,
+          ip: undefined,
+          process: undefined,
+          other: undefined
         },
         blackList: {
-          file: '',
-          ip: '',
-          process: '',
-          other: ''
+          fileDialog: false,
+          ipDialog: false,
+          processDialog: false,
+          otherDialog: false,
+          fileCurPage: 1,
+          filePageSize: 10,
+          ipCurPage: 1,
+          ipPageSize: 10,
+          processCurPage: 1,
+          processPageSize: 10,
+          otherCurPage: 1,
+          otherPageSize: 10,
+          file: undefined,
+          ip: undefined,
+          process: undefined,
+          other: undefined
         },
         filter: {
-          file: '',
-          ip: '',
-          process: '',
-          other: ''
+          fileDialog: false,
+          ipDialog: false,
+          processDialog: false,
+          otherDialog: false,
+          fileCurPage: 1,
+          filePageSize: 10,
+          ipCurPage: 1,
+          ipPageSize: 10,
+          processCurPage: 1,
+          processPageSize: 10,
+          file: undefined,
+          ip: undefined,
+          process: undefined,
+          other: undefined
         }
+      }
+    },
+    watch: {
+      activeName(val) {
+        this.$router.push(`${this.$route.path}?tab=${val}`)
+      }
+    },
+    created() {
+      this.getList()
+      const tab = this.$route.query.tab
+      if (tab) {
+        this.activeName = tab
+      }
+    },
+    inject: ['reload'],
+    methods: {
+      showCreatedTimes() {
+        this.createdTimes = this.createdTimes + 1
+      },
+      fresh() {
+        this.reload()
+      },
+      handleChange(value) {
+        console.log(value)
+      },
+      getList() {
+        getClientConfig().then(res => {
+          this.client.cycle = res.data.dic.cycle
+          this.client.udp = res.data.dic.udp
+          this.client.monitorPath = res.data.dic.monitorPath
+          this.client.lan = res.data.dic.lan
+        })
+        getBlackListConfig().then(res => {
+          this.blackList.ip = res.data.dic.ip
+          this.blackList.file = res.data.dic.file
+          this.blackList.process = res.data.dic.process
+          this.blackList.other = res.data.dic.other
+        })
+        getFilterConfig().then(res => {
+          this.filter.ip = res.data.dic.ip
+          this.filter.file = res.data.dic.file
+          this.filter.process = res.data.dic.process
+          this.filter.other = res.data.dic.other
+        })
+        getServerConfig().then(res => {
+          this.server.learn = res.data.dic.learn
+          this.server.offlinecheck = res.data.dic.offlinecheck
+          this.server.cert = res.data.dic.cert
+          this.server.privatekey = res.data.dic.privatekey
+          this.server.publickey = res.data.dic.publickey
+        })
+        getWhiteListConfig().then(res => {
+          this.whiteList.ip = res.data.dic.ip
+          this.whiteList.file = res.data.dic.file
+          this.whiteList.process = res.data.dic.process
+          this.whiteList.other = res.data.dic.other
+        })
+        getIntelligenceConfig().then(res => {
+          this.intelligence.switch = res.data.dic.switch
+          this.intelligence.fileapi = res.data.dic.fileapi
+          this.intelligence.ipapi = res.data.dic.ipapi
+          this.intelligence.regex = res.data.dic.regex
+        })
+        getNoticeConfig().then(res => {
+          this.notice.switch = res.data.dic.switch
+          this.notice.onlyhigh = res.data.dic.onlyhigh
+          this.notice.api = res.data.dic.api
+        })
       },
 
-      client: {
-        dialog: false,
-        curPage: 1,
-        pageSize: 10,
-        cycle: undefined,
-        udp: undefined,
-        lan: undefined,
-        monitorPath: undefined
+      // client
+      handleClientCycleChange(value) {
+        setClientConfig({key: 'cycle', value: value}).then(res => {
+          this.getList()
+          if (res.code === 200) {
+            this.$notify({
+              title: 'Success',
+              message: 'Update Successfully',
+              type: 'success',
+              duration: 2000
+            })
+          } else {
+            this.$notify({
+              title: 'Failure',
+              message: 'Update Failed',
+              type: 'success',
+              duration: 2000
+            })
+          }
+        })
       },
-      server: {
-        learn: undefined,
-        offlinecheck: undefined,
-        publickey: undefined,
-        privatekey: undefined,
-        cert: undefined
+      handleClientUdpChange(value) {
+        setClientConfig({key: 'udp', value: value}).then(res => {
+          this.getList()
+          if (res.code === 200) {
+            this.$notify({
+              title: 'Success',
+              message: 'Update Successfully',
+              type: 'success',
+              duration: 2000
+            })
+          } else {
+            this.$notify({
+              title: 'Failure',
+              message: 'Update Failed',
+              type: 'success',
+              duration: 2000
+            })
+          }
+        })
       },
-      intelligence: {
-        fileApiisDisabled: true,
-        ipApiisDisabled: true,
-        regexisDisabled: true,
-        switch: undefined,
-        ipapi: undefined,
-        fileapi: undefined,
-        regex: undefined
+      handleClientLanChange(value) {
+        setClientConfig({key: 'lan', value: value}).then(res => {
+          this.getList()
+          if (res.code === 200) {
+            this.$notify({
+              title: 'Success',
+              message: 'Update Successfully',
+              type: 'success',
+              duration: 2000
+            })
+          } else {
+            this.$notify({
+              title: 'Failure',
+              message: 'Update Failed',
+              type: 'success',
+              duration: 2000
+            })
+          }
+        })
       },
-      notice: {
-        apiisDisabled: true,
-        switch: undefined,
-        onlyhigh: undefined,
-        api: undefined
+      handleDeleteMonitorPath(row, index) {
+        setClientConfig({key: 'monitorPath', value: row, action: 'delete'}).then(res => {
+          this.getList()
+          if (res.code === 200) {
+            this.$notify({
+              title: 'Success',
+              message: 'Update Successfully',
+              type: 'success',
+              duration: 2000
+            })
+          } else {
+            this.$notify({
+              title: 'Failure',
+              message: 'Update Failed',
+              type: 'success',
+              duration: 2000
+            })
+          }
+        })
       },
-      whiteList: {
-        fileDialog: false,
-        ipDialog: false,
-        processDialog: false,
-        otherDialog: false,
-        fileCurPage: 1,
-        filePageSize: 10,
-        ipCurPage: 1,
-        ipPageSize: 10,
-        processCurPage: 1,
-        processPageSize: 10,
-        otherCurPage: 1,
-        otherPageSize: 10,
-        file: undefined,
-        ip: undefined,
-        process: undefined,
-        other: undefined
+      handleAddMonitorPath() {
+        this.client.dialog = true
       },
-      blackList: {
-        fileDialog: false,
-        ipDialog: false,
-        processDialog: false,
-        otherDialog: false,
-        fileCurPage: 1,
-        filePageSize: 10,
-        ipCurPage: 1,
-        ipPageSize: 10,
-        processCurPage: 1,
-        processPageSize: 10,
-        otherCurPage: 1,
-        otherPageSize: 10,
-        file: undefined,
-        ip: undefined,
-        process: undefined,
-        other: undefined
+      addMonitorPath() {
+        setClientConfig({key: 'monitorPath', value: this.temp.monitorPath, action: 'add'}).then(res => {
+          this.getList()
+          if (res.code === 200) {
+            this.client.dialog = false
+            this.$notify({
+              title: 'Success',
+              message: 'Update Successfully',
+              type: 'success',
+              duration: 2000
+            })
+          } else {
+            this.$notify({
+              title: 'Failure',
+              message: 'Update Failed',
+              type: 'success',
+              duration: 2000
+            })
+          }
+        })
       },
-      filter: {
-        fileDialog: false,
-        ipDialog: false,
-        processDialog: false,
-        otherDialog: false,
-        fileCurPage: 1,
-        filePageSize: 10,
-        ipCurPage: 1,
-        ipPageSize: 10,
-        processCurPage: 1,
-        processPageSize: 10,
-        file: undefined,
-        ip: undefined,
-        process: undefined
+
+      // server
+      handleServerLearnChange(value) {
+        setServerConfig({key: 'learn', value: value}).then(res => {
+          this.getList()
+          if (res.code === 200) {
+            this.$notify({
+              title: 'Success',
+              message: 'Update Successfully',
+              type: 'success',
+              duration: 2000
+            })
+          } else {
+            this.$notify({
+              title: 'Failure',
+              message: 'Update Failed',
+              type: 'success',
+              duration: 2000
+            })
+          }
+        })
+      },
+      handleServerOfflinecheckChange(value) {
+        setServerConfig({key: 'offlinecheck', value: value}).then(res => {
+          this.getList()
+          if (res.code === 200) {
+            this.$notify({
+              title: 'Success',
+              message: 'Update Successfully',
+              type: 'success',
+              duration: 2000
+            })
+          } else {
+            this.$notify({
+              title: 'Failure',
+              message: 'Update Failed',
+              type: 'success',
+              duration: 2000
+            })
+          }
+        })
+      },
+      // whiteList
+      handleDeleteWhiteListFile(row, index) {
+        setWhiteListConfig({key: 'file', value: row, action: 'delete'}).then(res => {
+          this.getList()
+          if (res.code === 200) {
+            this.$notify({
+              title: 'Success',
+              message: 'Update Successfully',
+              type: 'success',
+              duration: 2000
+            })
+          } else {
+            this.$notify({
+              title: 'Failure',
+              message: 'Update Failed',
+              type: 'success',
+              duration: 2000
+            })
+          }
+        })
+      },
+      handleAddWhiteListFile() {
+        this.whiteList.fileDialog = true
+      },
+      addWhiteListFile() {
+        setWhiteListConfig({key: 'file', value: this.temp.whiteList.file, action: 'add'}).then(res => {
+          this.getList()
+          if (res.code === 200) {
+            this.client.dialog = false
+            this.$notify({
+              title: 'Success',
+              message: 'Update Successfully',
+              type: 'success',
+              duration: 2000
+            })
+          } else {
+            this.$notify({
+              title: 'Failure',
+              message: 'Update Failed',
+              type: 'success',
+              duration: 2000
+            })
+          }
+        })
+      },
+      handleDeleteWhiteListIP(row, index) {
+        setWhiteListConfig({key: 'ip', value: row, action: 'delete'}).then(res => {
+          this.getList()
+          if (res.code === 200) {
+            this.$notify({
+              title: 'Success',
+              message: 'Update Successfully',
+              type: 'success',
+              duration: 2000
+            })
+          } else {
+            this.$notify({
+              title: 'Failure',
+              message: 'Update Failed',
+              type: 'success',
+              duration: 2000
+            })
+          }
+        })
+      },
+      handleAddWhiteListIP() {
+        this.whiteList.ipDialog = true
+      },
+      addWhiteListIP() {
+        setWhiteListConfig({key: 'ip', value: this.temp.whiteList.ip, action: 'add'}).then(res => {
+          this.getList()
+          if (res.code === 200) {
+            this.whiteList.ipDialog = false
+            this.$notify({
+              title: 'Success',
+              message: 'Update Successfully',
+              type: 'success',
+              duration: 2000
+            })
+          } else {
+            this.$notify({
+              title: 'Failure',
+              message: 'Update Failed',
+              type: 'success',
+              duration: 2000
+            })
+          }
+        })
+      },
+      handleDeleteWhiteListProcess(row, index) {
+        setWhiteListConfig({key: 'process', value: row, action: 'delete'}).then(res => {
+          this.getList()
+          if (res.code === 200) {
+            this.$notify({
+              title: 'Success',
+              message: 'Update Successfully',
+              type: 'success',
+              duration: 2000
+            })
+          } else {
+            this.$notify({
+              title: 'Failure',
+              message: 'Update Failed',
+              type: 'success',
+              duration: 2000
+            })
+          }
+        })
+      },
+      handleAddWhiteListProcess() {
+        this.whiteList.processDialog = true
+      },
+      addWhiteListProcess() {
+        setWhiteListConfig({key: 'process', value: this.temp.whiteList.process, action: 'add'}).then(res => {
+          this.getList()
+          if (res.code === 200) {
+            this.whiteList.processDialog = false
+            this.$notify({
+              title: 'Success',
+              message: 'Update Successfully',
+              type: 'success',
+              duration: 2000
+            })
+          } else {
+            this.$notify({
+              title: 'Failure',
+              message: 'Update Failed',
+              type: 'success',
+              duration: 2000
+            })
+          }
+        })
+      },
+      handleDeleteWhiteListOther(row, index) {
+        setWhiteListConfig({key: 'other', value: row, action: 'delete'}).then(res => {
+          this.getList()
+          if (res.code === 200) {
+            this.$notify({
+              title: 'Success',
+              message: 'Update Successfully',
+              type: 'success',
+              duration: 2000
+            })
+          } else {
+            this.$notify({
+              title: 'Failure',
+              message: 'Update Failed',
+              type: 'success',
+              duration: 2000
+            })
+          }
+        })
+      },
+      handleAddWhiteListOther() {
+        this.whiteList.otherDialog = true
+      },
+      addWhiteListOther() {
+        setWhiteListConfig({key: 'other', value: this.temp.whiteList.other, action: 'add'}).then(res => {
+          this.getList()
+          if (res.code === 200) {
+            this.whiteList.otherDialog = false
+            this.$notify({
+              title: 'Success',
+              message: 'Update Successfully',
+              type: 'success',
+              duration: 2000
+            })
+          } else {
+            this.$notify({
+              title: 'Failure',
+              message: 'Update Failed',
+              type: 'success',
+              duration: 2000
+            })
+          }
+        })
+      },
+
+      // backList
+      handleDeleteBlackListFile(row, index) {
+        setBlackListConfig({key: 'file', value: row, action: 'delete'}).then(res => {
+          this.getList()
+          if (res.code === 200) {
+            this.$notify({
+              title: 'Success',
+              message: 'Update Successfully',
+              type: 'success',
+              duration: 2000
+            })
+          } else {
+            this.$notify({
+              title: 'Failure',
+              message: 'Update Failed',
+              type: 'success',
+              duration: 2000
+            })
+          }
+        })
+      },
+      handleAddBlackListFile() {
+        this.blackList.fileDialog = true
+      },
+      addBlackListFile() {
+        setBlackListConfig({key: 'file', value: this.temp.blackList.file, action: 'add'}).then(res => {
+          this.getList()
+          if (res.code === 200) {
+            this.client.dialog = false
+            this.$notify({
+              title: 'Success',
+              message: 'Update Successfully',
+              type: 'success',
+              duration: 2000
+            })
+          } else {
+            this.$notify({
+              title: 'Failure',
+              message: 'Update Failed',
+              type: 'success',
+              duration: 2000
+            })
+          }
+        })
+      },
+      handleDeleteBlackListIP(row, index) {
+        setBlackListConfig({key: 'ip', value: row, action: 'delete'}).then(res => {
+          this.getList()
+          if (res.code === 200) {
+            this.$notify({
+              title: 'Success',
+              message: 'Update Successfully',
+              type: 'success',
+              duration: 2000
+            })
+          } else {
+            this.$notify({
+              title: 'Failure',
+              message: 'Update Failed',
+              type: 'success',
+              duration: 2000
+            })
+          }
+        })
+      },
+      handleAddBlackListIP() {
+        this.blackList.ipDialog = true
+      },
+      addBlackListIP() {
+        setBlackListConfig({key: 'ip', value: this.temp.blackList.ip, action: 'add'}).then(res => {
+          this.getList()
+          if (res.code === 200) {
+            this.blackList.ipDialog = false
+            this.$notify({
+              title: 'Success',
+              message: 'Update Successfully',
+              type: 'success',
+              duration: 2000
+            })
+          } else {
+            this.$notify({
+              title: 'Failure',
+              message: 'Update Failed',
+              type: 'success',
+              duration: 2000
+            })
+          }
+        })
+      },
+      handleDeleteBlackListProcess(row, index) {
+        setBlackListConfig({key: 'process', value: row, action: 'delete'}).then(res => {
+          this.getList()
+          if (res.code === 200) {
+            this.$notify({
+              title: 'Success',
+              message: 'Update Successfully',
+              type: 'success',
+              duration: 2000
+            })
+          } else {
+            this.$notify({
+              title: 'Failure',
+              message: 'Update Failed',
+              type: 'success',
+              duration: 2000
+            })
+          }
+        })
+      },
+      handleAddBlackListProcess() {
+        this.blackList.processDialog = true
+      },
+      addBlackListProcess() {
+        this.getList()
+        setBlackListConfig({key: 'process', value: this.temp.blackList.process, action: 'add'}).then(res => {
+          if (res.code === 200) {
+            this.blackList.processDialog = false
+            this.$notify({
+              title: 'Success',
+              message: 'Update Successfully',
+              type: 'success',
+              duration: 2000
+            })
+          } else {
+            this.$notify({
+              title: 'Failure',
+              message: 'Update Failed',
+              type: 'success',
+              duration: 2000
+            })
+          }
+        })
+      },
+      handleDeleteBlackListOther(row, index) {
+        setBlackListConfig({key: 'other', value: row, action: 'delete'}).then(res => {
+          this.getList()
+          if (res.code === 200) {
+            this.$notify({
+              title: 'Success',
+              message: 'Update Successfully',
+              type: 'success',
+              duration: 2000
+            })
+          } else {
+            this.$notify({
+              title: 'Failure',
+              message: 'Update Failed',
+              type: 'success',
+              duration: 2000
+            })
+          }
+        })
+      },
+      handleAddBlackListOther() {
+        this.blackList.otherDialog = true
+      },
+      addBlackListOther() {
+        setBlackListConfig({key: 'other', value: this.temp.blackList.other, action: 'add'}).then(res => {
+          this.getList()
+          if (res.code === 200) {
+            this.blackList.otherDialog = false
+            this.$notify({
+              title: 'Success',
+              message: 'Update Successfully',
+              type: 'success',
+              duration: 2000
+            })
+          } else {
+            this.$notify({
+              title: 'Failure',
+              message: 'Update Failed',
+              type: 'success',
+              duration: 2000
+            })
+          }
+        })
+      },
+
+      // filter
+      handleDeleteFilterFile(row, index) {
+        setFilterConfig({key: 'file', value: row, action: 'delete'}).then(res => {
+          this.getList()
+          if (res.code === 200) {
+            this.$notify({
+              title: 'Success',
+              message: 'Update Successfully',
+              type: 'success',
+              duration: 2000
+            })
+          } else {
+            this.$notify({
+              title: 'Failure',
+              message: 'Update Failed',
+              type: 'success',
+              duration: 2000
+            })
+          }
+        })
+      },
+      handleAddFilterFile() {
+        this.filter.fileDialog = true
+      },
+      addFilterFile() {
+        setFilterConfig({key: 'file', value: this.temp.filter.file, action: 'add'}).then(res => {
+          if (res.code === 200) {
+            this.filter.dialog = false
+            this.$notify({
+              title: 'Success',
+              message: 'Update Successfully',
+              type: 'success',
+              duration: 2000
+            })
+          } else {
+            this.$notify({
+              title: 'Failure',
+              message: 'Update Failed',
+              type: 'success',
+              duration: 2000
+            })
+          }
+        })
+      },
+      handleDeleteFilterIP(row, index) {
+        setFilterConfig({key: 'ip', value: row, action: 'delete'}).then(res => {
+          this.getList()
+          if (res.code === 200) {
+            this.$notify({
+              title: 'Success',
+              message: 'Update Successfully',
+              type: 'success',
+              duration: 2000
+            })
+          } else {
+            this.$notify({
+              title: 'Failure',
+              message: 'Update Failed',
+              type: 'success',
+              duration: 2000
+            })
+          }
+        })
+      },
+      handleAddFilterIP() {
+        this.filter.ipDialog = true
+      },
+      addFilterIP() {
+        setFilterConfig({key: 'ip', value: this.temp.blackList.ip, action: 'add'}).then(res => {
+          this.getList()
+          if (res.code === 200) {
+            this.filter.ipDialog = false
+            this.$notify({
+              title: 'Success',
+              message: 'Update Successfully',
+              type: 'success',
+              duration: 2000
+            })
+          } else {
+            this.$notify({
+              title: 'Failure',
+              message: 'Update Failed',
+              type: 'success',
+              duration: 2000
+            })
+          }
+        })
+      },
+      handleDeleteFilterProcess(row, index) {
+        setFilterConfig({key: 'process', value: row, action: 'delete'}).then(res => {
+          this.getList()
+          if (res.code === 200) {
+            this.$notify({
+              title: 'Success',
+              message: 'Update Successfully',
+              type: 'success',
+              duration: 2000
+            })
+          } else {
+            this.$notify({
+              title: 'Failure',
+              message: 'Update Failed',
+              type: 'success',
+              duration: 2000
+            })
+          }
+        })
+      },
+      handleAddFilterProcess() {
+        this.filter.processDialog = true
+      },
+      addFilterProcess() {
+        setFilterConfig({key: 'process', value: this.temp.filter.process, action: 'add'}).then(res => {
+          this.getList()
+          if (res.code === 200) {
+            this.filter.processDialog = false
+            this.$notify({
+              title: 'Success',
+              message: 'Update Successfully',
+              type: 'success',
+              duration: 2000
+            })
+          } else {
+            this.$notify({
+              title: 'Failure',
+              message: 'Update Failed',
+              type: 'success',
+              duration: 2000
+            })
+          }
+        })
+      },
+
+      // notice
+      handleNoticeApiChange() {
+        this.notice.apiisDisabled = false
+      },
+      handleNoticeApiSave() {
+        setNoticeConfig({key: 'switch', value: this.notice.api}).then(res => {
+          this.notice.apiisDisabled = true
+          if (res.code === 200) {
+            this.$notify({
+              title: 'Success',
+              message: 'Update Successfully',
+              type: 'success',
+              duration: 2000
+            })
+          } else {
+            this.$notify({
+              title: 'Failure',
+              message: 'Update Failed',
+              type: 'success',
+              duration: 2000
+            })
+          }
+        })
+      },
+      handleNoticeOnlyhighChange(value) {
+        setNoticeConfig({key: 'switch', value: value}).then(res => {
+          if (res.code === 200) {
+            this.$notify({
+              title: 'Success',
+              message: 'Update Successfully',
+              type: 'success',
+              duration: 2000
+            })
+          } else {
+            this.$notify({
+              title: 'Failure',
+              message: 'Update Failed',
+              type: 'success',
+              duration: 2000
+            })
+          }
+        })
+      },
+      handleNoticeSwitchChange(value) {
+        setNoticeConfig({key: 'switch', value: value}).then(res => {
+          if (res.code === 200) {
+            this.$notify({
+              title: 'Success',
+              message: 'Update Successfully',
+              type: 'success',
+              duration: 2000
+            })
+          } else {
+            this.$notify({
+              title: 'Failure',
+              message: 'Update Failed',
+              type: 'success',
+              duration: 2000
+            })
+          }
+        })
+      },
+      // intelligence
+      handleIntelligenceSwitchChange(value) {
+        setIntelligenceConfig({key: 'switch', value: value}).then(res => {
+          if (res.code === 200) {
+            this.$notify({
+              title: 'Success',
+              message: 'Update Successfully',
+              type: 'success',
+              duration: 2000
+            })
+          } else {
+            this.$notify({
+              title: 'Failure',
+              message: 'Update Failed',
+              type: 'success',
+              duration: 2000
+            })
+          }
+        })
+      },
+      handleIntelligenceRegexChange() {
+        this.intelligence.regexisDisabled = false
+      },
+      handleIntelligenceRegexSave() {
+        setIntelligenceConfig({key: 'intelligence', value: this.intelligence.regex}).then(res => {
+          if (res.code === 200) {
+            this.intelligence.regexisDisabled = true
+            this.$notify({
+              title: 'Success',
+              message: 'Update Successfully',
+              type: 'success',
+              duration: 2000
+            })
+          } else {
+            this.$notify({
+              title: 'Failure',
+              message: 'Update Failed',
+              type: 'success',
+              duration: 2000
+            })
+          }
+        })
+      },
+      handleIntelligenceIpApiChange() {
+        this.intelligence.ipApiisDisabled = false
+      },
+      handleIntelligenceIpApiSave() {
+        setIntelligenceConfig({key: 'intelligence', value: this.intelligence.ipapi}).then(res => {
+          if (res.code === 200) {
+            this.intelligence.ipApiisDisabled = true
+            this.$notify({
+              title: 'Success',
+              message: 'Update Successfully',
+              type: 'success',
+              duration: 2000
+            })
+          } else {
+            this.$notify({
+              title: 'Failure',
+              message: 'Update Failed',
+              type: 'success',
+              duration: 2000
+            })
+          }
+        })
+      },
+      handleIntelligenceFileApiChange() {
+        this.intelligence.fileApiisDisabled = false
+      },
+      handleIntelligenceFileApiSave() {
+        setIntelligenceConfig({key: 'intelligence', value: this.intelligence.fileapi}).then(res => {
+          if (res.code === 200) {
+            this.intelligence.fileApiisDisabled = true
+            this.$notify({
+              title: 'Success',
+              message: 'Update Successfully',
+              type: 'success',
+              duration: 2000
+            })
+          } else {
+            this.$notify({
+              title: 'Failure',
+              message: 'Update Failed',
+              type: 'success',
+              duration: 2000
+            })
+          }
+        })
       }
     }
-  },
-  watch: {
-    activeName(val) {
-      this.$router.push(`${this.$route.path}?tab=${val}`)
-    }
-  },
-  created() {
-    this.getList()
-    const tab = this.$route.query.tab
-    if (tab) {
-      this.activeName = tab
-    }
-  },
-  inject: ['reload'],
-  methods: {
-    showCreatedTimes() {
-      this.createdTimes = this.createdTimes + 1
-    },
-    fresh() {
-      this.reload()
-    },
-    handleChange(value) {
-      console.log(value)
-    },
-    getList() {
-      getClientConfig().then(res => {
-        console.log(res.data[0].dic.cycle)
-        this.client.cycle = res.data[0].dic.cycle
-        this.client.udp = res.data[0].dic.udp
-        this.client.monitorPath = res.data[0].dic.monitorPath
-        this.client.lan = res.data[0].dic.lan
-      })
-      getBlackListConfig().then(res => {
-        this.blackList.ip = res.data[0].dic.ip
-        this.blackList.file = res.data[0].dic.file
-        this.blackList.process = res.data[0].dic.process
-        this.blackList.other = res.data[0].dic.other
-      })
-      getFilterConfig().then(res => {
-        this.filter.ip = res.data[0].dic.ip
-        this.filter.file = res.data[0].dic.file
-        this.filter.process = res.data[0].dic.process
-      })
-      getServerConfig().then(res => {
-        this.server.learn = res.data[0].dic.learn
-        this.server.offlinecheck = res.data[0].dic.offlinecheck
-        this.server.cert = res.data[0].dic.cert
-        this.server.privatekey = res.data[0].dic.privatekey
-        this.server.publickey = res.data[0].dic.publickey
-      })
-      getWhiteListConfig().then(res => {
-        this.whiteList.ip = res.data[0].dic.ip
-        this.whiteList.file = res.data[0].dic.file
-        this.whiteList.process = res.data[0].dic.process
-        this.whiteList.other = res.data[0].dic.other
-      })
-      getIntelligenceConfig().then(res => {
-        this.intelligence.switch = res.data[0].dic.switch
-        this.intelligence.fileapi = res.data[0].dic.fileapi
-        this.intelligence.ipapi = res.data[0].dic.ipapi
-        this.intelligence.regex = res.data[0].dic.regex
-      })
-      getNoticeConfig().then(res => {
-        this.notice.switch = res.data[0].dic.switch
-        this.notice.onlyhigh = res.data[0].dic.onlyhigh
-        this.notice.api = res.data[0].dic.api
-      })
-    },
-
-    // client
-    handleClientCycleChange(value) {
-      setClientConfig({ key: 'cycle', value: value }).then(res => {
-        this.getList()
-        if (res.code === 200 & res.data === true) {
-          this.$notify({
-            title: 'Success',
-            message: 'Update Successfully',
-            type: 'success',
-            duration: 2000
-          })
-        } else {
-          this.$notify({
-            title: 'Failure',
-            message: 'Update Failed',
-            type: 'success',
-            duration: 2000
-          })
-        }
-      })
-    },
-    handleClientUdpChange(value) {
-      setClientConfig({ key: 'udp', value: value }).then(res => {
-        this.getList()
-        if (res.code === 200 & res.data === true) {
-          this.$notify({
-            title: 'Success',
-            message: 'Update Successfully',
-            type: 'success',
-            duration: 2000
-          })
-        } else {
-          this.$notify({
-            title: 'Failure',
-            message: 'Update Failed',
-            type: 'success',
-            duration: 2000
-          })
-        }
-      })
-    },
-    handleClientLanChange(value) {
-      setClientConfig({ key: 'lan', value: value }).then(res => {
-        this.getList()
-        if (res.code === 200 & res.data === true) {
-          this.$notify({
-            title: 'Success',
-            message: 'Update Successfully',
-            type: 'success',
-            duration: 2000
-          })
-        } else {
-          this.$notify({
-            title: 'Failure',
-            message: 'Update Failed',
-            type: 'success',
-            duration: 2000
-          })
-        }
-      })
-    },
-    handleDeleteMonitorPath(row, index) {
-      setClientConfig({ key: 'monitorPath', value: row, action: 'delete' }).then(res => {
-        this.getList()
-        if (res.code === 200 & res.data === true) {
-          this.$notify({
-            title: 'Success',
-            message: 'Update Successfully',
-            type: 'success',
-            duration: 2000
-          })
-        } else {
-          this.$notify({
-            title: 'Failure',
-            message: 'Update Failed',
-            type: 'success',
-            duration: 2000
-          })
-        }
-      })
-    },
-    handleAddMonitorPath() {
-      this.client.dialog = true
-    },
-    addMonitorPath() {
-      setClientConfig({ key: 'monitorPath', value: this.temp.monitorPath, action: 'add' }).then(res => {
-        this.getList()
-        if (res.code === 200 & res.data === true) {
-          this.client.dialog = false
-          this.$notify({
-            title: 'Success',
-            message: 'Update Successfully',
-            type: 'success',
-            duration: 2000
-          })
-        } else {
-          this.$notify({
-            title: 'Failure',
-            message: 'Update Failed',
-            type: 'success',
-            duration: 2000
-          })
-        }
-      })
-    },
-
-    // server
-    handleServerLearnChange(value) {
-      setServerConfig({ key: 'learn', value: value }).then(res => {
-        this.getList()
-        if (res.code === 200 & res.data === true) {
-          this.$notify({
-            title: 'Success',
-            message: 'Update Successfully',
-            type: 'success',
-            duration: 2000
-          })
-        } else {
-          this.$notify({
-            title: 'Failure',
-            message: 'Update Failed',
-            type: 'success',
-            duration: 2000
-          })
-        }
-      })
-    },
-    handleServerOfflinecheckChange(value) {
-      setServerConfig({ key: 'offlinecheck', value: value }).then(res => {
-        this.getList()
-        if (res.code === 200 & res.data === true) {
-          this.$notify({
-            title: 'Success',
-            message: 'Update Successfully',
-            type: 'success',
-            duration: 2000
-          })
-        } else {
-          this.$notify({
-            title: 'Failure',
-            message: 'Update Failed',
-            type: 'success',
-            duration: 2000
-          })
-        }
-      })
-    },
-    // whiteList
-    handleDeleteWhiteListFile(row, index) {
-      setWhiteListConfig({ key: 'file', value: row, action: 'delete' }).then(res => {
-        this.getList()
-        if (res.code === 200 & res.data === true) {
-          this.$notify({
-            title: 'Success',
-            message: 'Update Successfully',
-            type: 'success',
-            duration: 2000
-          })
-        } else {
-          this.$notify({
-            title: 'Failure',
-            message: 'Update Failed',
-            type: 'success',
-            duration: 2000
-          })
-        }
-      })
-    },
-    handleAddWhiteListFile() {
-      this.whiteList.fileDialog = true
-    },
-    addWhiteListFile() {
-      setWhiteListConfig({ key: 'file', value: this.temp.whiteList.file, action: 'add' }).then(res => {
-        this.getList()
-        if (res.code === 200 & res.data === true) {
-          this.client.dialog = false
-          this.$notify({
-            title: 'Success',
-            message: 'Update Successfully',
-            type: 'success',
-            duration: 2000
-          })
-        } else {
-          this.$notify({
-            title: 'Failure',
-            message: 'Update Failed',
-            type: 'success',
-            duration: 2000
-          })
-        }
-      })
-    },
-    handleDeleteWhiteListIP(row, index) {
-      setWhiteListConfig({ key: 'ip', value: row, action: 'delete' }).then(res => {
-        this.getList()
-        if (res.code === 200 & res.data === true) {
-          this.$notify({
-            title: 'Success',
-            message: 'Update Successfully',
-            type: 'success',
-            duration: 2000
-          })
-        } else {
-          this.$notify({
-            title: 'Failure',
-            message: 'Update Failed',
-            type: 'success',
-            duration: 2000
-          })
-        }
-      })
-    },
-    handleAddWhiteListIP() {
-      this.whiteList.ipDialog = true
-    },
-    addWhiteListIP() {
-      setWhiteListConfig({ key: 'ip', value: this.temp.whiteList.ip, action: 'add' }).then(res => {
-        this.getList()
-        if (res.code === 200 & res.data === true) {
-          this.whiteList.ipDialog = false
-          this.$notify({
-            title: 'Success',
-            message: 'Update Successfully',
-            type: 'success',
-            duration: 2000
-          })
-        } else {
-          this.$notify({
-            title: 'Failure',
-            message: 'Update Failed',
-            type: 'success',
-            duration: 2000
-          })
-        }
-      })
-    },
-    handleDeleteWhiteListProcess(row, index) {
-      setWhiteListConfig({ key: 'process', value: row, action: 'delete' }).then(res => {
-        this.getList()
-        if (res.code === 200 & res.data === true) {
-          this.$notify({
-            title: 'Success',
-            message: 'Update Successfully',
-            type: 'success',
-            duration: 2000
-          })
-        } else {
-          this.$notify({
-            title: 'Failure',
-            message: 'Update Failed',
-            type: 'success',
-            duration: 2000
-          })
-        }
-      })
-    },
-    handleAddWhiteListProcess() {
-      this.whiteList.processDialog = true
-    },
-    addWhiteListProcess() {
-      setWhiteListConfig({ key: 'process', value: this.temp.whiteList.process, action: 'add' }).then(res => {
-        this.getList()
-        if (res.code === 200 & res.data === true) {
-          this.whiteList.processDialog = false
-          this.$notify({
-            title: 'Success',
-            message: 'Update Successfully',
-            type: 'success',
-            duration: 2000
-          })
-        } else {
-          this.$notify({
-            title: 'Failure',
-            message: 'Update Failed',
-            type: 'success',
-            duration: 2000
-          })
-        }
-      })
-    },
-    handleDeleteWhiteListOther(row, index) {
-      setWhiteListConfig({ key: 'other', value: row, action: 'delete' }).then(res => {
-        this.getList()
-        if (res.code === 200 & res.data === true) {
-          this.$notify({
-            title: 'Success',
-            message: 'Update Successfully',
-            type: 'success',
-            duration: 2000
-          })
-        } else {
-          this.$notify({
-            title: 'Failure',
-            message: 'Update Failed',
-            type: 'success',
-            duration: 2000
-          })
-        }
-      })
-    },
-    handleAddWhiteListOther() {
-      this.whiteList.otherDialog = true
-    },
-    addWhiteListOther() {
-      setWhiteListConfig({ key: 'other', value: this.temp.whiteList.other, action: 'add' }).then(res => {
-        this.getList()
-        if (res.code === 200 & res.data === true) {
-          this.whiteList.otherDialog = false
-          this.$notify({
-            title: 'Success',
-            message: 'Update Successfully',
-            type: 'success',
-            duration: 2000
-          })
-        } else {
-          this.$notify({
-            title: 'Failure',
-            message: 'Update Failed',
-            type: 'success',
-            duration: 2000
-          })
-        }
-      })
-    },
-
-    // backList
-    handleDeleteBlackListFile(row, index) {
-      setBlackListConfig({ key: 'file', value: row, action: 'delete' }).then(res => {
-        this.getList()
-        if (res.code === 200 & res.data === true) {
-          this.$notify({
-            title: 'Success',
-            message: 'Update Successfully',
-            type: 'success',
-            duration: 2000
-          })
-        } else {
-          this.$notify({
-            title: 'Failure',
-            message: 'Update Failed',
-            type: 'success',
-            duration: 2000
-          })
-        }
-      })
-    },
-    handleAddBlackListFile() {
-      this.blackList.fileDialog = true
-    },
-    addBlackListFile() {
-      setBlackListConfig({ key: 'file', value: this.temp.blackList.file, action: 'add' }).then(res => {
-        this.getList()
-        if (res.code === 200 & res.data === true) {
-          this.client.dialog = false
-          this.$notify({
-            title: 'Success',
-            message: 'Update Successfully',
-            type: 'success',
-            duration: 2000
-          })
-        } else {
-          this.$notify({
-            title: 'Failure',
-            message: 'Update Failed',
-            type: 'success',
-            duration: 2000
-          })
-        }
-      })
-    },
-    handleDeleteBlackListIP(row, index) {
-      setBlackListConfig({ key: 'ip', value: row, action: 'delete' }).then(res => {
-        this.getList()
-        if (res.code === 200 & res.data === true) {
-          this.$notify({
-            title: 'Success',
-            message: 'Update Successfully',
-            type: 'success',
-            duration: 2000
-          })
-        } else {
-          this.$notify({
-            title: 'Failure',
-            message: 'Update Failed',
-            type: 'success',
-            duration: 2000
-          })
-        }
-      })
-    },
-    handleAddBlackListIP() {
-      this.blackList.ipDialog = true
-    },
-    addBlackListIP() {
-      setBlackListConfig({ key: 'ip', value: this.temp.blackList.ip, action: 'add' }).then(res => {
-        this.getList()
-        if (res.code === 200 & res.data === true) {
-          this.blackList.ipDialog = false
-          this.$notify({
-            title: 'Success',
-            message: 'Update Successfully',
-            type: 'success',
-            duration: 2000
-          })
-        } else {
-          this.$notify({
-            title: 'Failure',
-            message: 'Update Failed',
-            type: 'success',
-            duration: 2000
-          })
-        }
-      })
-    },
-    handleDeleteBlackListProcess(row, index) {
-      setBlackListConfig({ key: 'process', value: row, action: 'delete' }).then(res => {
-        this.getList()
-        if (res.code === 200 & res.data === true) {
-          this.$notify({
-            title: 'Success',
-            message: 'Update Successfully',
-            type: 'success',
-            duration: 2000
-          })
-        } else {
-          this.$notify({
-            title: 'Failure',
-            message: 'Update Failed',
-            type: 'success',
-            duration: 2000
-          })
-        }
-      })
-    },
-    handleAddBlackListProcess() {
-      this.blackList.processDialog = true
-    },
-    addBlackListProcess() {
-      this.getList()
-      setBlackListConfig({ key: 'process', value: this.temp.blackList.process, action: 'add' }).then(res => {
-        if (res.code === 200 & res.data === true) {
-          this.blackList.processDialog = false
-          this.$notify({
-            title: 'Success',
-            message: 'Update Successfully',
-            type: 'success',
-            duration: 2000
-          })
-        } else {
-          this.$notify({
-            title: 'Failure',
-            message: 'Update Failed',
-            type: 'success',
-            duration: 2000
-          })
-        }
-      })
-    },
-    handleDeleteBlackListOther(row, index) {
-      setBlackListConfig({ key: 'other', value: row, action: 'delete' }).then(res => {
-        this.getList()
-        if (res.code === 200 & res.data === true) {
-          this.$notify({
-            title: 'Success',
-            message: 'Update Successfully',
-            type: 'success',
-            duration: 2000
-          })
-        } else {
-          this.$notify({
-            title: 'Failure',
-            message: 'Update Failed',
-            type: 'success',
-            duration: 2000
-          })
-        }
-      })
-    },
-    handleAddBlackListOther() {
-      this.blackList.otherDialog = true
-    },
-    addBlackListOther() {
-      setBlackListConfig({ key: 'other', value: this.temp.blackList.other, action: 'add' }).then(res => {
-        this.getList()
-        if (res.code === 200 & res.data === true) {
-          this.blackList.otherDialog = false
-          this.$notify({
-            title: 'Success',
-            message: 'Update Successfully',
-            type: 'success',
-            duration: 2000
-          })
-        } else {
-          this.$notify({
-            title: 'Failure',
-            message: 'Update Failed',
-            type: 'success',
-            duration: 2000
-          })
-        }
-      })
-    },
-
-    // filter
-    handleDeleteFilterFile(row, index) {
-      setFilterConfig({ key: 'file', value: row, action: 'delete' }).then(res => {
-        this.getList()
-        if (res.code === 200 & res.data === true) {
-          this.$notify({
-            title: 'Success',
-            message: 'Update Successfully',
-            type: 'success',
-            duration: 2000
-          })
-        } else {
-          this.$notify({
-            title: 'Failure',
-            message: 'Update Failed',
-            type: 'success',
-            duration: 2000
-          })
-        }
-      })
-    },
-    handleAddFilterFile() {
-      this.filter.fileDialog = true
-    },
-    addFilterFile() {
-      setFilterConfig({ key: 'file', value: this.temp.filter.file, action: 'add' }).then(res => {
-        if (res.code === 200 & res.data === true) {
-          this.filter.dialog = false
-          this.$notify({
-            title: 'Success',
-            message: 'Update Successfully',
-            type: 'success',
-            duration: 2000
-          })
-        } else {
-          this.$notify({
-            title: 'Failure',
-            message: 'Update Failed',
-            type: 'success',
-            duration: 2000
-          })
-        }
-      })
-    },
-    handleDeleteFilterIP(row, index) {
-      setFilterConfig({ key: 'ip', value: row, action: 'delete' }).then(res => {
-        this.getList()
-        if (res.code === 200 & res.data === true) {
-          this.$notify({
-            title: 'Success',
-            message: 'Update Successfully',
-            type: 'success',
-            duration: 2000
-          })
-        } else {
-          this.$notify({
-            title: 'Failure',
-            message: 'Update Failed',
-            type: 'success',
-            duration: 2000
-          })
-        }
-      })
-    },
-    handleAddFilterIP() {
-      this.filter.ipDialog = true
-    },
-    addFilterIP() {
-      setFilterConfig({ key: 'ip', value: this.temp.blackList.ip, action: 'add' }).then(res => {
-        this.getList()
-        if (res.code === 200 & res.data === true) {
-          this.filter.ipDialog = false
-          this.$notify({
-            title: 'Success',
-            message: 'Update Successfully',
-            type: 'success',
-            duration: 2000
-          })
-        } else {
-          this.$notify({
-            title: 'Failure',
-            message: 'Update Failed',
-            type: 'success',
-            duration: 2000
-          })
-        }
-      })
-    },
-    handleDeleteFilterProcess(row, index) {
-      setFilterConfig({ key: 'process', value: row, action: 'delete' }).then(res => {
-        this.getList()
-        if (res.code === 200 & res.data === true) {
-          this.$notify({
-            title: 'Success',
-            message: 'Update Successfully',
-            type: 'success',
-            duration: 2000
-          })
-        } else {
-          this.$notify({
-            title: 'Failure',
-            message: 'Update Failed',
-            type: 'success',
-            duration: 2000
-          })
-        }
-      })
-    },
-    handleAddFilterProcess() {
-      this.filter.processDialog = true
-    },
-    addFilterProcess() {
-      setFilterConfig({ key: 'process', value: this.temp.filter.process, action: 'add' }).then(res => {
-        this.getList()
-        if (res.code === 200 & res.data === true) {
-          this.filter.processDialog = false
-          this.$notify({
-            title: 'Success',
-            message: 'Update Successfully',
-            type: 'success',
-            duration: 2000
-          })
-        } else {
-          this.$notify({
-            title: 'Failure',
-            message: 'Update Failed',
-            type: 'success',
-            duration: 2000
-          })
-        }
-      })
-    },
-
-    // notice
-    handleNoticeApiChange() {
-      this.notice.apiisDisabled = false
-    },
-    handleNoticeApiSave() {
-      setNoticeConfig({ key: 'switch', value: this.notice.api }).then(res => {
-        this.notice.apiisDisabled = true
-        if (res.code === 200 & res.data === true) {
-          this.$notify({
-            title: 'Success',
-            message: 'Update Successfully',
-            type: 'success',
-            duration: 2000
-          })
-        } else {
-          this.$notify({
-            title: 'Failure',
-            message: 'Update Failed',
-            type: 'success',
-            duration: 2000
-          })
-        }
-      })
-    },
-    handleNoticeOnlyhighChange(value) {
-      setNoticeConfig({ key: 'switch', value: value }).then(res => {
-        if (res.code === 200 & res.data === true) {
-          this.$notify({
-            title: 'Success',
-            message: 'Update Successfully',
-            type: 'success',
-            duration: 2000
-          })
-        } else {
-          this.$notify({
-            title: 'Failure',
-            message: 'Update Failed',
-            type: 'success',
-            duration: 2000
-          })
-        }
-      })
-    },
-    handleNoticeSwitchChange(value) {
-      setNoticeConfig({ key: 'switch', value: value }).then(res => {
-        if (res.code === 200 & res.data === true) {
-          this.$notify({
-            title: 'Success',
-            message: 'Update Successfully',
-            type: 'success',
-            duration: 2000
-          })
-        } else {
-          this.$notify({
-            title: 'Failure',
-            message: 'Update Failed',
-            type: 'success',
-            duration: 2000
-          })
-        }
-      })
-    },
-    // intelligence
-    handleIntelligenceSwitchChange(value) {
-      setIntelligenceConfig({ key: 'switch', value: value }).then(res => {
-        if (res.code === 200 & res.data === true) {
-          this.$notify({
-            title: 'Success',
-            message: 'Update Successfully',
-            type: 'success',
-            duration: 2000
-          })
-        } else {
-          this.$notify({
-            title: 'Failure',
-            message: 'Update Failed',
-            type: 'success',
-            duration: 2000
-          })
-        }
-      })
-    },
-    handleIntelligenceRegexChange() {
-      this.intelligence.regexisDisabled = false
-    },
-    handleIntelligenceRegexSave() {
-      setIntelligenceConfig({ key: 'intelligence', value: this.intelligence.regex }).then(res => {
-        if (res.code === 200 & res.data === true) {
-          this.intelligence.regexisDisabled = true
-          this.$notify({
-            title: 'Success',
-            message: 'Update Successfully',
-            type: 'success',
-            duration: 2000
-          })
-        } else {
-          this.$notify({
-            title: 'Failure',
-            message: 'Update Failed',
-            type: 'success',
-            duration: 2000
-          })
-        }
-      })
-    },
-    handleIntelligenceIpApiChange() {
-      this.intelligence.ipApiisDisabled = false
-    },
-    handleIntelligenceIpApiSave() {
-      setIntelligenceConfig({ key: 'intelligence', value: this.intelligence.ipapi }).then(res => {
-        if (res.code === 200 & res.data === true) {
-          this.intelligence.ipApiisDisabled = true
-          this.$notify({
-            title: 'Success',
-            message: 'Update Successfully',
-            type: 'success',
-            duration: 2000
-          })
-        } else {
-          this.$notify({
-            title: 'Failure',
-            message: 'Update Failed',
-            type: 'success',
-            duration: 2000
-          })
-        }
-      })
-    },
-    handleIntelligenceFileApiChange() {
-      this.intelligence.fileApiisDisabled = false
-    },
-    handleIntelligenceFileApiSave() {
-      setIntelligenceConfig({ key: 'intelligence', value: this.intelligence.fileapi }).then(res => {
-        if (res.code === 200 & res.data === true) {
-          this.intelligence.fileApiisDisabled = true
-          this.$notify({
-            title: 'Success',
-            message: 'Update Successfully',
-            type: 'success',
-            duration: 2000
-          })
-        } else {
-          this.$notify({
-            title: 'Failure',
-            message: 'Update Failed',
-            type: 'success',
-            duration: 2000
-          })
-        }
-      })
-    }
   }
-}
 </script>
 
 <style scoped>

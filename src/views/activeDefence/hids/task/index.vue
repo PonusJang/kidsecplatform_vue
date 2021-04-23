@@ -136,7 +136,7 @@ export default {
 
       getTaskList(this.listQuery.page, this.listQuery.limit).then(response => {
         this.total = response.data.count
-        this.list = response.data.docs
+        this.list = response.data.data
         setTimeout(() => {
           this.listLoading = false
         }, 1.5 * 1000)
