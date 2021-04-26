@@ -44,7 +44,7 @@
       </el-table-column>
       <el-table-column label="脚本名称" align="center">
         <template slot-scope="scope">
-          <span class="link-type" @click="handleUpdate(row)"> {{ scope.row.file_name }}</span>
+          <span class="link-type" @click="handleUpdate(row)"> {{ scope.row.filename }}</span>
         </template>
       </el-table-column>
       <el-table-column label="危害" align="center">
@@ -65,7 +65,7 @@
       <el-table-column align="center" prop="created_at" label="添加时间">
         <template slot-scope="scope">
           <i class="el-icon-time" />
-          <span>{{ scope.row.add_time | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+          <span>{{ scope.row.created | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
         </template>
       </el-table-column>
 
@@ -159,7 +159,7 @@ export default {
       if (this.listQuery.name !== undefined && this.listQuery.name !== '') {
         findByName(this.listQuery.page, this.listQuery.limit, this.listQuery.ip).then(response => {
           this.total = response.data.count
-          this.list = response.data.docs
+          this.list = response.data.data
           setTimeout(() => {
             this.listLoading = false
           }, 1.5 * 1000)
@@ -167,7 +167,7 @@ export default {
       } else {
         getList(this.listQuery.page, this.listQuery.limit).then(response => {
           this.total = response.data.count
-          this.list = response.data.docs
+          this.list = response.data.data
           setTimeout(() => {
             this.listLoading = false
           }, 1.5 * 1000)

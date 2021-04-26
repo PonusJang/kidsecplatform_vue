@@ -148,7 +148,7 @@
         if (this.listQuery.ip !== undefined && this.listQuery.ip !== '') {
           findResultByIP(this.listQuery.page, this.listQuery.limit, this.listQuery.ip).then(response => {
             this.total = response.data.count
-            this.list = response.data.docs
+            this.list = response.data.data
             setTimeout(() => {
               this.listLoading = false
             }, 1.5 * 1000)
@@ -156,7 +156,7 @@
         } else if (this.listQuery.port !== undefined && this.listQuery.port !== '') {
           findResultByPort(this.listQuery.page, this.listQuery.limit, this.listQuery.port).then(response => {
             this.total = response.data.count
-            this.list = response.data.docs
+            this.list = response.data.data
             setTimeout(() => {
               this.listLoading = false
             }, 1.5 * 1000)
@@ -164,7 +164,7 @@
         } else {
           getResultList(this.listQuery.page, this.listQuery.limit).then(response => {
             this.total = response.data.count
-            this.list = response.data.docs
+            this.list = response.data.data
             setTimeout(() => {
               this.listLoading = false
             }, 1.5 * 1000)

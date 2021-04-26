@@ -41,7 +41,7 @@
       </el-table-column>
       <el-table-column label="网址URL" align="center">
         <template slot-scope="scope">
-          <span class="link-type"> {{ scope.row.target }}</span>
+          <span class="link-type"> {{ scope.row.target.address }}</span>
         </template>
       </el-table-column>
       <el-table-column label="ScanID" align="center">
@@ -51,7 +51,7 @@
       </el-table-column>
       <el-table-column label="状态" align="center">
         <template slot-scope="scope">
-          <span class="link-type">{{ scope.row.status }}</span>
+          <span class="link-type">{{ scope.row.current_session.status }}</span>
         </template>
       </el-table-column>
 

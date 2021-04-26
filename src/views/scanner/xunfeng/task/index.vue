@@ -115,7 +115,7 @@
       </el-table-column>
       <el-table-column label="周期" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
-          <span class="link-type">{{ scope.row.cronSchedule }}</span>
+          <span class="link-type">{{ scope.row.cron }}</span>
         </template>
       </el-table-column>
 
@@ -167,7 +167,7 @@
           <el-switch v-model="temp.isCron" @change=handleChange()></el-switch>
         </el-form-item>
         <el-form-item label="" prop="title">
-          <el-input :disabled="!temp.disabled" v-model="temp.cronSchedule"></el-input>
+          <el-input :disabled="!temp.disabled" v-model="temp.cron"></el-input>
         </el-form-item>
         <div style="display: flex;margin-bottom: 20px">
           <label class="typo__label" style="margin-right: 100px" for="ajax">插件</label>
@@ -314,7 +314,7 @@
         },
         temp: {
           isCron: false,
-          cronSchedule: undefined,
+          cron: undefined,
           disabled: false,
         },
         statusOptions,
@@ -340,7 +340,7 @@
         if (this.listQuery.name !== undefined && this.listQuery.name !== '') {
           findByName(this.listQuery.page, this.listQuery.limit, this.listQuery.name).then(response => {
             this.total = response.data.count
-            this.list = response.data.docs
+            this.list = response.data.data
             setTimeout(() => {
               this.listLoading = false
             }, 1.5 * 1000)
@@ -348,7 +348,7 @@
         } else if (this.listQuery.service !== undefined && this.listQuery.service !== '') {
           findByService(this.listQuery.page, this.listQuery.limit, this.listQuery.domain).then(response => {
             this.total = response.data.count
-            this.list = response.data.docs
+            this.list = response.data.data
             setTimeout(() => {
               this.listLoading = false
             }, 1.5 * 1000)
@@ -356,7 +356,7 @@
         } else {
           getList(this.listQuery.page, this.listQuery.limit).then(response => {
             this.total = response.data.count
-            this.list = response.data.docs
+            this.list = response.data.data
             setTimeout(() => {
               this.listLoading = false
             }, 1.5 * 1000)
@@ -434,7 +434,7 @@
         })
         const data = {
           isCron: this.temp.isCron,
-          cronSchedule: this.temp.cronSchedule,
+          cron: this.temp.cron,
           plugins: pluginList,
           hosts: hostList
         }

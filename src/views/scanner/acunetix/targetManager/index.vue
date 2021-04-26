@@ -148,7 +148,7 @@
           url: '',
           desc: '',
           param: '',
-          criticality: ''
+          criticality: 10
         },
         tabPosition: 'left'
       }
@@ -164,7 +164,7 @@
         if (this.targetListQuery.param !== undefined && this.targetListQuery.param !== '') {
           filterTarget(this.targetListQuery.page, this.targetListQuery.limit, this.targetListQuery.param).then(response => {
             this.targetTotal = response.data.count
-            this.targetList = response.data.docs
+            this.targetList = response.data.data
             setTimeout(() => {
               this.listLoading = false
             }, 1.5 * 1000)
@@ -172,7 +172,7 @@
         } else {
           getTargetList(this.targetListQuery.page, this.targetListQuery.limit).then(response => {
             this.targetTotal = response.data.count
-            this.targetList = response.data.docs
+            this.targetList = response.data.data
             setTimeout(() => {
               this.listLoading = false
             }, 1.5 * 1000)

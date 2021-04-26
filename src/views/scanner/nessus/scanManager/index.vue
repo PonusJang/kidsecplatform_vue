@@ -215,7 +215,7 @@
         if (this.scanListQuery.param !== undefined && this.scanListQuery.param !== '') {
           filterByIP(this.scanListQuery.page, this.scanListQuery.limit, this.scanListQuery.param).then(response => {
             this.scanTotal = response.data.count
-            this.scanList = response.data.docs
+            this.scanList = response.data.data
             setTimeout(() => {
               this.listLoading = false
             }, 1.5 * 1000)
@@ -223,7 +223,7 @@
         } else {
           getScanList(this.scanListQuery.page, this.scanListQuery.limit).then(response => {
             this.scanTotal = response.data.count
-            this.scanList = response.data.docs
+            this.scanList = response.data.data
             setTimeout(() => {
               this.listLoading = false
             }, 1.5 * 1000)

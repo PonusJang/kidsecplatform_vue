@@ -142,7 +142,7 @@
         }
       },
       handleRead(row, index) {
-        read(row._id)
+        read(row.id)
         this.dialogFormVisible = true
         this.temp.host = row.title
         this.temp.module = row.module

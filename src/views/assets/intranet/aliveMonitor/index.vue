@@ -74,7 +74,7 @@
       </el-table-column>
       <el-table-column label="Time" align="center">
         <template slot-scope="scope">
-          <span class="link-type"> {{ scope.row.add_time |parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+          <span class="link-type"> {{ scope.row.timestamp |parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
         </template>
       </el-table-column>
     </el-table>
