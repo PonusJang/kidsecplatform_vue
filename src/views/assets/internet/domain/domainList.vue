@@ -389,7 +389,7 @@ export default {
     },
     handleGetWebInfo(row) {
       getWebInfo(row.subdomain).then(res => {
-        if (res.code === 200 ) {
+        if (res.code === 200) {
           this.$notify({
             title: 'Success',
             message: 'Successfully',
@@ -408,7 +408,7 @@ export default {
     },
     handleWebScan(row) {
       webScan(row.subdomain).then(res => {
-        if (res.code === 200 ) {
+        if (res.code === 200) {
           this.$notify({
             title: 'Success',
             message: 'Successfully',

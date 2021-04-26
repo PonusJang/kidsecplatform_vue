@@ -405,7 +405,7 @@ export default {
     },
     handleHostScan(row) {
       hostScan(row.ip).then(res => {
-        if (res.code === 200 && res.data === true) {
+        if (res.code === 200 ) {
           this.$notify({
             title: 'Success',
             message: 'Successfully',
@@ -424,7 +424,7 @@ export default {
     },
     handlePortScan(row) {
       portScan(row.ip).then(res => {
-        if (res.code === 200 && res.data === true) {
+        if (res.code === 200 ) {
           this.$notify({
             title: 'Success',
             message: 'Successfully',
