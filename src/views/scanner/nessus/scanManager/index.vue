@@ -127,9 +127,9 @@
           >
             <el-option
               v-for="item in policies"
-              :key="item.uuid"
-              :label="item.title"
-              :value="item.uuid"
+              :key="item.template_uuid"
+              :label="item.name"
+              :value="item.template_uuid"
             />
           </el-select>
         </el-form-item>
@@ -240,7 +240,7 @@
       },
       handleScanCreate() {
         getPolicies().then(res => {
-          this.policies = res.data.data
+          this.policies = res.data.policies
           this.resetTemp()
           this.dialogStatus = 'create'
           this.dialogFormVisible = true
