@@ -56,18 +56,18 @@ export function findByDomain(page, limit, domain) {
   })
 }
 
-export function webScan(param) {
+export function webScan(subDomain) {
   return request({
     url: '/domain/webScan',
     method: 'get',
-    params: { param }
+    params: { subDomain }
   })
 }
 
-export function getWebInfo(param) {
+export function getWebInfo(subDomain) {
   return request({
     url: '/domain/getWebInfo',
     method: 'get',
-    params: { param }
+    params: { subDomain }
   })
 }
