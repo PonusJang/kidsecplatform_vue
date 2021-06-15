@@ -544,7 +544,7 @@
       },
       handleDownload_before_15() {
         getAllList().then((res) => {
-          this.exportList = res.data.docs
+          this.exportList = res.data.data
           this.downloadLoading1 = true
           import('@/vendor/Export2Excel').then(excel => {
             const tHeader = ['设备名称', 'IP', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15']
@@ -561,7 +561,7 @@
       },
       handleDownload_after_15() {
         getAllList().then((res) => {
-          this.exportList = res.data.docs
+          this.exportList = res.data.data
           this.downloadLoading2 = true
           import('@/vendor/Export2Excel').then(excel => {
             const tHeader = ['设备名称', 'IP', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31']

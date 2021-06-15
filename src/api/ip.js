@@ -72,18 +72,18 @@ export function searchIP(data) {
   })
 }
 
-export function hostScan(param) {
+export function hostScan(host) {
   return request({
     url: '/ip/hostScan',
     method: 'get',
-    params: { param }
+    params: { host }
   })
 }
 
-export function portScan(param) {
+export function portScan(host) {
   return request({
     url: '/ip/portScan',
     method: 'get',
-    params: { param }
+    params: { host }
   })
 }

@@ -72,26 +72,26 @@ export function addFromExcel(data) {
   })
 }
 
-export function hostScan(param) {
+export function hostScan(host) {
   return request({
     url: '/assets/hostScan',
     method: 'get',
-    params: { param }
+    params: { host }
   })
 }
 
-export function portScan(param) {
+export function portScan(host) {
   return request({
     url: '/assets/portScan',
     method: 'get',
-    params: { param }
+    params: { host }
   })
 }
 
-export function getDetail(param) {
+export function getDetail(host) {
   return request({
     url: '/assets/',
     method: 'get',
-    params: { param }
+    params: { host }
   })
 }

@@ -241,7 +241,7 @@ export default {
 
       if (this.listQuery.ip !== undefined && this.listQuery.ip !== '') {
         findByIP(this.listQuery.page, this.listQuery.limit, this.listQuery.ip).then(response => {
-          // console.log(response.data.docs)
+
           this.total = response.data.count
           this.list = response.data.data
           setTimeout(() => {
@@ -250,7 +250,7 @@ export default {
         })
       } else if (this.listQuery.owner !== undefined && this.listQuery.owner !== '') {
         findByOwner(this.listQuery.page, this.listQuery.limit, this.listQuery.owner).then(response => {
-          // console.log(response.data.docs)
+
           this.total = response.data.count
           this.list = response.data.data
           setTimeout(() => {
@@ -259,7 +259,7 @@ export default {
         })
       } else if (this.listQuery.port !== undefined && this.listQuery.port !== '') {
         findByPort(this.listQuery.page, this.listQuery.limit, this.listQuery.port).then(response => {
-          // console.log(response.data.docs)
+
           this.total = response.data.count
           this.list = response.data.data
           setTimeout(() => {
@@ -268,7 +268,7 @@ export default {
         })
       } else if (this.listQuery.service !== undefined && this.listQuery.service != '') {
         findByService(this.listQuery.page, this.listQuery.limit, this.listQuery.service).then(response => {
-          // console.log(response.data.docs)
+
           this.total = response.data.count
           this.list = response.data.data
           setTimeout(() => {
@@ -277,7 +277,7 @@ export default {
         })
       } else {
         getList(this.listQuery.page, this.listQuery.limit).then(response => {
-          // console.log(response.data.docs)
+
           this.total = response.data.count
           this.list = response.data.data
           setTimeout(() => {
