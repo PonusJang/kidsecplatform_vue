@@ -91,14 +91,18 @@
               width="200px"
               label="操作"
               align="center"
-            ><template slot-scope="{row}">
-              <el-button type="primary" size="mini" @click="handleWebScan(row)">
-                Web漏扫
-              </el-button>
-              <el-button type="primary" size="mini" @click="handleGetWebInfo(row)">
-                获取指纹
-              </el-button>
-            </template>
+            >
+              <template slot-scope="scope">
+                <el-dropdown split-button type="primary" @command="handleCommand">
+                  操作
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'webscan')">网站漏描
+                    </el-dropdown-item>
+                    <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'webInfo')">获取指纹
+                    </el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </template>
             </el-table-column>
 
           </el-table>
@@ -124,25 +128,37 @@
 
       <el-table-column align="center" prop="created_at" label="添加时间">
         <template slot-scope="scope">
-          <i class="el-icon-time" />
+          <i class="el-icon-time"/>
           <span>{{ scope.row.add_time | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
         </template>
       </el-table-column>
 
+      <!--      <el-table-column label="操作" align="center" width="250" class-name="small-padding fixed-width">-->
+      <!--        <template slot-scope="{row,$index}">-->
+      <!--          <el-button type="primary" size="mini" @click="handleUpdate(row)">-->
+      <!--            编辑-->
+      <!--          </el-button>-->
+      <!--          <el-button size="mini" type="danger" @click="handleDelete(row,$index)">-->
+      <!--            删除-->
+      <!--          </el-button>-->
+      <!--          <el-button size="mini" type="danger" @click="handleDeleteAll(row,$index)">-->
+      <!--            删除全部-->
+      <!--          </el-button>-->
+      <!--        </template>-->
+      <!--      </el-table-column>-->
       <el-table-column label="操作" align="center" width="250" class-name="small-padding fixed-width">
-        <template slot-scope="{row,$index}">
-          <el-button type="primary" size="mini" @click="handleUpdate(row)">
-            编辑
-          </el-button>
-          <el-button size="mini" type="danger" @click="handleDelete(row,$index)">
-            删除
-          </el-button>
-          <el-button size="mini" type="danger" @click="handleDeleteAll(row,$index)">
-            删除全部
-          </el-button>
+        <template slot-scope="scope">
+          <el-dropdown split-button type="primary" @command="handleCommand">
+            操作
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'edit')">编辑</el-dropdown-item>
+              <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'delete')">删除</el-dropdown-item>
+              <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'deleteAll')">全部删除
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
         </template>
       </el-table-column>
-
     </el-table>
 
     <pagination
@@ -163,10 +179,10 @@
         style="width: 400px; margin-left:50px;"
       >
         <el-form-item label="归属企业" prop="title">
-          <el-input v-model="temp.owner" />
+          <el-input v-model="temp.owner"/>
         </el-form-item>
         <el-form-item label="域名" prop="title">
-          <el-input v-model="temp.domain" />
+          <el-input v-model="temp.domain"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -183,250 +199,277 @@
 </template>
 
 <script>
-// eslint-disable-next-line no-unused-vars
-import { getList, update, add, del, delAll, findByDomain, findByOwner, getWebInfo, webScan } from '@/api/domain'
-import { parseTime } from '@/utils'
-import waves from '@/directive/waves' // waves directive
-import Pagination from '@/components/Pagination/index' // secondary package based on el-pagination
-export default {
-  name: 'DomainList',
-  components: { Pagination },
-  directives: { waves },
-  filters: {
-    parseTime: parseTime
-  },
-  data() {
-    return {
-      total: 0,
-      listQuery: {
-        page: 1,
-        limit: 10,
-        owner: undefined,
-        domain: undefined
-      },
-      list: null,
-      listLoading: false,
-      dialogFormVisible: false,
-      dialogStatus: '',
-      textMap: {
-        update: 'Edit',
-        create: '新增'
-      },
-      dialogPvVisible: false,
-      rules: {
-        owner: [{ required: true, message: '归属企业 is required', trigger: 'blur' }],
-        domain: [{ required: true, message: '域名 is required', trigger: 'blur' }]
-      },
-      downloadLoading: false,
-      temp: {
-        id: undefined,
-        owner: '',
-        domain: ''
-      }
-    }
-  },
-  created() {
-    this.getList()
-  },
-  inject: ['reload'],
-  methods: {
-    fresh() {
-      this.reload()
+  // eslint-disable-next-line no-unused-vars
+  import {getList, update, add, del, delAll, findByDomain, findByOwner, getWebInfo, webScan} from '@/api/domain'
+  import {parseTime} from '@/utils'
+  import waves from '@/directive/waves' // waves directive
+  import Pagination from '@/components/Pagination/index' // secondary package based on el-pagination
+  export default {
+    name: 'DomainList',
+    components: {Pagination},
+    directives: {waves},
+    filters: {
+      parseTime: parseTime
     },
-    getList() {
-      if(this.$route.params.type && this.$route.params.domain){
-        this.listQuery.domain =  this.$route.params.domain
-      }
-      this.listLoading = false
-      if (this.listQuery.owner !== undefined && this.listQuery.owner !== '') {
-        findByOwner(this.listQuery.page, this.listQuery.limit, this.listQuery.owner).then(response => {
-          this.total = response.data.count
-          this.list = response.data.data
-          setTimeout(() => {
-            this.listLoading = false
-          }, 1.5 * 1000)
-        })
-      } else if (this.listQuery.domain !== undefined && this.listQuery.domain !== '') {
-        findByDomain(this.listQuery.page, this.listQuery.limit, this.listQuery.domain).then(response => {
-          this.total = response.data.count
-          this.list = response.data.data
-          setTimeout(() => {
-            this.listLoading = false
-          }, 1.5 * 1000)
-        })
-      } else {
-        getList(this.listQuery.page, this.listQuery.limit).then(response => {
-          this.total = response.data.count
-          this.list = response.data.data
-          setTimeout(() => {
-            this.listLoading = false
-          }, 1.5 * 1000)
-        })
-      }
-    },
-    set_webtag(row, column) {
-      const arr = new Array(row.web_tag)
-      return arr.join('<br>').replaceAll('[null]', '')
-    },
-    set_webtitle(row, column) {
-      const arr = new Array(row.web_title)
-      return arr.join('<br>')
-        .replaceAll(',,', '')
-        .replace(/^,/, '')
-        .replace(/,$/, '')
-    },
-    set_ip(row, column) {
-      const arr = new Array(row.ip)
-      return arr.join('<br>')
-    },
-    resetTemp() {
-      this.temp = {
-        id: undefined,
-        owner: '',
-        domain: ''
-      }
-    },
-    createData() {
-      this.$refs['dataForm'].validate((valid) => {
-        if (valid) {
-          add(this.temp).then(() => {
-            this.list.unshift(this.temp)
-            this.dialogFormVisible = false
-            this.$notify({
-              title: 'Success',
-              message: 'Created Successfully',
-              type: 'success',
-              duration: 2000
-            })
-          })
+    data() {
+      return {
+        total: 0,
+        listQuery: {
+          page: 1,
+          limit: 10,
+          owner: undefined,
+          domain: undefined
+        },
+        list: null,
+        listLoading: false,
+        dialogFormVisible: false,
+        dialogStatus: '',
+        textMap: {
+          update: 'Edit',
+          create: '新增'
+        },
+        dialogPvVisible: false,
+        rules: {
+          owner: [{required: true, message: '归属企业 is required', trigger: 'blur'}],
+          domain: [{required: true, message: '域名 is required', trigger: 'blur'}]
+        },
+        downloadLoading: false,
+        temp: {
+          id: undefined,
+          owner: '',
+          domain: ''
         }
-      })
+      }
     },
-    handleDelete(row, index) {
-      // console.log(row.domain)
-      del(row.domain).then(() => {
-        this.$notify({
-          title: 'Success',
-          message: 'Delete Successfully',
-          type: 'success',
-          duration: 2000
-        })
-        this.list.splice(index, 1)
-      })
-    },
-    handleDeleteAll(row, index) {
-      // console.log(row.domain)
-      delAll(row.domain, 'delete_all_ip').then(() => {
-        this.$notify({
-          title: 'Success',
-          message: 'Delete Successfully',
-          type: 'success',
-          duration: 2000
-        })
-        this.list.splice(index, 1)
-      })
-    },
-    handleFilter() {
-      this.listQuery.page = 1
+    created() {
       this.getList()
     },
-    handleCreate() {
-      this.resetTemp()
-      this.dialogStatus = 'create'
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
-    },
-    handleUpdate(row) {
-      this.temp = Object.assign({}, row) // copy obj
-      this.dialogStatus = 'update'
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
-    },
-    updateData() {
-      this.$refs['dataForm'].validate((valid) => {
-        if (valid) {
-          const tempData = Object.assign({}, this.temp)
-          update(tempData).then(() => {
-            const index = this.list.findIndex(v => v._id === this.temp._id)
-            this.list.splice(index, 1, this.temp)
-            this.dialogFormVisible = false
+    inject: ['reload'],
+    methods: {
+      fresh() {
+        this.reload()
+      },
+      getList() {
+        if (this.$route.params.type && this.$route.params.domain) {
+          this.listQuery.domain = this.$route.params.domain
+        }
+        this.listLoading = false
+        if (this.listQuery.owner !== undefined && this.listQuery.owner !== '') {
+          findByOwner(this.listQuery.page, this.listQuery.limit, this.listQuery.owner).then(response => {
+            this.total = response.data.count
+            this.list = response.data.data
+            setTimeout(() => {
+              this.listLoading = false
+            }, 1.5 * 1000)
+          })
+        } else if (this.listQuery.domain !== undefined && this.listQuery.domain !== '') {
+          findByDomain(this.listQuery.page, this.listQuery.limit, this.listQuery.domain).then(response => {
+            this.total = response.data.count
+            this.list = response.data.data
+            setTimeout(() => {
+              this.listLoading = false
+            }, 1.5 * 1000)
+          })
+        } else {
+          getList(this.listQuery.page, this.listQuery.limit).then(response => {
+            this.total = response.data.count
+            this.list = response.data.data
+            setTimeout(() => {
+              this.listLoading = false
+            }, 1.5 * 1000)
+          })
+        }
+      },
+      set_webtag(row, column) {
+        const arr = new Array(row.web_tag)
+        return arr.join('<br>').replaceAll('[null]', '')
+      },
+      set_webtitle(row, column) {
+        const arr = new Array(row.web_title)
+        return arr.join('<br>')
+          .replaceAll(',,', '')
+          .replace(/^,/, '')
+          .replace(/,$/, '')
+      },
+      set_ip(row, column) {
+        const arr = new Array(row.ip)
+        return arr.join('<br>')
+      },
+      resetTemp() {
+        this.temp = {
+          id: undefined,
+          owner: '',
+          domain: ''
+        }
+      },
+      createData() {
+        this.$refs['dataForm'].validate((valid) => {
+          if (valid) {
+            add(this.temp).then(() => {
+              this.list.unshift(this.temp)
+              this.dialogFormVisible = false
+              this.$notify({
+                title: 'Success',
+                message: 'Created Successfully',
+                type: 'success',
+                duration: 2000
+              })
+            })
+          }
+        })
+      },
+      handleDelete(row, index) {
+        // console.log(row.domain)
+        del(row.domain).then(() => {
+          this.$notify({
+            title: 'Success',
+            message: 'Delete Successfully',
+            type: 'success',
+            duration: 2000
+          })
+          this.list.splice(index, 1)
+        })
+      },
+      handleDeleteAll(row, index) {
+        // console.log(row.domain)
+        delAll(row.domain, 'delete_all_ip').then(() => {
+          this.$notify({
+            title: 'Success',
+            message: 'Delete Successfully',
+            type: 'success',
+            duration: 2000
+          })
+          this.list.splice(index, 1)
+        })
+      },
+      handleFilter() {
+        this.listQuery.page = 1
+        this.getList()
+      },
+      handleCreate() {
+        this.resetTemp()
+        this.dialogStatus = 'create'
+        this.dialogFormVisible = true
+        this.$nextTick(() => {
+          this.$refs['dataForm'].clearValidate()
+        })
+      },
+      handleUpdate(row) {
+        this.temp = Object.assign({}, row) // copy obj
+        this.dialogStatus = 'update'
+        this.dialogFormVisible = true
+        this.$nextTick(() => {
+          this.$refs['dataForm'].clearValidate()
+        })
+      },
+      updateData() {
+        this.$refs['dataForm'].validate((valid) => {
+          if (valid) {
+            const tempData = Object.assign({}, this.temp)
+            update(tempData).then(() => {
+              const index = this.list.findIndex(v => v._id === this.temp._id)
+              this.list.splice(index, 1, this.temp)
+              this.dialogFormVisible = false
+              this.$notify({
+                title: 'Success',
+                message: 'Update Successfully',
+                type: 'success',
+                duration: 2000
+              })
+            })
+          }
+        })
+      },
+      handleDownload() {
+        this.downloadLoading = true
+        import('@/vendor/Export2Excel').then(excel => {
+          const tHeader = ['add_time', 'owner', 'domain']
+          const filterVal = ['add_time', 'owner', 'domain']
+          const data = this.formatJson(filterVal)
+          excel.export_json_to_excel({
+            header: tHeader,
+            data,
+            filename: '域名列表'
+          })
+          this.downloadLoading = false
+        })
+      },
+      formatJson(filterVal) {
+        return this.list.map(v => filterVal.map(j => {
+          if (j === 'add_time') {
+            return parseTime(v[j])
+          } else {
+            return v[j]
+          }
+        }))
+      },
+      handleGetWebInfo(row) {
+        getWebInfo(row.subdomain).then(res => {
+          if (res.code === 200) {
             this.$notify({
               title: 'Success',
-              message: 'Update Successfully',
+              message: 'Successfully',
               type: 'success',
               duration: 2000
             })
-          })
-        }
-      })
-    },
-    handleDownload() {
-      this.downloadLoading = true
-      import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['add_time', 'owner', 'domain']
-        const filterVal = ['add_time', 'owner', 'domain']
-        const data = this.formatJson(filterVal)
-        excel.export_json_to_excel({
-          header: tHeader,
-          data,
-          filename: '域名列表'
+          } else {
+            this.$notify({
+              title: 'Failure',
+              message: 'Task Failed',
+              type: 'failure',
+              duration: 2000
+            })
+          }
         })
-        this.downloadLoading = false
-      })
-    },
-    formatJson(filterVal) {
-      return this.list.map(v => filterVal.map(j => {
-        if (j === 'add_time') {
-          return parseTime(v[j])
-        } else {
-          return v[j]
+      },
+      handleWebScan(row) {
+        webScan(row.subdomain).then(res => {
+          if (res.code === 200) {
+            this.$notify({
+              title: 'Success',
+              message: 'Successfully',
+              type: 'success',
+              duration: 2000
+            })
+          } else {
+            this.$notify({
+              title: 'Failure',
+              message: 'Task Failed',
+              type: 'failure',
+              duration: 2000
+            })
+          }
+        })
+      },
+      beforeHandleCommand(index, row, command) {
+        return {
+          'index': index,
+          'row': row,
+          'command': command
         }
-      }))
-    },
-    handleGetWebInfo(row) {
-      getWebInfo(row.subdomain).then(res => {
-        if (res.code === 200) {
-          this.$notify({
-            title: 'Success',
-            message: 'Successfully',
-            type: 'success',
-            duration: 2000
-          })
-        } else {
-          this.$notify({
-            title: 'Failure',
-            message: 'Task Failed',
-            type: 'failure',
-            duration: 2000
-          })
+      },
+      handleCommand(command) {
+        switch (command.command) {
+          case "edit":
+            this.handleUpdate(command.row);
+            break;
+          case "delete":
+            this.handleDelete(command.row, command.index);
+            break;
+          case "deleteAll":
+            this.handleDeleteAll(command.row, command.index);
+            break;
+          case "webscan":
+            this.handleGetWebInfo(command.row);
+            break;
+          case "webInfo":
+            this.handleGetWebInfo(command.row);
+            break;
         }
-      })
-    },
-    handleWebScan(row) {
-      webScan(row.subdomain).then(res => {
-        if (res.code === 200) {
-          this.$notify({
-            title: 'Success',
-            message: 'Successfully',
-            type: 'success',
-            duration: 2000
-          })
-        } else {
-          this.$notify({
-            title: 'Failure',
-            message: 'Task Failed',
-            type: 'failure',
-            duration: 2000
-          })
-        }
-      })
+      }
+
     }
   }
-}
 </script>
 
 <style scoped>

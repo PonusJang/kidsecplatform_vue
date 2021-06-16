@@ -150,31 +150,27 @@
       </el-table-column>
       <el-table-column align="center" prop="created_at" label="添加时间">
         <template slot-scope="scope">
-          <i class="el-icon-time" />
+          <i class="el-icon-time"/>
           <span>{{ scope.row.add_time | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="操作" align="center" width="400" class-name="small-padding fixed-width">
-        <template slot-scope="{row,$index}">
-          <el-button type="primary" size="mini" @click="handleDetail(row)">
-            详情
-          </el-button>
-          <el-button type="primary" size="mini" @click="handleHostScan(row)">
-            主机扫描
-          </el-button>
-          <el-button type="primary" size="mini" @click="handlePortScan(row)">
-            端口扫描
-          </el-button>
-          <el-button type="primary" size="mini" @click="handleUpdate(row)">
-            编辑
-          </el-button>
-          <el-button size="mini" type="danger" @click="handleDelete(row,$index)">
-            删除
-          </el-button>
+      <el-table-column label="操作" align="center" width="120" class-name="small-padding fixed-width">
+        <template slot-scope="scope">
+          <el-dropdown split-button type="primary" @command="handleCommand">
+            操作
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'detail')">详情</el-dropdown-item>
+              <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'hostScan')">主机扫描
+              </el-dropdown-item>
+              <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'portScan')">端口扫描
+              </el-dropdown-item>
+              <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'edit')">编辑</el-dropdown-item>
+              <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'delete')">删除</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
         </template>
       </el-table-column>
-
     </el-table>
 
     <pagination
@@ -185,7 +181,7 @@
       @pagination="getList"
     />
     <el-dialog :visible.sync="dialogUploadVisible">
-      <upload-excel-component :on-success="handleSuccess" :before-upload="beforeUpload" />
+      <upload-excel-component :on-success="handleSuccess" :before-upload="beforeUpload"/>
     </el-dialog>
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
@@ -198,22 +194,22 @@
         style="width: 400px; margin-left:50px;"
       >
         <el-form-item label="归属部门" prop="title">
-          <el-input v-model="temp.owner" />
+          <el-input v-model="temp.owner"/>
         </el-form-item>
         <el-form-item label="资产编号" prop="title">
-          <el-input v-model="temp.code" />
+          <el-input v-model="temp.code"/>
         </el-form-item>
         <el-form-item label="资产名称" prop="title">
-          <el-input v-model="temp.name" />
+          <el-input v-model="temp.name"/>
         </el-form-item>
         <el-form-item label="资产类别" prop="title">
-          <el-input v-model="temp.type" />
+          <el-input v-model="temp.type"/>
         </el-form-item>
         <el-form-item label="IP地址" prop="title">
-          <el-input v-model="temp.ip" />
+          <el-input v-model="temp.ip"/>
         </el-form-item>
         <el-form-item label="负责人员" prop="title">
-          <el-input v-model="temp.manager" />
+          <el-input v-model="temp.manager"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -231,292 +227,322 @@
 </template>
 
 <script>
-// eslint-disable-next-line no-unused-vars
-import {
-  add,
-  addFromExcel,
-  del,
-  findByIP,
-  findByOwner,
-  findByType,
-  findByName,
-  getList,
-  update,
-  hostScan,
-  portScan,
-  getDetail
-} from '@/api/assest'
-import { parseTime } from '@/utils'
-import UploadExcelComponent from '@/components/UploadExcel/index.vue'
-import waves from '@/directive/waves' // waves directive
-import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-export default {
-  name: 'AssestList',
-  components: { Pagination, UploadExcelComponent },
-  directives: { waves },
-  filters: {
-    parseTime: parseTime
-  },
-  data() {
-    return {
-      total: 0,
-      listQuery: {
-        page: 1,
-        limit: 10,
-        name: undefined,
-        owner: undefined,
-        ip: undefined,
-        type: undefined,
-        manager: undefined
-      },
-      list: null,
-      listLoading: false,
-      dialogFormVisible: false,
-      dialogUploadVisible: false,
-      dialogStatus: '',
-      textMap: {
-        update: 'Edit',
-        create: '新增'
-      },
-      dialogPvVisible: false,
-      rules: {
-        owner: [{ required: true, message: '归属单位 is required', trigger: 'blur' }],
-        ip: [{ required: true, message: 'IP is required', trigger: 'blur' }],
-        type: [{ required: true, message: '资产类型 is required', trigger: 'blur' }],
-        name: [{ required: true, message: '资产名称 is required', trigger: 'blur' }],
-        manager: [{ required: true, message: '负责人员 is required', trigger: 'blur' }]
-      },
-      downloadLoading: false,
-      UploadLoading: false,
-      temp: {
-        id: undefined,
-        owner: '',
-        ip: '',
-        type: '',
-        name: '',
-        manager: ''
-      }
-    }
-  },
-  created() {
-    this.getList()
-  },
-  methods: {
-    getList() {
-      this.listLoading = false
-      if (this.listQuery.owner !== undefined && this.listQuery.owner !== '') {
-        findByOwner(this.listQuery.page, this.listQuery.limit, this.listQuery.owner).then(response => {
-          this.total = response.data.count
-          this.list = response.data.data
-          setTimeout(() => {
-            this.listLoading = false
-          }, 1.5 * 1000)
-        })
-      } else if (this.listQuery.type !== undefined && this.listQuery.type !== '') {
-        findByType(this.listQuery.page, this.listQuery.limit, this.listQuery.type).then(response => {
-          this.total = response.data.count
-          this.list = response.data.data
-          setTimeout(() => {
-            this.listLoading = false
-          }, 1.5 * 1000)
-        })
-      } else if (this.listQuery.ip !== undefined && this.listQuery.ip !== '') {
-        findByIP(this.listQuery.page, this.listQuery.limit, this.listQuery.ip).then(response => {
-          this.total = response.data.count
-          this.list = response.data.data
-          setTimeout(() => {
-            this.listLoading = false
-          }, 1.5 * 1000)
-        })
-      } else if (this.listQuery.name !== undefined && this.listQuery.name !== '') {
-        findByName(this.listQuery.page, this.listQuery.limit, this.listQuery.name).then(response => {
-          this.total = response.data.count
-          this.list = response.data.data
-          setTimeout(() => {
-            this.listLoading = false
-          }, 1.5 * 1000)
-        })
-      } else {
-        getList(this.listQuery.page, this.listQuery.limit).then(response => {
-          this.total = response.data.count
-          this.list = response.data.data
-          setTimeout(() => {
-            this.listLoading = false
-          }, 1.5 * 1000)
-        })
-      }
+  // eslint-disable-next-line no-unused-vars
+  import {
+    add,
+    addFromExcel,
+    del,
+    findByIP,
+    findByOwner,
+    findByType,
+    findByName,
+    getList,
+    update,
+    hostScan,
+    portScan,
+    getDetail
+  } from '@/api/assest'
+  import {parseTime} from '@/utils'
+  import UploadExcelComponent from '@/components/UploadExcel/index.vue'
+  import waves from '@/directive/waves' // waves directive
+  import Pagination from '@/components/Pagination' // secondary package based on el-pagination
+  export default {
+    name: 'AssestList',
+    components: {Pagination, UploadExcelComponent},
+    directives: {waves},
+    filters: {
+      parseTime: parseTime
     },
-    resetTemp() {
-      this.temp = {
-        id: undefined,
-        owner: '',
-        ip: '',
-        type: '',
-        name: ''
-      }
-    },
-    createData() {
-      this.$refs['dataForm'].validate((valid) => {
-        if (valid) {
-          add(this.temp).then(() => {
-            this.list.unshift(this.temp)
-            this.dialogFormVisible = false
-            this.$notify({
-              title: 'Success',
-              message: 'Created Successfully',
-              type: 'success',
-              duration: 2000
-            })
-          })
+    data() {
+      return {
+        total: 0,
+        listQuery: {
+          page: 1,
+          limit: 10,
+          name: undefined,
+          owner: undefined,
+          ip: undefined,
+          type: undefined,
+          manager: undefined
+        },
+        list: null,
+        listLoading: false,
+        dialogFormVisible: false,
+        dialogUploadVisible: false,
+        dialogStatus: '',
+        textMap: {
+          update: 'Edit',
+          create: '新增'
+        },
+        dialogPvVisible: false,
+        rules: {
+          owner: [{required: true, message: '归属单位 is required', trigger: 'blur'}],
+          ip: [{required: true, message: 'IP is required', trigger: 'blur'}],
+          type: [{required: true, message: '资产类型 is required', trigger: 'blur'}],
+          name: [{required: true, message: '资产名称 is required', trigger: 'blur'}],
+          manager: [{required: true, message: '负责人员 is required', trigger: 'blur'}]
+        },
+        downloadLoading: false,
+        UploadLoading: false,
+        temp: {
+          id: undefined,
+          owner: '',
+          ip: '',
+          type: '',
+          name: '',
+          manager: ''
         }
-      })
+      }
     },
-    handleDelete(row, index) {
-      del(row.id).then(() => {
-        this.$notify({
-          title: 'Success',
-          message: 'Delete Successfully',
-          type: 'success',
-          duration: 2000
-        })
-        this.list.splice(index, 1)
-      })
-    },
-    handleFilter() {
-      // this.listQuery.page = 1
+    created() {
       this.getList()
     },
-    handleCreate() {
-      this.resetTemp()
-      this.dialogStatus = 'create'
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
-    },
-    handleUpdate(row) {
-      this.temp = Object.assign({}, row) // copy obj
-      console.log(row._id)
-      this.dialogStatus = 'update'
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
-    },
-    handleHostScan(row) {
-      hostScan(row.ip).then(res => {
-        if (res.code === 200 ) {
+    methods: {
+      getList() {
+        this.listLoading = false
+        if (this.listQuery.owner !== undefined && this.listQuery.owner !== '') {
+          findByOwner(this.listQuery.page, this.listQuery.limit, this.listQuery.owner).then(response => {
+            this.total = response.data.count
+            this.list = response.data.data
+            setTimeout(() => {
+              this.listLoading = false
+            }, 1.5 * 1000)
+          })
+        } else if (this.listQuery.type !== undefined && this.listQuery.type !== '') {
+          findByType(this.listQuery.page, this.listQuery.limit, this.listQuery.type).then(response => {
+            this.total = response.data.count
+            this.list = response.data.data
+            setTimeout(() => {
+              this.listLoading = false
+            }, 1.5 * 1000)
+          })
+        } else if (this.listQuery.ip !== undefined && this.listQuery.ip !== '') {
+          findByIP(this.listQuery.page, this.listQuery.limit, this.listQuery.ip).then(response => {
+            this.total = response.data.count
+            this.list = response.data.data
+            setTimeout(() => {
+              this.listLoading = false
+            }, 1.5 * 1000)
+          })
+        } else if (this.listQuery.name !== undefined && this.listQuery.name !== '') {
+          findByName(this.listQuery.page, this.listQuery.limit, this.listQuery.name).then(response => {
+            this.total = response.data.count
+            this.list = response.data.data
+            setTimeout(() => {
+              this.listLoading = false
+            }, 1.5 * 1000)
+          })
+        } else {
+          getList(this.listQuery.page, this.listQuery.limit).then(response => {
+            this.total = response.data.count
+            this.list = response.data.data
+            setTimeout(() => {
+              this.listLoading = false
+            }, 1.5 * 1000)
+          })
+        }
+      },
+      resetTemp() {
+        this.temp = {
+          id: undefined,
+          owner: '',
+          ip: '',
+          type: '',
+          name: ''
+        }
+      },
+      createData() {
+        this.$refs['dataForm'].validate((valid) => {
+          if (valid) {
+            add(this.temp).then(() => {
+              this.list.unshift(this.temp)
+              this.dialogFormVisible = false
+              this.$notify({
+                title: 'Success',
+                message: 'Created Successfully',
+                type: 'success',
+                duration: 2000
+              })
+            })
+          }
+        })
+      },
+      handleDelete(row, index) {
+        del(row.id).then(() => {
           this.$notify({
             title: 'Success',
-            message: 'Successfully',
+            message: 'Delete Successfully',
             type: 'success',
             duration: 2000
           })
-        } else {
-          this.$notify({
-            title: 'Failure',
-            message: 'Task Failed',
-            type: 'failure',
-            duration: 2000
-          })
-        }
-      })
-    },
-    handlePortScan(row) {
-      portScan(row.ip).then(res => {
-        if (res.code === 200 ) {
-          this.$notify({
-            title: 'Success',
-            message: 'Successfully',
-            type: 'success',
-            duration: 2000
-          })
-        } else {
-          this.$notify({
-            title: 'Failure',
-            message: 'Task Failed',
-            type: 'failure',
-            duration: 2000
-          })
-        }
-      })
-    },
-    handleDetail(row) {
-      getDetail(row.ip).then(() => {
-      })
-    },
-    updateData() {
-      this.$refs['dataForm'].validate((valid) => {
-        if (valid) {
-          const tempData = Object.assign({}, this.temp)
-          update(tempData).then(() => {
-            const index = this.list.findIndex(v => v._id === this.temp._id)
-            this.list.splice(index, 1, this.temp)
-            this.dialogFormVisible = false
+          this.list.splice(index, 1)
+        })
+      },
+      handleFilter() {
+        // this.listQuery.page = 1
+        this.getList()
+      },
+      handleCreate() {
+        this.resetTemp()
+        this.dialogStatus = 'create'
+        this.dialogFormVisible = true
+        this.$nextTick(() => {
+          this.$refs['dataForm'].clearValidate()
+        })
+      },
+      handleUpdate(row) {
+        this.temp = Object.assign({}, row) // copy obj
+        console.log(row._id)
+        this.dialogStatus = 'update'
+        this.dialogFormVisible = true
+        this.$nextTick(() => {
+          this.$refs['dataForm'].clearValidate()
+        })
+      },
+      handleHostScan(row) {
+        hostScan(row.ip).then(res => {
+          if (res.code === 200) {
             this.$notify({
               title: 'Success',
-              message: 'Update Successfully',
+              message: 'Successfully',
               type: 'success',
               duration: 2000
             })
+          } else {
+            this.$notify({
+              title: 'Failure',
+              message: 'Task Failed',
+              type: 'failure',
+              duration: 2000
+            })
+          }
+        })
+      },
+      handlePortScan(row) {
+        portScan(row.ip).then(res => {
+          if (res.code === 200) {
+            this.$notify({
+              title: 'Success',
+              message: 'Successfully',
+              type: 'success',
+              duration: 2000
+            })
+          } else {
+            this.$notify({
+              title: 'Failure',
+              message: 'Task Failed',
+              type: 'failure',
+              duration: 2000
+            })
+          }
+        })
+      },
+      handleDetail(row) {
+        getDetail(row.ip).then(() => {
+        })
+      },
+      updateData() {
+        this.$refs['dataForm'].validate((valid) => {
+          if (valid) {
+            const tempData = Object.assign({}, this.temp)
+            update(tempData).then(() => {
+              const index = this.list.findIndex(v => v._id === this.temp._id)
+              this.list.splice(index, 1, this.temp)
+              this.dialogFormVisible = false
+              this.$notify({
+                title: 'Success',
+                message: 'Update Successfully',
+                type: 'success',
+                duration: 2000
+              })
+            })
+          }
+        })
+      },
+      handleDownload() {
+        this.downloadLoading = true
+        import('@/vendor/Export2Excel').then(excel => {
+          const tHeader = ['add_time', 'owner', 'domain']
+          const filterVal = ['add_time', 'owner', 'domain']
+          const data = this.formatJson(filterVal)
+          excel.export_json_to_excel({
+            header: tHeader,
+            data,
+            filename: '域名列表'
           })
-        }
-      })
-    },
-    handleDownload() {
-      this.downloadLoading = true
-      import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['add_time', 'owner', 'domain']
-        const filterVal = ['add_time', 'owner', 'domain']
-        const data = this.formatJson(filterVal)
-        excel.export_json_to_excel({
-          header: tHeader,
-          data,
-          filename: '域名列表'
+          this.downloadLoading = false
         })
-        this.downloadLoading = false
-      })
-    },
-    handleUpload() {
-      this.dialogUploadVisible = true
-    },
-    beforeUpload(file) {
-      if (file) {
-        return true
+      },
+      handleUpload() {
+        this.dialogUploadVisible = true
+      },
+      beforeUpload(file) {
+        if (file) {
+          return true
+        }
+        this.$message({
+          message: '请参照模板上传文件',
+          type: 'warning'
+        })
+        return false
+      },
+      handleSuccess({results, header}) {
+        addFromExcel({results, header}).then(response => {
+          getList()
+          this.$notify({
+            title: 'Success',
+            message: 'Update Successfully',
+            type: 'success',
+            duration: 2000
+          })
+        })
+      },
+      handleDownloadTemplate() {
+        const aTag = document.createElement('a')
+        aTag.href = '/api/assets/getAssetsTemplate'
+        aTag.click()
+      },
+      formatJson(filterVal) {
+        return this.list.map(v => filterVal.map(j => {
+          if (j === 'add_time') {
+            return parseTime(v[j])
+          } else {
+            return v[j]
+          }
+        }))
+      },
+
+
+      beforeHandleCommand(index, row, command) {
+        return {
+          'index': index,
+          'row': row,
+          'command': command
+        }
+      },
+      handleCommand(command) {
+        switch (command.command) {
+          case "detail"://编辑
+            this.handleDetail(command.row);
+            break;
+          case "hostScan"://删除
+            this.handleHostScan(command.row);
+            break;
+          case "portScan"://分配角色
+            this.handlePortScan(command.row);
+            break;
+          case "edit"://分配角色
+            this.handleUpdate(command.row);
+            break;
+          case "delete"://分配角色
+            this.handleUpdate(command.row, command.index);
+            break;
+        }
       }
-      this.$message({
-        message: '请参照模板上传文件',
-        type: 'warning'
-      })
-      return false
-    },
-    handleSuccess({ results, header }) {
-      addFromExcel({ results, header }).then(response => {
-        getList()
-        this.$notify({
-          title: 'Success',
-          message: 'Update Successfully',
-          type: 'success',
-          duration: 2000
-        })
-      })
-    },
-    handleDownloadTemplate() {
-      const aTag = document.createElement('a')
-      aTag.href = '/api/assets/getAssetsTemplate'
-      aTag.click()
-    },
-    formatJson(filterVal) {
-      return this.list.map(v => filterVal.map(j => {
-        if (j === 'add_time') {
-          return parseTime(v[j])
-        } else {
-          return v[j]
-        }
-      }))
+
+
     }
   }
-}
 </script>
 
 <style scoped>

@@ -114,22 +114,16 @@
       </el-table-column>
 
       <el-table-column label="操作" align="center" width="330" class-name="small-padding fixed-width">
-        <template slot-scope="{row,$index}">
-          <el-button type="primary" size="mini" @click="handleUpdate(row)">
-            编辑
-          </el-button>
-
-          <el-button type="primary" size="mini" @click="handleHostScan(row)">
-            主机漏扫
-          </el-button>
-
-          <el-button type="primary" size="mini" @click="handlePortScan(row)">
-            端口扫描
-          </el-button>
-
-          <el-button size="mini" type="danger" @click="handleDelete(row,$index)">
-            删除
-          </el-button>
+        <template slot-scope="scope">
+          <el-dropdown split-button type="primary" @command="handleCommand">
+            操作
+            <el-dropdown-menu slot="dropdown" >
+              <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'edit')">编辑</el-dropdown-item>
+              <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'hostScan')">主机漏扫</el-dropdown-item>
+              <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'portScan')">端口扫描</el-dropdown-item>
+              <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'delete')">删除</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
         </template>
       </el-table-column>
 
@@ -419,7 +413,33 @@ export default {
           return v[j]
         }
       }))
+    },
+
+    beforeHandleCommand(index, row,command){
+      return {
+        'index': index,
+        'row': row,
+        'command':command
+      }
+    },
+    handleCommand(command) {
+      switch (command.command) {
+        case "edit"://编辑
+          this.handleUpdate(command.row);
+          break;
+        case "hostScan"://删除
+          this.handleHostScan(command.row);
+          break;
+        case "portScan"://分配角色
+          this.handlePortScan(command.row);
+          break;
+        case "delete"://分配角色
+          this.handleDelete(command.row,command.index);
+          break;
+      }
     }
+
+
   }
 }
 </script>
