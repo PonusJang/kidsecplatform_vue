@@ -49,12 +49,12 @@
       </el-table-column>
       <el-table-column label="配置项" align="center">
         <template slot-scope="scope">
-          <span class="link-type" @click="handleUpdate(row)"> {{ scope.row.configItem }}</span>
+          <span class="link-type" @click="handleUpdate(row)"> {{ scope.row.item }}</span>
         </template>
       </el-table-column>
       <el-table-column label="值" align="center">
         <template slot-scope="scope">
-          <span class="link-type" @click="handleUpdate(row)">{{ scope.row.configValue }}</span>
+          <span class="link-type" @click="handleUpdate(row)">{{ scope.row.value }}</span>
         </template>
       </el-table-column>
 
@@ -160,7 +160,7 @@ export default {
       if (this.listQuery.configItem !== undefined && this.listQuery.configItem !== '') {
         findByConfigItem(this.listQuery.page, this.listQuery.limit, this.listQuery.owner).then(response => {
           this.total = response.data.count
-          this.list = response.data.docs
+          this.list = response.data.data
           setTimeout(() => {
             this.listLoading = false
           }, 1.5 * 1000)
@@ -168,7 +168,7 @@ export default {
       } else {
         getList(this.listQuery.page, this.listQuery.limit).then(response => {
           this.total = response.data.count
-          this.list = response.data.docs
+          this.list = response.data.data
           setTimeout(() => {
             this.listLoading = false
           }, 1.5 * 1000)

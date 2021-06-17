@@ -31,7 +31,7 @@ export function generaMenu(routes, data) {
       meta: item.meta
       // meta: { title: item.name, id: item.id, roles: ['admin'] }
     }
-    console.log(menu)
+
     if (item.children) {
       generaMenu(menu.children, item.children)
     }
@@ -95,8 +95,7 @@ const actions = {
       getAuthMenu().then(response => {
         let data = response
         if (response.code !== 200) {
-          alert(JSON.stringify('菜单数据加载异常'))
-          // throw new Error('菜单数据加载异常')
+          console.log(JSON.stringify('菜单数据加载异常'))
         } else {
           data = response.data
           Object.assign(loadMenuData, data)

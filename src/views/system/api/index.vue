@@ -51,7 +51,7 @@
             style="width: 100%"
           >
             <el-table-column
-              prop="id"
+              prop="number"
               label="ID"
               align="center"
             />
@@ -98,7 +98,7 @@
 
       <el-table-column label="API组" align="center">
         <template slot-scope="scope">
-          <span class="link-type" @click="handleUpdate(row)"> {{ scope.row.id }}</span>
+          <span class="link-type" @click="handleUpdate(row)"> {{ scope.row.number }}</span>
         </template>
       </el-table-column>
       <el-table-column label="名称" align="center">
@@ -140,7 +140,7 @@
         style="width: 400px; margin-left:50px;"
       >
         <el-form-item label="API组" prop="title">
-          <el-input v-model="temp.id"/>
+          <el-input v-model="temp.number"/>
         </el-form-item>
         <el-form-item label="名称" prop="title">
           <el-input v-model="temp.name"/>
@@ -168,7 +168,7 @@
           <el-input type="hidden" v-model="temp2.pid"/>
         </el-form-item>
         <el-form-item label="ID" prop="title">
-          <el-input v-model="temp2.id"/>
+          <el-input v-model="temp2.number"/>
         </el-form-item>
         <el-form-item label="名称" prop="title">
           <el-input v-model="temp2.name"/>
@@ -256,7 +256,7 @@
         if (this.listQuery.id !== undefined && this.listQuery.id !== '') {
           findByID(this.listQuery.page, this.listQuery.limit, this.listQuery.id).then(response => {
             this.total = response.data.count
-            this.list = response.data.docs
+            this.list = response.data.data
             setTimeout(() => {
               this.listLoading = false
             }, 1.5 * 1000)
@@ -264,7 +264,7 @@
         } else {
           getList(this.listQuery.page, this.listQuery.limit).then(response => {
             this.total = response.data.count
-            this.list = response.data.docs
+            this.list = response.data.data
             setTimeout(() => {
               this.listLoading = false
             }, 1.5 * 1000)

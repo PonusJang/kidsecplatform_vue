@@ -3,8 +3,8 @@
   <div class="app-container">
     <div class="filter-container">
       <el-input
-        v-model="listQuery.id"
-        placeholder="角色名"
+        v-model="listQuery.number"
+        placeholder="ID"
         style="width: 200px;"
         class="filter-item"
         @keyup.enter.native="handleFilter"
@@ -49,7 +49,7 @@
       <!--            </el-table-column>-->
       <el-table-column label="菜单ID" align="center">
         <template slot-scope="scope">
-          <span class="link-type" @click="handleUpdate(row)"> {{ scope.row.id }}</span>
+          <span class="link-type" @click="handleUpdate(row)"> {{ scope.row.number }}</span>
         </template>
       </el-table-column>
       <el-table-column label="菜单名称" align="center">
@@ -132,7 +132,7 @@
         style="width: 400px; margin-left:50px;"
       >
         <el-form-item label="ID" prop="title">
-          <el-input v-model="temp.id"/>
+          <el-input v-model="temp.number"/>
         </el-form-item>
         <el-form-item label="名称" prop="title">
           <el-input v-model="temp.name"/>
@@ -194,7 +194,7 @@
         listQuery: {
           page: 1,
           limit: 10,
-          roleName: undefined
+          number: undefined
 
         },
         list: null,
@@ -211,7 +211,7 @@
         },
         downloadLoading: false,
         temp: {
-          id: undefined,
+          number: '',
           name:'',
           path:'#',
           component:'#',
@@ -230,10 +230,10 @@
     methods: {
       getList() {
         this.listLoading = false
-        if (this.listQuery.id !== undefined && this.listQuery.id !== '') {
-          findByID(this.listQuery.page, this.listQuery.limit, this.listQuery.id).then(response => {
+        if (this.listQuery.number !== undefined && this.listQuery.number !== '') {
+          findByID(this.listQuery.page, this.listQuery.limit, this.listQuery.number).then(response => {
             this.total = response.data.count
-            this.list = response.data.docs
+            this.list = response.data.data
             setTimeout(() => {
               this.listLoading = false
             }, 1.5 * 1000)
@@ -241,7 +241,8 @@
         } else {
           getList(this.listQuery.page, this.listQuery.limit).then(response => {
             this.total = response.data.count
-            this.list = response.data.docs
+            this.list = response.data.data
+            console.log(this.list)
             setTimeout(() => {
               this.listLoading = false
             }, 1.5 * 1000)
