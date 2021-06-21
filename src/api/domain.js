@@ -71,3 +71,11 @@ export function getWebInfo(subDomain) {
     params: { subDomain }
   })
 }
+
+export function getSubdomains(domain) {
+  return request({
+    url: '/domain/getSubdomains',
+    method: 'get',
+    params: { domain }
+  })
+}

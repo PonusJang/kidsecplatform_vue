@@ -151,6 +151,7 @@
           <el-dropdown split-button type="primary" @command="handleCommand">
             操作
             <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'getSubdomains')">获取子域名</el-dropdown-item>
               <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'edit')">编辑</el-dropdown-item>
               <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'delete')">删除</el-dropdown-item>
               <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'deleteAll')">全部删除
@@ -200,7 +201,7 @@
 
 <script>
   // eslint-disable-next-line no-unused-vars
-  import {getList, update, add, del, delAll, findByDomain, findByOwner, getWebInfo, webScan} from '@/api/domain'
+  import {getList, update, add, del, delAll, findByDomain, findByOwner, getWebInfo, webScan,getSubdomains} from '@/api/domain'
   import {parseTime} from '@/utils'
   import waves from '@/directive/waves' // waves directive
   import Pagination from '@/components/Pagination/index' // secondary package based on el-pagination
@@ -403,6 +404,25 @@
           }
         }))
       },
+      handleGetSubdomains(row){
+        getSubdomains(row.domain).then(res=>{
+          if (res.code === 200) {
+            this.$notify({
+              title: 'Success',
+              message: 'Successfully',
+              type: 'success',
+              duration: 2000
+            })
+          } else {
+            this.$notify({
+              title: 'Failure',
+              message: 'Task Failed',
+              type: 'failure',
+              duration: 2000
+            })
+          }
+        })
+      },
       handleGetWebInfo(row) {
         getWebInfo(row.subdomain).then(res => {
           if (res.code === 200) {
@@ -464,6 +484,9 @@
             break;
           case "webInfo":
             this.handleGetWebInfo(command.row);
+            break;
+          case "getSubdomains":
+            this.handleGetSubdomains(command.row);
             break;
         }
       }

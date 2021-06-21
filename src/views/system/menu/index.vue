@@ -3,7 +3,7 @@
   <div class="app-container">
     <div class="filter-container">
       <el-input
-        v-model="listQuery.number"
+        v-model="listQuery.mid"
         placeholder="ID"
         style="width: 200px;"
         class="filter-item"
@@ -49,7 +49,7 @@
       <!--            </el-table-column>-->
       <el-table-column label="菜单ID" align="center">
         <template slot-scope="scope">
-          <span class="link-type" @click="handleUpdate(row)"> {{ scope.row.number }}</span>
+          <span class="link-type" @click="handleUpdate(row)"> {{ scope.row.mid }}</span>
         </template>
       </el-table-column>
       <el-table-column label="菜单名称" align="center">
@@ -132,7 +132,7 @@
         style="width: 400px; margin-left:50px;"
       >
         <el-form-item label="ID" prop="title">
-          <el-input v-model="temp.number"/>
+          <el-input v-model="temp.mid"/>
         </el-form-item>
         <el-form-item label="名称" prop="title">
           <el-input v-model="temp.name"/>
@@ -194,7 +194,7 @@
         listQuery: {
           page: 1,
           limit: 10,
-          number: undefined
+          mid: undefined
 
         },
         list: null,
@@ -211,10 +211,12 @@
         },
         downloadLoading: false,
         temp: {
-          number: '',
+          mid: '',
           name:'',
           path:'#',
+          hidden:false,
           component:'#',
+          children: [],
           redirect:undefined,
           pid:undefined,
           meta:{
@@ -230,8 +232,8 @@
     methods: {
       getList() {
         this.listLoading = false
-        if (this.listQuery.number !== undefined && this.listQuery.number !== '') {
-          findByID(this.listQuery.page, this.listQuery.limit, this.listQuery.number).then(response => {
+        if (this.listQuery.mid !== undefined && this.listQuery.mid !== '') {
+          findByID(this.listQuery.page, this.listQuery.limit, this.listQuery.mid).then(response => {
             this.total = response.data.count
             this.list = response.data.data
             setTimeout(() => {
