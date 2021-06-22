@@ -98,6 +98,7 @@
                   <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'webscan')">网站漏描
                     </el-dropdown-item>
+                    <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'getIps')">获取IP地址</el-dropdown-item>
                     <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'webInfo')">获取指纹
                     </el-dropdown-item>
                   </el-dropdown-menu>
@@ -152,6 +153,8 @@
             操作
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'getSubdomains')">获取子域名</el-dropdown-item>
+              <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'authorizeUser')">授权用户</el-dropdown-item>
+              <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'authorizeGroup')">授权组</el-dropdown-item>
               <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'edit')">编辑</el-dropdown-item>
               <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'delete')">删除</el-dropdown-item>
               <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'deleteAll')">全部删除
@@ -201,7 +204,7 @@
 
 <script>
   // eslint-disable-next-line no-unused-vars
-  import {getList, update, add, del, delAll, findByDomain, findByOwner, getWebInfo, webScan,getSubdomains} from '@/api/domain'
+  import {getList, update, add, del, delAll, findByDomain, findByOwner, getWebInfo, webScan,getSubdomains,getIps} from '@/api/domain'
   import {parseTime} from '@/utils'
   import waves from '@/directive/waves' // waves directive
   import Pagination from '@/components/Pagination/index' // secondary package based on el-pagination
@@ -442,6 +445,25 @@
           }
         })
       },
+      handleGetIps(row){
+        getIps(row.subdomain).then(res=>{
+          if (res.code === 200) {
+            this.$notify({
+              title: 'Success',
+              message: 'Successfully',
+              type: 'success',
+              duration: 2000
+            })
+          } else {
+            this.$notify({
+              title: 'Failure',
+              message: 'Task Failed',
+              type: 'failure',
+              duration: 2000
+            })
+          }
+        })
+      },
       handleWebScan(row) {
         webScan(row.subdomain).then(res => {
           if (res.code === 200) {
@@ -487,6 +509,9 @@
             break;
           case "getSubdomains":
             this.handleGetSubdomains(command.row);
+            break;
+          case "getIps":
+            this.handleGetIps(command.row);
             break;
         }
       }

@@ -53,14 +53,15 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="操作" align="center" width="250" class-name="small-padding fixed-width">
-        <template slot-scope="{row,$index}">
-          <el-button type="primary" size="mini" @click="handleUpdate(row)">
-            编辑
-          </el-button>
-          <el-button size="mini" type="danger" @click="handleDelete(row,$index)">
-            删除
-          </el-button>
+      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+        <template slot-scope="scope">
+          <el-dropdown split-button type="primary" @command="handleCommand">
+            操作
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'edit')">编辑</el-dropdown-item>
+              <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'del')">删除</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
         </template>
       </el-table-column>
 
@@ -84,7 +85,7 @@
         style="width: 400px; margin-left:50px;"
       >
         <el-form-item label="部门名称" prop="title">
-          <el-input v-model="temp.department" />
+          <el-input v-model="temp.department"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -101,157 +102,176 @@
 </template>
 
 <script>
-// eslint-disable-next-line no-unused-vars
-import { getList, update, add, del, findByDepart } from '@/api/depart'
-import { parseTime } from '@/utils'
-import waves from '@/directive/waves' // waves directive
-import Pagination from '@/components/Pagination/index' // secondary package based on el-pagination
-export default {
-  name: 'SystemList',
-  components: { Pagination },
-  directives: { waves },
-  filters: {
-    parseTime: parseTime
-  },
-  data() {
-    return {
-      total: 0,
-      listQuery: {
-        page: 1,
-        limit: 10,
-        department: undefined
-      },
-      list: null,
-      listLoading: false,
-      dialogFormVisible: false,
-      dialogStatus: '',
-      textMap: {
-        update: 'Edit',
-        create: '新增'
-      },
-      dialogPvVisible: false,
-      rules: {
-        department: [{ required: true, message: '配置项 is required', trigger: 'blur' }]
-      },
-      downloadLoading: false,
-      temp: {
-        id: undefined,
-        department: ''
-      }
-    }
-  },
-  created() {
-    this.getList()
-  },
-  methods: {
-    getList() {
-      this.listLoading = false
-      if (this.listQuery.department !== undefined && this.listQuery.department !== '') {
-        findByDepart(this.listQuery.page, this.listQuery.limit, this.listQuery.department).then(response => {
-          this.total = response.data.count
-          this.list = response.data.docs
-          setTimeout(() => {
-            this.listLoading = false
-          }, 1.5 * 1000)
-        })
-      } else {
-        getList(this.listQuery.page, this.listQuery.limit).then(response => {
-          this.total = response.data.count
-          this.list = response.data.docs
-          setTimeout(() => {
-            this.listLoading = false
-          }, 1.5 * 1000)
-        })
-      }
+  // eslint-disable-next-line no-unused-vars
+  import {getList, update, add, del, findByDepart} from '@/api/depart'
+  import {parseTime} from '@/utils'
+  import waves from '@/directive/waves' // waves directive
+  import Pagination from '@/components/Pagination/index' // secondary package based on el-pagination
+  export default {
+    name: 'SystemList',
+    components: {Pagination},
+    directives: {waves},
+    filters: {
+      parseTime: parseTime
     },
-    resetTemp() {
-      this.temp = {
-        id: undefined,
-        department: ''
-      }
-    },
-    createData() {
-      this.$refs['dataForm'].validate((valid) => {
-        if (valid) {
-          add(this.temp).then(() => {
-            this.list.unshift(this.temp)
-            this.dialogFormVisible = false
-            this.$notify({
-              title: 'Success',
-              message: 'Created Successfully',
-              type: 'success',
-              duration: 2000
-            })
-          })
+    data() {
+      return {
+        total: 0,
+        listQuery: {
+          page: 1,
+          limit: 10,
+          department: undefined
+        },
+        list: null,
+        listLoading: false,
+        dialogFormVisible: false,
+        dialogStatus: '',
+        textMap: {
+          update: 'Edit',
+          create: '新增'
+        },
+        dialogPvVisible: false,
+        rules: {
+          department: [{required: true, message: '配置项 is required', trigger: 'blur'}]
+        },
+        downloadLoading: false,
+        temp: {
+          id: undefined,
+          department: ''
         }
-      })
+      }
     },
-    handleDelete(row, index) {
-      del(row.department).then(() => {
-        this.$notify({
-          title: 'Success',
-          message: 'Delete Successfully',
-          type: 'success',
-          duration: 2000
-        })
-        this.list.splice(index, 1)
-      })
-    },
-    handleFilter() {
-      this.listQuery.page = 1
+    created() {
       this.getList()
     },
-    handleCreate() {
-      this.resetTemp()
-      this.dialogStatus = 'create'
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
-    },
-    handleUpdate(row) {
-      this.temp = Object.assign({}, row) // copy obj
-      console.log(row.configItem)
-      this.dialogStatus = 'update'
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
-    },
-    updateData() {
-      this.$refs['dataForm'].validate((valid) => {
-        if (valid) {
-          const tempData = Object.assign({}, this.temp)
-          update(tempData).then(() => {
-            const index = this.list.findIndex(v => v._id === this.temp._id)
-            this.list.splice(index, 1, this.temp)
-            this.dialogFormVisible = false
-            this.$notify({
-              title: 'Success',
-              message: 'Update Successfully',
-              type: 'success',
-              duration: 2000
-            })
+    methods: {
+      getList() {
+        this.listLoading = false
+        if (this.listQuery.department !== undefined && this.listQuery.department !== '') {
+          findByDepart(this.listQuery.page, this.listQuery.limit, this.listQuery.department).then(response => {
+            this.total = response.data.count
+            this.list = response.data.data
+            setTimeout(() => {
+              this.listLoading = false
+            }, 1.5 * 1000)
+          })
+        } else {
+          getList(this.listQuery.page, this.listQuery.limit).then(response => {
+            this.total = response.data.count
+            this.list = response.data.data
+            setTimeout(() => {
+              this.listLoading = false
+            }, 1.5 * 1000)
           })
         }
-      })
-    },
-    handleDownload() {
-      this.downloadLoading = true
-      import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['add_time', 'owner', 'domain']
-        const filterVal = ['add_time', 'owner', 'domain']
-        const data = this.formatJson(filterVal)
-        excel.export_json_to_excel({
-          header: tHeader,
-          data,
-          filename: '部门列表'
+      },
+      resetTemp() {
+        this.temp = {
+          id: undefined,
+          department: ''
+        }
+      },
+      createData() {
+        this.$refs['dataForm'].validate((valid) => {
+          if (valid) {
+            add(this.temp).then(() => {
+              this.list.unshift(this.temp)
+              this.dialogFormVisible = false
+              this.$notify({
+                title: 'Success',
+                message: 'Created Successfully',
+                type: 'success',
+                duration: 2000
+              })
+            })
+          }
         })
-        this.downloadLoading = false
-      })
+      },
+      handleDelete(row, index) {
+        del(row.department).then(() => {
+          this.$notify({
+            title: 'Success',
+            message: 'Delete Successfully',
+            type: 'success',
+            duration: 2000
+          })
+          this.list.splice(index, 1)
+        })
+      },
+      handleFilter() {
+        this.listQuery.page = 1
+        this.getList()
+      },
+      handleCreate() {
+        this.resetTemp()
+        this.dialogStatus = 'create'
+        this.dialogFormVisible = true
+        this.$nextTick(() => {
+          this.$refs['dataForm'].clearValidate()
+        })
+      },
+      handleUpdate(row) {
+        this.temp = Object.assign({}, row) // copy obj
+        console.log(row.configItem)
+        this.dialogStatus = 'update'
+        this.dialogFormVisible = true
+        this.$nextTick(() => {
+          this.$refs['dataForm'].clearValidate()
+        })
+      },
+      updateData() {
+        this.$refs['dataForm'].validate((valid) => {
+          if (valid) {
+            const tempData = Object.assign({}, this.temp)
+            update(tempData).then(() => {
+              const index = this.list.findIndex(v => v.id === this.temp.id)
+              this.list.splice(index, 1, this.temp)
+              this.dialogFormVisible = false
+              this.$notify({
+                title: 'Success',
+                message: 'Update Successfully',
+                type: 'success',
+                duration: 2000
+              })
+            })
+          }
+        })
+      },
+      handleDownload() {
+        this.downloadLoading = true
+        import('@/vendor/Export2Excel').then(excel => {
+          const tHeader = ['add_time', 'owner', 'domain']
+          const filterVal = ['add_time', 'owner', 'domain']
+          const data = this.formatJson(filterVal)
+          excel.export_json_to_excel({
+            header: tHeader,
+            data,
+            filename: '部门列表'
+          })
+          this.downloadLoading = false
+        })
+      },
+      
+      beforeHandleCommand(index, row, command) {
+        return {
+          'index': index,
+          'row': row,
+          'command': command
+        }
+      },
+      handleCommand(command) {
+        switch (command.command) {
+          case "edit"://分配角色
+            this.handleUpdate(command.row);
+            break;
+          case "del"://分配角色
+            this.handleDelete(command.row, command.index);
+            break;
+        }
+      }
+
     }
   }
-}
 </script>
 
 <style scoped>

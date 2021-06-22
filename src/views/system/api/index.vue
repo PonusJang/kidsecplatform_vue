@@ -106,17 +106,16 @@
           <span class="link-type" @click="handleUpdate(row)"> {{ scope.row.name }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="" align="center" width="250" class-name="small-padding fixed-width">
-        <template slot-scope="{row,$index}">
-          <el-button type="primary" size="mini" @click="handleUpdate(row)">
-            编辑
-          </el-button>
-          <el-button type="primary" size="mini" @click="handleAddSub(row)">
-            新增接口
-          </el-button>
-          <el-button size="mini" type="danger" @click="handleDelete(row,$index)">
-            删除
-          </el-button>
+      <el-table-column label="操作" align="center" width="150"  class-name="small-padding fixed-width">
+        <template slot-scope="scope">
+          <el-dropdown split-button type="primary" @command="handleCommand">
+            操作
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'edit')">编辑</el-dropdown-item>
+              <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'addApi')">新增接口</el-dropdown-item>
+              <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'del')">删除</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
         </template>
       </el-table-column>
 
@@ -323,7 +322,7 @@
           this.$refs['dataForm'].clearValidate()
         })
       },
-      handleAddSub(row){
+      handleAddSub(row) {
         this.resetTemp()
         this.temp2.pid = row.id
         this.dialogStatus2 = 'create'
@@ -434,6 +433,28 @@
             })
           }
         })
+      },
+
+      beforeHandleCommand(index, row, command) {
+        return {
+          'index': index,
+          'row': row,
+          'command': command
+        }
+      },
+      handleCommand(command) {
+        switch (command.command) {
+
+          case "addApi"://分配角色
+            this.handleCreateSub(command.row);
+            break;
+          case "edit"://分配角色
+            this.handleUpdate(command.row);
+            break;
+          case "delete"://分配角色
+            this.handleDelete(command.row, command.index);
+            break;
+        }
       }
     }
   }

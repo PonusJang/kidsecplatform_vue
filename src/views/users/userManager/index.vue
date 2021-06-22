@@ -87,14 +87,15 @@
           <span class="link-type" @click="handleUpdate(row)">{{ scope.row.lastLogonIn | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" width="250" class-name="small-padding fixed-width">
-        <template slot-scope="{row,$index}">
-          <el-button type="primary" size="mini" @click="handleUpdate(row)">
-            编辑
-          </el-button>
-          <el-button size="mini" type="danger" @click="handleDelete(row,$index)">
-            删除
-          </el-button>
+      <el-table-column label="操作" align="center" width="150px" class-name="small-padding fixed-width">
+        <template slot-scope="scope">
+          <el-dropdown split-button type="primary" @command="handleCommand">
+            操作
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'edit')">编辑</el-dropdown-item>
+              <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'del')">删除</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
         </template>
       </el-table-column>
 
@@ -120,7 +121,7 @@
         <el-form-item label="用户名" prop="title">
           <el-input v-model="temp.username" />
         </el-form-item>
-        <el-form-item label="密码" prop="title" :disabled="passwdDisabled">
+        <el-form-item label="密码" prop="title" v-if="passwdDisabled">
           <el-input v-model="temp.password" />
         </el-form-item>
         <el-form-item label="中文名" prop="title">
@@ -249,14 +250,14 @@ export default {
     getDepart() {
       getDepart().then(res => {
         if (res.code === 200) {
-          this.options = res.data.dataList
+          this.options = res.data
         }
       })
     },
     getRoles() {
       getRoles().then(res => {
         if (res.code === 200) {
-          this.optionRoles = res.data.dataList
+          this.optionRoles = res.data
         }
       })
     },
@@ -265,7 +266,7 @@ export default {
       if (this.listQuery.username !== undefined && this.listQuery.username !== '') {
         findByUsername(this.listQuery.page, this.listQuery.limit, this.listQuery.username).then(response => {
           this.total = response.data.count
-          this.list = response.data.docs
+          this.list = response.data.data
           setTimeout(() => {
             this.listLoading = false
           }, 1.5 * 1000)
@@ -273,7 +274,7 @@ export default {
       } else {
         getList(this.listQuery.page, this.listQuery.limit).then(response => {
           this.total = response.data.count
-          this.list = response.data.docs
+          this.list = response.data.data
           setTimeout(() => {
             this.listLoading = false
           }, 1.5 * 1000)
@@ -310,7 +311,7 @@ export default {
       })
     },
     handleDelete(row, index) {
-      del(row.configItem).then(() => {
+      del(row.id).then(() => {
         this.$notify({
           title: 'Success',
           message: 'Delete Successfully',
@@ -334,6 +335,7 @@ export default {
       })
     },
     handleUpdate(row) {
+      this.passwdDisabled = false
       this.temp = Object.assign({}, row) // copy obj
       console.log(row.configItem)
       this.dialogStatus = 'update'
@@ -347,7 +349,7 @@ export default {
         if (valid) {
           const tempData = Object.assign({}, this.temp)
           update(tempData).then(() => {
-            const index = this.list.findIndex(v => v._id === this.temp._id)
+            const index = this.list.findIndex(v => v.id === this.temp.id)
             this.list.splice(index, 1, this.temp)
             this.dialogFormVisible = false
             this.$notify({
@@ -373,7 +375,28 @@ export default {
         })
         this.downloadLoading = false
       })
+    },
+
+
+
+    beforeHandleCommand(index, row, command) {
+      return {
+        'index': index,
+        'row': row,
+        'command': command
+      }
+    },
+    handleCommand(command) {
+      switch (command.command) {
+        case "edit"://分配角色
+          this.handleUpdate(command.row);
+          break;
+        case "del"://分配角色
+          this.handleDelete(command.row, command.index);
+          break;
+      }
     }
+
   }
 }
 </script>

@@ -222,7 +222,6 @@
       }
     },
     created() {
-      this.getList(),
         this.getServerStatus()
     },
     methods: {
@@ -286,6 +285,7 @@
       getServerStatus() {
         getServerStatus().then(res => {
           if (res.data == 3) {
+            getList()
             this.disabled = true
             this.$notify({
               title: 'Success',

@@ -59,14 +59,16 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="操作" align="center" width="250" class-name="small-padding fixed-width">
-        <template slot-scope="{row,$index}">
-          <el-button type="primary" size="mini" @click="handleUpdate(row)">
-            编辑权限
-          </el-button>
-          <el-button size="mini" type="danger" @click="handleDelete(row,$index)">
-            删除
-          </el-button>
+      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+        <template slot-scope="scope">
+          <el-dropdown split-button type="primary" @command="handleCommand">
+            操作
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'edit')">编辑</el-dropdown-item>
+              <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'editAuthorize')">编辑权限</el-dropdown-item>
+              <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'del')">删除</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
         </template>
       </el-table-column>
 
@@ -207,7 +209,7 @@
         if (this.listQuery.roleName !== undefined && this.listQuery.roleName !== '') {
           findByRole(this.listQuery.page, this.listQuery.limit, this.listQuery.roleName).then(response => {
             this.total = response.data.count
-            this.list = response.data.docs
+            this.list = response.data.data
             setTimeout(() => {
               this.listLoading = false
             }, 1.5 * 1000)
@@ -215,7 +217,7 @@
         } else {
           getList(this.listQuery.page, this.listQuery.limit).then(response => {
             this.total = response.data.count
-            this.list = response.data.docs
+            this.list = response.data.data
             setTimeout(() => {
               this.listLoading = false
             }, 1.5 * 1000)
@@ -285,7 +287,7 @@
           if (valid) {
             const tempData = Object.assign({}, this.temp)
             update(tempData).then(() => {
-              const index = this.list.findIndex(v => v._id === this.temp._id)
+              const index = this.list.findIndex(v => v.id === this.temp.id)
               this.list.splice(index, 1, this.temp)
               this.dialogFormVisible = false
               this.$notify({
@@ -311,7 +313,27 @@
           })
           this.downloadLoading = false
         })
+      },
+
+
+      beforeHandleCommand(index, row, command) {
+        return {
+          'index': index,
+          'row': row,
+          'command': command
+        }
+      },
+      handleCommand(command) {
+        switch (command.command) {
+          case "edit"://分配角色
+            this.handleUpdate(command.row);
+            break;
+          case "del"://分配角色
+            this.handleDelete(command.row, command.index);
+            break;
+        }
       }
+
     }
   }
 </script>

@@ -47,11 +47,11 @@ export function add(data) {
   })
 }
 
-export function del(username) {
+export function del(id) {
   return request({
     url: '/user/delete',
     method: 'get',
-    params: { username }
+    params: { id }
   })
 }
 

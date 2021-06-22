@@ -120,14 +120,17 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="操作" align="center" width="250" class-name="small-padding fixed-width">
-        <template slot-scope="{row,$index}">
-          <el-button type="primary" size="mini" @click="handleUpdate(row)">
-            编辑
-          </el-button>
-          <el-button size="mini" type="danger" @click="handleDelete(row,$index)">
-            删除
-          </el-button>
+      <el-table-column label="操作" align="center"  class-name="small-padding fixed-width">
+        <template slot-scope="scope">
+          <el-dropdown split-button type="primary" @command="handleCommand">
+            操作
+            <el-dropdown-menu slot="dropdown" >
+              <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'edit')">编辑</el-dropdown-item>
+              <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'authorizeUser')">授权用户</el-dropdown-item>
+              <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'authorizeGroup')">授权组</el-dropdown-item>
+              <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'delete')">删除</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
         </template>
       </el-table-column>
 
@@ -176,21 +179,7 @@
       </div>
     </el-dialog>
 
-    <!--    <el-dialog :visible.sync="dialogUploadVisible">-->
-    <!--      <el-upload-->
-    <!--        class="upload-demo"-->
-    <!--        drag-->
-    <!--        action="#"-->
-    <!--        auto-upload="true"-->
-    <!--        multiple-->
-    <!--        :on-success="handleSuccess"-->
-    <!--        :http-request="uploadNginxConf"-->
-    <!--      >-->
-    <!--        <i class="el-icon-upload" />-->
-    <!--        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>-->
-    <!--        &lt;!&ndash;        <div slot="tip" class="el-upload__tip">只能上传conf文件</div>&ndash;&gt;-->
-    <!--      </el-upload>-->
-    <!--    </el-dialog>-->
+
   </div>
 </template>
 
@@ -400,7 +389,27 @@ export default {
           return v[j]
         }
       }))
+    },
+
+
+    beforeHandleCommand(index, row,command){
+      return {
+        'index': index,
+        'row': row,
+        'command':command
+      }
+    },
+    handleCommand(command) {
+      switch (command.command) {
+        case "edit"://编辑
+          this.handleUpdate(command.row);
+          break;
+        case "delete"://分配角色
+          this.handleDelete(command.row,command.index);
+          break;
+      }
     }
+
   }
 }
 </script>

@@ -79,3 +79,11 @@ export function getSubdomains(domain) {
     params: { domain }
   })
 }
+
+export function getIps(domain) {
+  return request({
+    url: '/domain/getIps',
+    method: 'get',
+    params: { domain }
+  })
+}
