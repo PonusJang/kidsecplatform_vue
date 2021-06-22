@@ -122,6 +122,7 @@
               <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'authorizeUser')">授权用户</el-dropdown-item>
               <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'authorizeGroup')">授权组</el-dropdown-item>
               <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'hostScan')">主机漏扫</el-dropdown-item>
+              <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'vulnInfo')">查看漏洞</el-dropdown-item>
               <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'portScan')">端口扫描</el-dropdown-item>
               <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'delete')">删除</el-dropdown-item>
             </el-dropdown-menu>

@@ -96,7 +96,9 @@
                 <el-dropdown split-button type="primary" @command="handleCommand">
                   操作
                   <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'webscan')">网站漏描
+                    <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'webscan')">漏洞扫描
+                    </el-dropdown-item>
+                    <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'vulnInfo')">查看漏洞
                     </el-dropdown-item>
                     <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'getIps')">获取IP地址</el-dropdown-item>
                     <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'webInfo')">获取指纹
