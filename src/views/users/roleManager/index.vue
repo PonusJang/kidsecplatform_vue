@@ -49,7 +49,7 @@
       </el-table-column>
       <el-table-column label="角色名" align="center">
         <template slot-scope="scope">
-          <span class="link-type" @click="handleUpdate(row)"> {{ scope.row.roleName }}</span>
+          <span class="link-type" @click="handleUpdate(row)"> {{ scope.row.name }}</span>
         </template>
       </el-table-column>
 
@@ -103,7 +103,7 @@
             :data="menu"
             show-checkbox
             default-expand-all
-            node-key="id"
+            node-key="mid"
             ref="tree"
             highlight-current
             :props="defaultProps">

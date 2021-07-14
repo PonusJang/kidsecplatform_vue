@@ -74,7 +74,7 @@ export function getAuthMenu() {
 
 export function getApiMenu() {
   return request({
-    url: '/user/getApiMenu',
+    url: '/apis/getApiMenu',
     method: 'get',
 
   })
