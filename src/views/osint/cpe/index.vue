@@ -22,7 +22,7 @@
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         搜索
       </el-button>
-      <el-button v-waves class="filter-item" type="warning" icon="el-icon-info" >
+      <el-button v-waves class="filter-item" type="warning" icon="el-icon-info">
         今日更新 : 100条CVE , 100条CNVD
       </el-button>
 
@@ -80,7 +80,7 @@
             操作
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'detail')">自查</el-dropdown-item>
-              <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'check')">推送 </el-dropdown-item>
+              <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'check')">推送</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </template>
@@ -91,6 +91,7 @@
 </template>
 
 <script>
+  import {getList, check, push} from "@/api/cpe"
   import Pagination from "@/components/Pagination/index";
   import waves from "@/directive/waves";
   import {parseTime} from "@/utils";
@@ -121,8 +122,7 @@
           create: '新增'
         },
         dialogPvVisible: false,
-        rules: {
-        },
+        rules: {},
         downloadLoading: false,
         UploadLoading: false,
         temp: {
@@ -139,6 +139,33 @@
       this.getList()
     },
     methods: {
+
+      handleFilter() {
+        this.listQuery.page = 1
+        this.getList()
+      },
+      getList() {
+        this.listLoading = false
+        getList(this.listQuery.page, this.listQuery.limit).then(response => {
+          this.total = response.data.count
+          this.list = response.data.data
+          setTimeout(() => {
+            this.listLoading = false
+          }, 1.5 * 1000)
+        })
+      },
+      handleCheck(row) {
+      },
+      handlePush(row) {
+      },
+      check(id) {
+        check(id).then(() => {
+        })
+      },
+      push(id) {
+        push(id).then(() => {
+        })
+      },
       beforeHandleCommand(index, row, command) {
         return {
           'index': index,
@@ -148,11 +175,11 @@
       },
       handleCommand(command) {
         switch (command.command) {
-          case "check"://分配角色
-            this.handleUpdate(command.row);
+          case "check"://
+            this.handleCheck(command.row);
             break;
-          case "push"://分配角色
-            this.handleUpdate(command.row, command.index);
+          case "push"://
+            this.handlePush(command.row);
             break;
         }
       }

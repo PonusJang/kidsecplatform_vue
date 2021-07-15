@@ -32,30 +32,30 @@
         新建检查
       </el-button>
     </div>
-      <el-table
-        v-loading="listLoading"
-        :data="list"
-        element-loading-text="Loading"
-        border
-        fit
-        highlight-current-row
-      >
-        <el-table-column align="center" label="ID" width="95">
-          <template slot-scope="scope">
-            {{ scope.$index }}
-          </template>
-        </el-table-column>
-        <el-table-column label="名称" align="center">
-          <template slot-scope="scope">
-            <span class="link-type" @click="handleUpdate(row)"> {{ scope.row.name }}</span>
-          </template>
-        </el-table-column>
+    <el-table
+      v-loading="listLoading"
+      :data="list"
+      element-loading-text="Loading"
+      border
+      fit
+      highlight-current-row
+    >
+      <el-table-column align="center" label="ID" width="95">
+        <template slot-scope="scope">
+          {{ scope.$index }}
+        </template>
+      </el-table-column>
+      <el-table-column label="名称" align="center">
+        <template slot-scope="scope">
+          <span class="link-type" @click="handleUpdate(row)"> {{ scope.row.name }}</span>
+        </template>
+      </el-table-column>
 
-        <el-table-column label="风险值" align="center">
-          <template slot-scope="scope">
-            <span class="link-type" @click="handleUpdate(row)"> {{ scope.row.risk }}</span>
-          </template>
-        </el-table-column>
+      <el-table-column label="风险值" align="center">
+        <template slot-scope="scope">
+          <span class="link-type" @click="handleUpdate(row)"> {{ scope.row.risk }}</span>
+        </template>
+      </el-table-column>
 
       <el-table-column align="center" prop="startTime" label="开始时间">
         <template slot-scope="scope">
@@ -76,85 +76,141 @@
             操作
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'detail')">详情</el-dropdown-item>
-              <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'check')">再次运行 </el-dropdown-item>
-              <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'push')">推送 </el-dropdown-item>
+              <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'check')">再次运行</el-dropdown-item>
+              <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'push')">推送</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </template>
       </el-table-column>
-      </el-table>
+    </el-table>
+
+    <pagination
+      v-show="total>0"
+      :total="total"
+      :page.sync="listQuery.page"
+      :limit.sync="listQuery.limit"
+      @pagination="getList"
+    />
+
   </div>
 
 </template>
 
 <script>
-import Pagination from "@/components/Pagination/index";
-import waves from "@/directive/waves";
-import {parseTime} from "@/utils";
+  import Pagination from "@/components/Pagination/index";
+  import waves from "@/directive/waves";
+  import {parseTime} from "@/utils";
+  import {findByIP, findByName, getList, check, update, push, getDetail} from "@/api/dataSecCheck";
 
-export default {
-  name: 'checkIndex',
-  components: {Pagination},
-  directives: {waves},
-  filters: {
-    parseTime: parseTime
-  },
-  data() {
-    return {
-      total: 0,
-      listQuery: {
-        page: 1,
-        limit: 10,
-        name: undefined,
-        ip: undefined,
-      },
-      list: null,
-      listLoading: false,
-      dialogFormVisible: false,
-      dialogUploadVisible: false,
-      dialogStatus: '',
-      textMap: {
-        update: 'Edit',
-        create: '新增'
-      },
-      dialogPvVisible: false,
-      rules: {
-      },
-      downloadLoading: false,
-      UploadLoading: false,
-      temp: {
-        id: undefined,
-        username: '',
-        ip: '',
-        type: '',
-        name: '',
-        manager: ''
-      }
-    }
-  },
-  created() {
-    this.getList()
-  },
-  methods: {
-    beforeHandleCommand(index, row, command) {
+  export default {
+    name: 'CheckIndex',
+    components: {Pagination},
+    directives: {waves},
+    filters: {
+      parseTime: parseTime
+    },
+    data() {
       return {
-        'index': index,
-        'row': row,
-        'command': command
+        total: 0,
+        listQuery: {
+          page: 1,
+          limit: 10,
+          name: undefined,
+          ip: undefined
+        },
+        list: null,
+        listLoading: false,
+        dialogFormVisible: false,
+        dialogStatus: '',
+        textMap: {
+          update: 'Edit',
+          create: '新增'
+        },
+        dialogPvVisible: false,
+        rules: {},
+        temp: {
+          id: undefined,
+          ip: '',
+          name: ''
+        }
       }
     },
-    handleCommand(command) {
-      switch (command.command) {
-        case "check"://分配角色
-          this.handleUpdate(command.row);
-          break;
-        case "push"://分配角色
-          this.handleUpdate(command.row, command.index);
-          break;
+    created() {
+      this.getList()
+    },
+    methods: {
+      getList() {
+        this.listLoading = false
+        if (this.listQuery.ip !== undefined && this.listQuery.ip !== '') {
+          findByIP(this.listQuery.page, this.listQuery.limit, this.listQuery.ip).then(response => {
+            this.total = response.data.count
+            this.list = response.data.data
+            setTimeout(() => {
+              this.listLoading = false
+            }, 1.5 * 1000)
+          })
+        } else if (this.listQuery.name !== undefined && this.listQuery.name !== '') {
+          findByName(this.listQuery.page, this.listQuery.limit, this.listQuery.name).then(response => {
+            this.total = response.data.count
+            this.list = response.data.data
+            setTimeout(() => {
+              this.listLoading = false
+            }, 1.5 * 1000)
+          })
+        } else {
+          getList(this.listQuery.page, this.listQuery.limit).then(response => {
+            this.total = response.data.count
+            this.list = response.data.data
+            setTimeout(() => {
+              this.listLoading = false
+            }, 1.5 * 1000)
+          })
+        }
+      },
+      handleFilter() {
+        this.listQuery.page = 1
+        this.getList()
+      },
+      handleCheck() {
+      },
+      handlePush() {
+      },
+      handleDetail() {
+      },
+      push(id) {
+        push(id).then(() => {
+        })
+      },
+      check(id) {
+        check(id).then(() => {
+        })
+      },
+      getDetail(id) {
+        getDetail(id).then(() => {
+        })
+      },
+      beforeHandleCommand(index, row, command) {
+        return {
+          'index': index,
+          'row': row,
+          'command': command
+        }
+      },
+      handleCommand(command) {
+        switch (command.command) {
+          case "check":
+            this.handleCheck(command.row);
+            break;
+          case "push":
+            this.handlePush(command.row);
+            break;
+          case "detail":
+            this.handleDetail(command.row);
+            break;
+        }
       }
     }
   }
-}
 </script>
 
 <style scoped>

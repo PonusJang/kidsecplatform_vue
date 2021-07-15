@@ -3,13 +3,6 @@
   <div class="app-container">
     <div class="filter-container">
       <el-input
-        v-model="listQuery.owner"
-        placeholder="所属部门"
-        style="width: 120px;"
-        class="filter-item"
-        @keyup.enter.native="handleFilter"
-      />
-      <el-input
         v-model="listQuery.name"
         placeholder="资产名称"
         style="width: 120px;"
@@ -112,9 +105,6 @@
       :limit.sync="listQuery.limit"
       @pagination="getList"
     />
-    <el-dialog :visible.sync="dialogUploadVisible">
-      <upload-excel-component :on-success="handleSuccess" :before-upload="beforeUpload"/>
-    </el-dialog>
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form
@@ -151,7 +141,7 @@
         <el-button @click="dialogFormVisible = false">
           取消
         </el-button>
-        <el-button @click="">
+        <el-button>
           测试
         </el-button>
         <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
@@ -168,25 +158,19 @@
   // eslint-disable-next-line no-unused-vars
   import {
     add,
-    addFromExcel,
     del,
+    update,
     findByIP,
-    findByOwner,
-    findByType,
     findByName,
     getList,
-    update,
-    hostScan,
-    portScan,
     getDetail
-  } from '@/api/assest'
+  } from '@/api/dataSec'
   import {parseTime} from '@/utils'
-  import UploadExcelComponent from '@/components/UploadExcel/index.vue'
   import waves from '@/directive/waves' // waves directive
   import Pagination from '@/components/Pagination' // secondary package based on el-pagination
   export default {
-    name: 'AssestList',
-    components: {Pagination, UploadExcelComponent},
+    name: 'DataAssestList',
+    components: {Pagination},
     directives: {waves},
     filters: {
       parseTime: parseTime
@@ -198,10 +182,7 @@
           page: 1,
           limit: 10,
           name: undefined,
-          owner: undefined,
-          ip: undefined,
-          type: undefined,
-          manager: undefined
+          ip: undefined
         },
         list: null,
         listLoading: false,
@@ -213,22 +194,18 @@
           create: '新增'
         },
         dialogPvVisible: false,
-        rules: {
-          owner: [{required: true, message: '归属单位 is required', trigger: 'blur'}],
-          ip: [{required: true, message: 'IP is required', trigger: 'blur'}],
-          type: [{required: true, message: '资产类型 is required', trigger: 'blur'}],
-          name: [{required: true, message: '资产名称 is required', trigger: 'blur'}],
-          manager: [{required: true, message: '负责人员 is required', trigger: 'blur'}]
-        },
+        rules: {},
         downloadLoading: false,
         UploadLoading: false,
         temp: {
           id: undefined,
-          owner: '',
           ip: '',
+          port: '',
+          username: '',
+          password: '',
           type: '',
           name: '',
-          manager: ''
+          version: ''
         }
       }
     },
@@ -236,25 +213,13 @@
       this.getList()
     },
     methods: {
+      handleFilter() {
+        this.listQuery.page = 1
+        this.getList()
+      },
       getList() {
         this.listLoading = false
-        if (this.listQuery.owner !== undefined && this.listQuery.owner !== '') {
-          findByOwner(this.listQuery.page, this.listQuery.limit, this.listQuery.owner).then(response => {
-            this.total = response.data.count
-            this.list = response.data.data
-            setTimeout(() => {
-              this.listLoading = false
-            }, 1.5 * 1000)
-          })
-        } else if (this.listQuery.type !== undefined && this.listQuery.type !== '') {
-          findByType(this.listQuery.page, this.listQuery.limit, this.listQuery.type).then(response => {
-            this.total = response.data.count
-            this.list = response.data.data
-            setTimeout(() => {
-              this.listLoading = false
-            }, 1.5 * 1000)
-          })
-        } else if (this.listQuery.ip !== undefined && this.listQuery.ip !== '') {
+        if (this.listQuery.ip !== undefined && this.listQuery.ip !== '') {
           findByIP(this.listQuery.page, this.listQuery.limit, this.listQuery.ip).then(response => {
             this.total = response.data.count
             this.list = response.data.data
@@ -316,10 +281,6 @@
           this.list.splice(index, 1)
         })
       },
-      handleFilter() {
-        // this.listQuery.page = 1
-        this.getList()
-      },
       handleCreate() {
         this.resetTemp()
         this.dialogStatus = 'create'
@@ -330,49 +291,11 @@
       },
       handleUpdate(row) {
         this.temp = Object.assign({}, row) // copy obj
-        console.log(row._id)
+        console.log(row.id)
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
         this.$nextTick(() => {
           this.$refs['dataForm'].clearValidate()
-        })
-      },
-      handleHostScan(row) {
-        hostScan(row.ip).then(res => {
-          if (res.code === 200) {
-            this.$notify({
-              title: 'Success',
-              message: 'Successfully',
-              type: 'success',
-              duration: 2000
-            })
-          } else {
-            this.$notify({
-              title: 'Failure',
-              message: 'Task Failed',
-              type: 'failure',
-              duration: 2000
-            })
-          }
-        })
-      },
-      handlePortScan(row) {
-        portScan(row.ip).then(res => {
-          if (res.code === 200) {
-            this.$notify({
-              title: 'Success',
-              message: 'Successfully',
-              type: 'success',
-              duration: 2000
-            })
-          } else {
-            this.$notify({
-              title: 'Failure',
-              message: 'Task Failed',
-              type: 'failure',
-              duration: 2000
-            })
-          }
         })
       },
       handleDetail(row) {
@@ -397,45 +320,6 @@
           }
         })
       },
-      handleDownload() {
-        this.downloadLoading = true
-        import('@/vendor/Export2Excel').then(excel => {
-          const tHeader = ['add_time', 'owner', 'domain']
-          const filterVal = ['add_time', 'owner', 'domain']
-          const data = this.formatJson(filterVal)
-          excel.export_json_to_excel({
-            header: tHeader,
-            data,
-            filename: '域名列表'
-          })
-          this.downloadLoading = false
-        })
-      },
-      handleUpload() {
-        this.dialogUploadVisible = true
-      },
-      beforeUpload(file) {
-        if (file) {
-          return true
-        }
-        this.$message({
-          message: '请参照模板上传文件',
-          type: 'warning'
-        })
-        return false
-      },
-      handleSuccess({results, header}) {
-        addFromExcel({results, header}).then(response => {
-          getList()
-          this.$notify({
-            title: 'Success',
-            message: 'Update Successfully',
-            type: 'success',
-            duration: 2000
-          })
-        })
-      },
-
       formatJson(filterVal) {
         return this.list.map(v => filterVal.map(j => {
           if (j === 'add_time') {
@@ -445,8 +329,10 @@
           }
         }))
       },
-
-
+      handleAuthorizeGroup() {
+      },
+      handleAuthorizeUser() {
+      },
       beforeHandleCommand(index, row, command) {
         return {
           'index': index,
@@ -456,16 +342,26 @@
       },
       handleCommand(command) {
         switch (command.command) {
-          case "edit"://分配角色
+          case "edit":
             this.handleUpdate(command.row);
             break;
-          case "delete"://分配角色
-            this.handleUpdate(command.row, command.index);
+          case "authorizeGroup":
+            this.handleAuthorizeGroup(command.row, command.index);
+            break;
+          case "authorizeUser":
+            this.handleAuthorizeUser(command.row, command.index);
+            break;
+          case "check":
+            this.handleCheck(command.row, command.index);
+            break;
+          case "detail":
+            this.handleDetail(command.row);
+            break;
+          case "delete":
+            this.handleDelete(command.row, command.index);
             break;
         }
       }
-
-
     }
   }
 </script>

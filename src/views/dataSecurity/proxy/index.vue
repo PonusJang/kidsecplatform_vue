@@ -85,8 +85,8 @@
             操作
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'detail')">编辑</el-dropdown-item>
-              <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'check')">状态检测 </el-dropdown-item>
-              <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'del')">删除 </el-dropdown-item>
+              <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'check')">状态检测</el-dropdown-item>
+              <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'del')">删除</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </template>
@@ -97,9 +97,11 @@
 </template>
 
 <script>
+  import {add, del, update, check, stop, restart, getList, getProxyList} from "@/api/dataSecProxy"
   import Pagination from "@/components/Pagination/index";
   import waves from "@/directive/waves";
   import {parseTime} from "@/utils";
+  import {findByIP, findByName} from "@/api/dataSec";
 
   export default {
     name: 'ProxyIndex',
@@ -127,8 +129,7 @@
           create: '新增'
         },
         dialogPvVisible: false,
-        rules: {
-        },
+        rules: {},
         downloadLoading: false,
         UploadLoading: false,
         temp: {
@@ -145,22 +146,78 @@
       this.getList()
     },
     methods: {
-      beforeHandleCommand(index, row, command) {
-        return {
-          'index': index,
-          'row': row,
-          'command': command
-        }
+
+      handleFilter() {
+        this.listQuery.page = 1
+        this.getList()
       },
-      handleCommand(command) {
-        switch (command.command) {
-          case "check"://分配角色
-            this.handleUpdate(command.row);
-            break;
-          case "push"://分配角色
-            this.handleUpdate(command.row, command.index);
-            break;
-        }
+      getList() {
+        this.listLoading = false
+        getList(this.listQuery.page, this.listQuery.limit).then(response => {
+          this.total = response.data.count
+          this.list = response.data.data
+          setTimeout(() => {
+            this.listLoading = false
+          }, 1.5 * 1000)
+        })
+      }
+    },
+
+    handleUpdate(row) {
+    },
+    handleCheck(row) {
+    },
+    handleDelete(row) {
+    },
+    handleStop(row) {
+    },
+    handleRestart(row) {
+    },
+
+    update(data) {
+      update(data).then(() => {
+
+      })
+    },
+    check(id) {
+      check(id).then(() => {
+
+      })
+    },
+    stop(id) {
+      stop(id).then(() => {
+
+      })
+    },
+    restart(id) {
+      restart(id).then(() => {
+
+      })
+    },
+    beforeHandleCommand(index, row, command) {
+      return {
+        'index': index,
+        'row': row,
+        'command': command
+      }
+    },
+    handleCommand(command) {
+      switch (command.command) {
+        case "update":
+          this.handleUpdate(command.row);
+          break;
+        case "check":
+          this.handleCheck(command.row);
+          break;
+        case "delete":
+          this.handleDelete(command.row);
+          break;
+        case "stop":
+          this.handleStop(command.row);
+          break;
+        case "restart":
+          this.handleRestart(command.row);
+          break;
       }
     }
   }

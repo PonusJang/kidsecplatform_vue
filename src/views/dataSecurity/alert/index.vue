@@ -1,17 +1,6 @@
-<template >
+<template>
 
   <div class="app-container">
-<!--    <div class="filter-container">-->
-<!--      <el-input-->
-<!--        placeholder="选择数据资产"-->
-<!--        style="width: 120px;"-->
-<!--        class="filter-item"-->
-<!--        @keyup.enter.native="handleFilter"-->
-<!--      />-->
-<!--      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">-->
-<!--        选择-->
-<!--      </el-button>-->
-<!--    </div>-->
 
     <el-table
       v-loading="listLoading"
@@ -61,8 +50,9 @@
           <el-dropdown split-button type="primary" @command="handleCommand">
             操作
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'forbidden')">标记误报</el-dropdown-item>
-              <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'push')">推送 </el-dropdown-item>
+              <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'tagFalse')">标记误报
+              </el-dropdown-item>
+              <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'push')">推送</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </template>
@@ -71,9 +61,8 @@
   </div>
 </template>
 
-
-
 <script>
+  import {getList, push, tagFalse} from "@/api/dataSecAlert"
   import Pagination from "@/components/Pagination/index";
   import waves from "@/directive/waves";
   import {parseTime} from "@/utils";
@@ -94,17 +83,14 @@
         list: null,
         listLoading: false,
         dialogFormVisible: false,
-        dialogUploadVisible: false,
         dialogStatus: '',
         textMap: {
           update: 'Edit',
           create: '新增'
         },
         dialogPvVisible: false,
-        rules: {
-        },
+        rules: {},
         downloadLoading: false,
-        UploadLoading: false,
         temp: {
           id: undefined,
         }
@@ -113,8 +99,53 @@
     created() {
       this.getList()
     },
-    methods:{
+    methods: {
+      handleFilter() {
+        this.listQuery.page = 1
+        this.getList()
+      },
+      getList() {
+        this.listLoading = false
+        getList(this.listQuery.page, this.listQuery.limit).then(response => {
+          this.total = response.data.count
+          this.list = response.data.data
+          setTimeout(() => {
+            this.listLoading = false
+          }, 1.5 * 1000)
+        })
+      },
+      beforeHandleCommand(index, row, command) {
+        return {
+          'index': index,
+          'row': row,
+          'command': command
+        }
+      },
+      handlePush(row){
 
+      },
+      push(id){
+        push(id).then(()=>{
+
+        })
+      },
+      handleTagFalse(row){
+      },
+      tagFalse(id){
+        tagFalse(id).then(()=>{
+
+        })
+      },
+      handleCommand(command) {
+        switch (command.command) {
+          case "push":
+            this.handlePush(command.row);
+            break;
+          case "tagFalse":
+            this.handleTagFalse(command.row);
+            break;
+        }
+      }
     }
   }
 </script>
