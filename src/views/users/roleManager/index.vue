@@ -92,7 +92,7 @@
         style="width: 500px; margin-left:50px;"
       >
         <el-form-item label="角色名" prop="title">
-          <el-input v-model="temp.roleName"/>
+          <el-input v-model="temp.name"/>
         </el-form-item>
         <el-form-item label="描述" prop="title">
           <el-input v-model="temp.description"/>
@@ -103,7 +103,7 @@
             :data="menu"
             show-checkbox
             default-expand-all
-            node-key="mid"
+            node-key="id"
             ref="tree"
             highlight-current
             :props="defaultProps">
@@ -115,7 +115,7 @@
             :data="api"
             show-checkbox
             default-expand-all
-            node-key="id"
+            node-key="number"
             ref="tree2"
             highlight-current
             :props="defaultProps2">
@@ -271,7 +271,7 @@
       },
       handleUpdate(row) {
         this.temp = Object.assign({}, row) // copy obj
-        console.log(row.configItem)
+        console.log(row)
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
         this.$nextTick(() => {

@@ -45,7 +45,7 @@ export function del(id) {
 
 export function getMenu() {
   return request({
-    url: '/menu/getMenu',
+    url: '/menu/getMenuTree',
     method: 'get',
   })
 }

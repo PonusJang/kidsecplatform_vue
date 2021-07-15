@@ -94,6 +94,7 @@
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'edit')">编辑</el-dropdown-item>
               <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'del')">删除</el-dropdown-item>
+              <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'resetPwd')">重置密码</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </template>
@@ -109,6 +110,24 @@
       @pagination="getList"
     />
 
+    <el-dialog title="重置密码" :visible.sync="ResetFormVisible">
+      <el-form>
+        <el-form-item label="ID" prop="id">
+          <el-input v-model="uid" />
+        </el-form-item>
+        <el-form-item label="新密码" prop="password">
+           <el-input v-model="newPassword" />
+        </el-form-item>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="dialogFormVisible = false">
+            取消
+          </el-button>
+          <el-button type="primary" @click="resetPwd()">
+            确认
+          </el-button>
+        </div>
+      </el-form>
+    </el-dialog>
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form
         ref="dataForm"
@@ -190,7 +209,7 @@
 
 <script>
 // eslint-disable-next-line no-unused-vars
-import { getList, update, add, del, findByUsername } from '@/api/user'
+import { getList, update, add, del, findByUsername, resetPwd } from '@/api/user'
 import { getDepart } from '@/api/depart'
 import { getRoles } from '@/api/role'
 import { parseTime } from '@/utils'
@@ -216,6 +235,9 @@ export default {
       dialogFormVisible: false,
       passwdDisabled: true,
       dialogStatus: '',
+      ResetFormVisible: false,
+      newPassword: undefined,
+      uid: undefined,
       textMap: {
         update: 'Edit',
         create: '新增'
@@ -386,13 +408,31 @@ export default {
         'command': command
       }
     },
+    handleResetPwd(row,index){
+      this.uid = row.id
+      this.ResetFormVisible = true
+    },
+    resetPwd(){
+      resetPwd({ id:this.uid, newPwd: this.newPassword}).then(()=>{
+        this.ResetFormVisible = false
+        this.$notify({
+          title: 'Success',
+          message: 'Update Successfully',
+          type: 'success',
+          duration: 2000
+        })
+      })
+    },
     handleCommand(command) {
       switch (command.command) {
-        case "edit"://分配角色
+        case "edit":
           this.handleUpdate(command.row);
           break;
-        case "del"://分配角色
+        case "del":
           this.handleDelete(command.row, command.index);
+          break;
+        case "resetPwd":
+          this.handleResetPwd(command.row, command.index);
           break;
       }
     }

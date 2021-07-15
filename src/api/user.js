@@ -79,3 +79,11 @@ export function getApiMenu() {
 
   })
 }
+
+export function resetPwd(data) {
+  return request({
+    url: '/apis/resetPwd',
+    method: 'post',
+    data
+  })
+}

@@ -31,17 +31,22 @@
           <span class="link-type" @click="handleUpdate(row)"> {{ scope.row.username }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="源地址" align="center">
+      <el-table-column label="客户端" align="center">
         <template slot-scope="scope">
           <span class="link-type" @click="handleUpdate(row)"> {{ scope.row.username }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="数据库" align="center">
+      <el-table-column label="服务器" align="center">
         <template slot-scope="scope">
           <span class="link-type" @click="handleUpdate(row)"> {{ scope.row.username }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="SQL" align="center">
+      <el-table-column label="QUERY" align="center">
+        <template slot-scope="scope">
+          <span class="link-type" @click="handleUpdate(row)"> {{ scope.row.username }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="AlertBy" align="center">
         <template slot-scope="scope">
           <span class="link-type" @click="handleUpdate(row)"> {{ scope.row.username }}</span>
         </template>
@@ -56,7 +61,7 @@
           <el-dropdown split-button type="primary" @command="handleCommand">
             操作
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'forbidden')">标记禁止</el-dropdown-item>
+              <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'forbidden')">标记误报</el-dropdown-item>
               <el-dropdown-item :command="beforeHandleCommand(scope.$index, scope.row,'push')">推送 </el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
@@ -74,7 +79,7 @@
   import {parseTime} from "@/utils";
 
   export default {
-    name: 'AuditIndex',
+    name: 'AlertIndex',
     components: {Pagination},
     directives: {waves},
     filters: {
